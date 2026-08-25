@@ -146,7 +146,6 @@
 </head>
 <body>
 
-    <!-- OVERLAY DE LOGIN -->
     <div id="loginOverlay">
         <div class="login-card">
             <h2>Alcione Pacheco</h2>
@@ -158,7 +157,6 @@
         </div>
     </div>
 
-    <!-- SIDEBAR -->
     <div class="sidebar">
         <div>
             <div class="brand">
@@ -175,6 +173,9 @@
                 <li class="nav-item" onclick="switchTab('tratamentos', this)">
                     <i class="fa-solid fa-sparkles"></i> Tratamentos
                 </li>
+                <li class="nav-item" onclick="switchTab('antes-depois', this)">
+                    <i class="fa-solid fa-images"></i> Antes e Depois
+                </li>
                 <li class="nav-item" onclick="switchTab('diferenciais', this)">
                     <i class="fa-solid fa-star"></i> Diferenciais
                 </li>
@@ -186,7 +187,6 @@
         <button onclick="logout()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
     </div>
 
-    <!-- CONTEÚDO PRINCIPAL -->
     <div class="main-content">
         <form id="adminForm" onsubmit="saveData(event)">
             <div class="header">
@@ -203,8 +203,8 @@
                         <input type="text" id="brandName">
                     </div>
                     <div class="form-group">
-                        <label>URL da Imagem da Logo (Deixe em branco se não quiser imagem)</label>
-                        <input type="text" id="logoUrl" placeholder="https://exemplo.com/sua-logo.png">
+                        <label>URL Direta da Imagem da Logo (ex: Postimages, Imgur ou .png/.jpg)</label>
+                        <input type="text" id="logoUrl" placeholder="https://i.postimg.cc/sua-logo.png">
                     </div>
                 </div>
 
@@ -223,7 +223,7 @@
                         <input type="text" id="heroBtnText">
                     </div>
                     <div class="form-group">
-                        <label>URL da Imagem da Seção Inicial (Hero Image)</label>
+                        <label>URL da Imagem Inicial (Hero)</label>
                         <input type="text" id="heroImageUrl" placeholder="https://exemplo.com/foto-hero.jpg">
                     </div>
                 </div>
@@ -267,7 +267,22 @@
                 </div>
             </div>
 
-            <!-- Aba 4: Diferenciais -->
+            <!-- Aba 4: Antes e Depois -->
+            <div id="tab-antes-depois" class="tab-content">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--primary-green);">Galeria Antes & Depois</h3>
+                        <button type="button" class="btn-save" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="addBeforeAfterField()">+ Novo Caso (Antes/Depois)</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Título da Seção Antes e Depois</label>
+                        <input type="text" id="beforeAfterTitle">
+                    </div>
+                    <div id="beforeAfterList"></div>
+                </div>
+            </div>
+
+            <!-- Aba 5: Diferenciais -->
             <div id="tab-diferenciais" class="tab-content">
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -282,7 +297,7 @@
                 </div>
             </div>
 
-            <!-- Aba 5: Contato -->
+            <!-- Aba 6: Contato -->
             <div id="tab-contato" class="tab-content">
                 <div class="card">
                     <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Informações de Contato</h3>
@@ -306,6 +321,7 @@
     <script>
         const ADMIN_PASSWORD = "alcioneestetica";
         let treatmentsData = [];
+        let beforeAfterData = [];
         let differentialsData = [];
 
         function checkAuth() {
@@ -321,7 +337,6 @@
         function handleLogin(e) {
             e.preventDefault();
             const inputPass = document.getElementById('inputPassword').value;
-
             if (inputPass === ADMIN_PASSWORD) {
                 sessionStorage.setItem('adminAuth', 'true');
                 document.getElementById('loginOverlay').style.display = 'none';
@@ -348,22 +363,18 @@
         async function loadData() {
             let data = null;
 
-            // Tenta obter do localStorage primeiro
             const localStored = localStorage.getItem('siteContent');
             if (localStored) {
                 try { data = JSON.parse(localStored); } catch(e){}
             }
 
-            // Tenta obter da API backend
             try {
                 const res = await fetch('/api/content');
                 if (res.ok) {
                     const apiData = await res.json();
                     if (apiData && Object.keys(apiData).length > 0) data = apiData;
                 }
-            } catch (err) {
-                console.log("Modo local/estático ativado.");
-            }
+            } catch (err) {}
 
             if (data) {
                 setVal('brandName', data.brandName || 'Alcione Pacheco');
@@ -377,15 +388,18 @@
                 setVal('aboutText2', data.aboutText2 || '');
                 setVal('aboutImageUrl', data.aboutImageUrl || '');
                 setVal('treatmentsTitle', data.treatmentsTitle || 'Tratamentos');
+                setVal('beforeAfterTitle', data.beforeAfterTitle || 'Resultados (Antes & Depois)');
                 setVal('differentialsTitle', data.differentialsTitle || 'Nossos Diferenciais');
                 setVal('contactTitle', data.contactTitle || 'Contato & Localização');
                 setVal('phone', data.phone || '');
                 setVal('address', data.address || '');
                 
                 treatmentsData = data.treatments || [];
+                beforeAfterData = data.beforeAfter || [];
                 differentialsData = data.differentials || [];
 
                 renderTreatmentsList();
+                renderBeforeAfterList();
                 renderDifferentialsList();
             }
         }
@@ -395,6 +409,7 @@
             if (el) el.value = value;
         }
 
+        /* TRATAMENTOS */
         function renderTreatmentsList() {
             const container = document.getElementById('treatmentsList');
             if (!container) return;
@@ -412,7 +427,7 @@
                             <input type="text" value="${t.imgUrl || ''}" placeholder="https://exemplo.com/foto.jpg" onchange="treatmentsData[${index}].imgUrl = this.value">
                         </div>
                         <div class="form-group">
-                            <label>Ícone FontAwesome (Usado se não houver imagem, ex: fa-face-smile)</label>
+                            <label>Ícone (ex: fa-sparkles)</label>
                             <input type="text" value="${t.icon || 'fa-sparkles'}" onchange="treatmentsData[${index}].icon = this.value">
                         </div>
                         <div class="form-group">
@@ -442,6 +457,51 @@
             renderTreatmentsList();
         }
 
+        /* ANTES E DEPOIS */
+        function renderBeforeAfterList() {
+            const container = document.getElementById('beforeAfterList');
+            if (!container) return;
+            container.innerHTML = '';
+
+            beforeAfterData.forEach((ba, index) => {
+                container.innerHTML += `
+                    <div class="dynamic-item-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                            <strong>Caso #${index + 1}</strong>
+                            <button type="button" style="color: #dc2626; background: none; border: none; cursor: pointer; font-weight: 600;" onclick="removeBeforeAfter(${index})"><i class="fa-solid fa-trash"></i> Remover</button>
+                        </div>
+                        <div class="form-group">
+                            <label>URL da Foto ANTES</label>
+                            <input type="text" value="${ba.beforeUrl || ''}" placeholder="https://exemplo.com/antes.jpg" onchange="beforeAfterData[${index}].beforeUrl = this.value">
+                        </div>
+                        <div class="form-group">
+                            <label>URL da Foto DEPOIS</label>
+                            <input type="text" value="${ba.afterUrl || ''}" placeholder="https://exemplo.com/depois.jpg" onchange="beforeAfterData[${index}].afterUrl = this.value">
+                        </div>
+                        <div class="form-group">
+                            <label>Nome / Título do Procedimento</label>
+                            <input type="text" value="${ba.title || ''}" placeholder="Ex: Preenchimento Labial" onchange="beforeAfterData[${index}].title = this.value">
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição / Observação</label>
+                            <textarea onchange="beforeAfterData[${index}].desc = this.value">${ba.desc || ''}</textarea>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addBeforeAfterField() {
+            beforeAfterData.push({ beforeUrl: '', afterUrl: '', title: '', desc: '' });
+            renderBeforeAfterList();
+        }
+
+        function removeBeforeAfter(index) {
+            beforeAfterData.splice(index, 1);
+            renderBeforeAfterList();
+        }
+
+        /* DIFERENCIAIS */
         function renderDifferentialsList() {
             const container = document.getElementById('differentialsList');
             if (!container) return;
@@ -481,6 +541,7 @@
             renderDifferentialsList();
         }
 
+        /* SALVAR DADOS */
         async function saveData(e) {
             e.preventDefault();
             const updatedData = {
@@ -496,6 +557,8 @@
                 aboutImageUrl: document.getElementById('aboutImageUrl').value,
                 treatmentsTitle: document.getElementById('treatmentsTitle').value,
                 treatments: treatmentsData,
+                beforeAfterTitle: document.getElementById('beforeAfterTitle').value,
+                beforeAfter: beforeAfterData,
                 differentialsTitle: document.getElementById('differentialsTitle').value,
                 differentials: differentialsData,
                 contactTitle: document.getElementById('contactTitle').value,
@@ -503,10 +566,8 @@
                 address: document.getElementById('address').value
             };
 
-            // Salva instantaneamente no localStorage
             localStorage.setItem('siteContent', JSON.stringify(updatedData));
 
-            // Tenta enviar para a API se houver backend
             try {
                 await fetch('/api/content', {
                     method: 'POST',
