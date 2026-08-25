@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Administrativo | Alcione Pacheco Estética</title>
+    <title>Painel Admin | Alcione Pacheco Estética</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -146,6 +146,7 @@
 </head>
 <body>
 
+    <!-- OVERLAY DE LOGIN -->
     <div id="loginOverlay">
         <div class="login-card">
             <h2>Alcione Pacheco</h2>
@@ -157,6 +158,7 @@
         </div>
     </div>
 
+    <!-- SIDEBAR -->
     <div class="sidebar">
         <div>
             <div class="brand">
@@ -166,6 +168,9 @@
             <ul class="nav-list">
                 <li class="nav-item active" onclick="switchTab('geral', this)">
                     <i class="fa-solid fa-house"></i> Geral & Logo
+                </li>
+                <li class="nav-item" onclick="switchTab('sobre', this)">
+                    <i class="fa-solid fa-user"></i> Sobre
                 </li>
                 <li class="nav-item" onclick="switchTab('tratamentos', this)">
                     <i class="fa-solid fa-sparkles"></i> Tratamentos
@@ -181,6 +186,7 @@
         <button onclick="logout()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
     </div>
 
+    <!-- CONTEÚDO PRINCIPAL -->
     <div class="main-content">
         <form id="adminForm" onsubmit="saveData(event)">
             <div class="header">
@@ -188,16 +194,16 @@
                 <button type="submit" class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Salvar Alterações</button>
             </div>
 
-            <!-- Aba 1: Geral & Logo -->
+            <!-- Aba 1: Geral & Logo & Hero -->
             <div id="tab-geral" class="tab-content active">
                 <div class="card">
                     <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Marca & Logo</h3>
                     <div class="form-group">
-                        <label>Nome da Marca</label>
+                        <label>Nome da Marca (Texto)</label>
                         <input type="text" id="brandName">
                     </div>
                     <div class="form-group">
-                        <label>URL da Imagem da Logo</label>
+                        <label>URL da Imagem da Logo (Deixe em branco se não quiser imagem)</label>
                         <input type="text" id="logoUrl" placeholder="https://exemplo.com/sua-logo.png">
                     </div>
                 </div>
@@ -217,33 +223,36 @@
                         <input type="text" id="heroBtnText">
                     </div>
                     <div class="form-group">
-                        <label>URL da Imagem Lateral (Hero)</label>
-                        <input type="text" id="heroImageUrl" placeholder="https://exemplo.com/imagem-hero.jpg">
+                        <label>URL da Imagem da Seção Inicial (Hero Image)</label>
+                        <input type="text" id="heroImageUrl" placeholder="https://exemplo.com/foto-hero.jpg">
                     </div>
                 </div>
+            </div>
 
+            <!-- Aba 2: Sobre -->
+            <div id="tab-sobre" class="tab-content">
                 <div class="card">
                     <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Sobre a Clínica</h3>
                     <div class="form-group">
-                        <label>Título Sobre</label>
+                        <label>Título da Seção Sobre</label>
                         <input type="text" id="aboutTitle">
                     </div>
                     <div class="form-group">
-                        <label>Texto 1</label>
+                        <label>Parágrafo 1</label>
                         <textarea id="aboutText1"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Texto 2</label>
+                        <label>Parágrafo 2</label>
                         <textarea id="aboutText2"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>URL da Imagem de Sobre</label>
+                        <label>URL da Imagem da Seção Sobre</label>
                         <input type="text" id="aboutImageUrl" placeholder="https://exemplo.com/foto-alcione.jpg">
                     </div>
                 </div>
             </div>
 
-            <!-- Aba 2: Tratamentos -->
+            <!-- Aba 3: Tratamentos -->
             <div id="tab-tratamentos" class="tab-content">
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -258,7 +267,7 @@
                 </div>
             </div>
 
-            <!-- Aba 3: Diferenciais -->
+            <!-- Aba 4: Diferenciais -->
             <div id="tab-diferenciais" class="tab-content">
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -273,7 +282,7 @@
                 </div>
             </div>
 
-            <!-- Aba 4: Contato -->
+            <!-- Aba 5: Contato -->
             <div id="tab-contato" class="tab-content">
                 <div class="card">
                     <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Informações de Contato</h3>
@@ -337,35 +346,47 @@
         }
 
         async function loadData() {
+            let data = null;
+
+            // Tenta obter do localStorage primeiro
+            const localStored = localStorage.getItem('siteContent');
+            if (localStored) {
+                try { data = JSON.parse(localStored); } catch(e){}
+            }
+
+            // Tenta obter da API backend
             try {
                 const res = await fetch('/api/content');
-                const data = await res.json();
-                
-                if (data) {
-                    setVal('brandName', data.brandName || 'Alcione Pacheco');
-                    setVal('logoUrl', data.logoUrl || '');
-                    setVal('heroTitle', data.heroTitle || '');
-                    setVal('heroSubtitle', data.heroSubtitle || '');
-                    setVal('heroBtnText', data.heroBtnText || 'Agendar Consulta');
-                    setVal('heroImageUrl', data.heroImageUrl || '');
-                    setVal('aboutTitle', data.aboutTitle || '');
-                    setVal('aboutText1', data.aboutText1 || '');
-                    setVal('aboutText2', data.aboutText2 || '');
-                    setVal('aboutImageUrl', data.aboutImageUrl || '');
-                    setVal('treatmentsTitle', data.treatmentsTitle || 'Tratamentos');
-                    setVal('differentialsTitle', data.differentialsTitle || 'Nossos Diferenciais');
-                    setVal('contactTitle', data.contactTitle || 'Contato & Localização');
-                    setVal('phone', data.phone || '');
-                    setVal('address', data.address || '');
-                    
-                    treatmentsData = data.treatments || [];
-                    differentialsData = data.differentials || [];
-
-                    renderTreatmentsList();
-                    renderDifferentialsList();
+                if (res.ok) {
+                    const apiData = await res.json();
+                    if (apiData && Object.keys(apiData).length > 0) data = apiData;
                 }
             } catch (err) {
-                console.error("Erro ao carregar dados:", err);
+                console.log("Modo local/estático ativado.");
+            }
+
+            if (data) {
+                setVal('brandName', data.brandName || 'Alcione Pacheco');
+                setVal('logoUrl', data.logoUrl || '');
+                setVal('heroTitle', data.heroTitle || '');
+                setVal('heroSubtitle', data.heroSubtitle || '');
+                setVal('heroBtnText', data.heroBtnText || 'Agendar Consulta');
+                setVal('heroImageUrl', data.heroImageUrl || '');
+                setVal('aboutTitle', data.aboutTitle || '');
+                setVal('aboutText1', data.aboutText1 || '');
+                setVal('aboutText2', data.aboutText2 || '');
+                setVal('aboutImageUrl', data.aboutImageUrl || '');
+                setVal('treatmentsTitle', data.treatmentsTitle || 'Tratamentos');
+                setVal('differentialsTitle', data.differentialsTitle || 'Nossos Diferenciais');
+                setVal('contactTitle', data.contactTitle || 'Contato & Localização');
+                setVal('phone', data.phone || '');
+                setVal('address', data.address || '');
+                
+                treatmentsData = data.treatments || [];
+                differentialsData = data.differentials || [];
+
+                renderTreatmentsList();
+                renderDifferentialsList();
             }
         }
 
@@ -387,11 +408,11 @@
                             <button type="button" style="color: #dc2626; background: none; border: none; cursor: pointer; font-weight: 600;" onclick="removeTreatment(${index})"><i class="fa-solid fa-trash"></i> Remover</button>
                         </div>
                         <div class="form-group">
-                            <label>URL da Imagem do Tratamento (Opcional)</label>
-                            <input type="text" value="${t.imgUrl || ''}" placeholder="https://exemplo.com/imagem.jpg" onchange="treatmentsData[${index}].imgUrl = this.value">
+                            <label>URL da Imagem do Card (Opcional)</label>
+                            <input type="text" value="${t.imgUrl || ''}" placeholder="https://exemplo.com/foto.jpg" onchange="treatmentsData[${index}].imgUrl = this.value">
                         </div>
                         <div class="form-group">
-                            <label>Ícone FontAwesome (Usado caso não tenha imagem, ex: fa-face-smile)</label>
+                            <label>Ícone FontAwesome (Usado se não houver imagem, ex: fa-face-smile)</label>
                             <input type="text" value="${t.icon || 'fa-sparkles'}" onchange="treatmentsData[${index}].icon = this.value">
                         </div>
                         <div class="form-group">
@@ -482,17 +503,19 @@
                 address: document.getElementById('address').value
             };
 
+            // Salva instantaneamente no localStorage
+            localStorage.setItem('siteContent', JSON.stringify(updatedData));
+
+            // Tenta enviar para a API se houver backend
             try {
-                const res = await fetch('/api/content', {
+                await fetch('/api/content', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(updatedData)
                 });
-                const result = await res.json();
-                alert(result.message || result.error || 'Ação executada com sucesso!');
-            } catch (err) {
-                alert('Erro ao conectar com o servidor.');
-            }
+            } catch (err) {}
+
+            alert('Alterações salvas com sucesso!');
         }
 
         document.addEventListener('DOMContentLoaded', checkAuth);

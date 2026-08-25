@@ -20,6 +20,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
         body { background-color: var(--bg-white); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
 
+        /* HEADER & NAVIGATION */
         header {
             position: fixed;
             top: 0;
@@ -39,30 +40,40 @@
         .logo-img { max-height: 45px; width: auto; object-fit: contain; display: none; }
         .logo-text { font-size: 1.2rem; font-weight: 700; color: var(--primary-green); }
 
-        nav { display: flex; gap: 1.5rem; }
+        nav { display: flex; gap: 1.5rem; align-items: center; }
         nav a { text-decoration: none; color: var(--text-dark); font-weight: 500; transition: color 0.3s; font-size: 0.95rem; }
         nav a:hover { color: var(--primary-green); }
 
-        .menu-toggle { display: none; background: none; border: none; font-size: 1.8rem; color: var(--primary-green); cursor: pointer; padding: 5px; }
+        /* MENU SANDUÍCHE (MOBILE) */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.6rem;
+            color: var(--primary-green);
+            cursor: pointer;
+            padding: 5px;
+        }
 
+        /* SEÇÕES */
         section { padding: 5rem 2rem 3rem 2rem; max-width: 1200px; margin: 0 auto; }
         
         .hero {
-            min-height: 70vh;
+            min-height: 65vh;
             display: flex;
             align-items: center;
             justify-content: space-between;
             background-color: var(--bg-light);
             border-radius: var(--radius);
-            margin-top: 5rem;
+            margin-top: 4rem;
             padding: 3rem;
             gap: 2rem;
         }
 
         .hero-content { flex: 1; }
-        .hero h1 { font-size: 2.3rem; color: var(--primary-green); margin-bottom: 1rem; font-weight: 700; }
+        .hero h1 { font-size: 2.2rem; color: var(--primary-green); margin-bottom: 1rem; font-weight: 700; }
         .hero p { font-size: 1.05rem; color: var(--text-muted); margin-bottom: 2rem; }
-        .hero-img { flex: 1; max-width: 450px; border-radius: var(--radius); object-fit: cover; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        .hero-img { flex: 1; max-width: 450px; width: 100%; height: 320px; border-radius: var(--radius); object-fit: cover; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
 
         .btn {
             display: inline-block;
@@ -80,14 +91,14 @@
 
         .about-wrapper { display: flex; align-items: center; gap: 3rem; margin-top: 1rem; }
         .about-text { flex: 1; }
-        .about-img { flex: 1; max-width: 450px; border-radius: var(--radius); object-fit: cover; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        .about-img { flex: 1; max-width: 450px; width: 100%; height: 320px; border-radius: var(--radius); object-fit: cover; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
 
         .section-title { text-align: center; font-size: 2rem; color: var(--primary-green); margin-bottom: 2.5rem; font-weight: 700; }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
         .card {
             background: var(--bg-white);
-            padding: 2rem;
+            padding: 1.8rem;
             border-radius: var(--radius);
             border: 1px solid #e2e8f0;
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
@@ -106,7 +117,8 @@
 
         footer { text-align: center; padding: 2rem; background: var(--primary-dark); color: white; margin-top: 4rem; }
 
-        @media (max-width: 868px) {
+        /* RESPONSIVIDADE & MENU SANDUÍCHE */
+        @media (max-width: 768px) {
             .menu-toggle { display: block; }
             nav {
                 display: none;
@@ -118,7 +130,9 @@
                 background: #ffffff;
                 padding: 1.5rem 2rem;
                 border-bottom: 1px solid #e2e8f0;
-                box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+                gap: 1.2rem;
+                text-align: center;
             }
             nav.active { display: flex; }
             .hero { flex-direction: column; text-align: center; padding: 2rem 1.5rem; }
@@ -132,11 +146,11 @@
 
     <header>
         <a href="#inicio" class="logo-container">
-            <img id="siteLogo" class="logo-img" src="" alt="Logo" onerror="this.style.display='none'">
+            <img id="siteLogo" class="logo-img" src="" onerror="this.style.display='none'">
             <span class="logo-text" id="brandName">Alcione Pacheco</span>
         </a>
         <button class="menu-toggle" id="menuToggle" aria-label="Abrir Menu">
-            <i class="fa-solid fa-bars"></i>
+            <i class="fa-solid fa-bars" id="menuIcon"></i>
         </button>
         <nav id="navbar">
             <a href="#inicio" onclick="closeMenu()">Início</a>
@@ -154,7 +168,7 @@
                 <p id="heroSubtitle">Protocolos estéticos avançados focados em rejuvenescimento natural e saúde da pele.</p>
                 <a href="#contato" class="btn" id="heroBtnText">Agendar Consulta</a>
             </div>
-            <img id="heroImage" class="hero-img" src="" alt="Imagem Hero" onerror="this.style.display='none'">
+            <img id="heroImage" class="hero-img" src="" onerror="this.style.display='none'">
         </div>
     </section>
 
@@ -165,7 +179,7 @@
                 <p id="aboutText1" style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-dark);"></p>
                 <p id="aboutText2" style="color: var(--text-muted);"></p>
             </div>
-            <img id="aboutImage" class="about-img" src="" alt="Sobre Alcione Pacheco" onerror="this.style.display='none'">
+            <img id="aboutImage" class="about-img" src="" onerror="this.style.display='none'">
         </div>
     </section>
 
@@ -193,95 +207,136 @@
     </footer>
 
     <script>
+        // Lógica do Menu Sanduíche
         const menuToggle = document.getElementById('menuToggle');
         const navbar = document.getElementById('navbar');
+        const menuIcon = document.getElementById('menuIcon');
 
         menuToggle.addEventListener('click', () => {
             navbar.classList.toggle('active');
+            if (navbar.classList.contains('active')) {
+                menuIcon.classList.remove('fa-bars');
+                menuIcon.classList.add('fa-xmark');
+            } else {
+                menuIcon.classList.remove('fa-xmark');
+                menuIcon.classList.add('fa-bars');
+            }
         });
 
         function closeMenu() {
             navbar.classList.remove('active');
+            menuIcon.classList.remove('fa-xmark');
+            menuIcon.classList.add('fa-bars');
         }
 
+        // Carregamento de Dados
         async function loadPageData() {
+            let data = null;
+
+            // Tenta obter do localStorage primeiro
+            const localStored = localStorage.getItem('siteContent');
+            if (localStored) {
+                try { data = JSON.parse(localStored); } catch(e){}
+            }
+
+            // Tenta obter da API backend
             try {
                 const res = await fetch('/api/content');
-                const data = await res.json();
-
-                if (data.logoUrl && data.logoUrl.trim() !== '') {
-                    const img = document.getElementById('siteLogo');
-                    img.src = data.logoUrl;
-                    img.style.display = 'block';
+                if (res.ok) {
+                    const apiData = await res.json();
+                    if (apiData && Object.keys(apiData).length > 0) {
+                        data = apiData;
+                    }
                 }
-
-                if (data.heroImageUrl && data.heroImageUrl.trim() !== '') {
-                    const heroImg = document.getElementById('heroImage');
-                    heroImg.src = data.heroImageUrl;
-                    heroImg.style.display = 'block';
-                }
-
-                if (data.aboutImageUrl && data.aboutImageUrl.trim() !== '') {
-                    const aboutImg = document.getElementById('aboutImage');
-                    aboutImg.src = data.aboutImageUrl;
-                    aboutImg.style.display = 'block';
-                }
-
-                if (data.brandName) document.getElementById('brandName').innerText = data.brandName;
-                if (data.heroTitle) document.getElementById('heroTitle').innerText = data.heroTitle;
-                if (data.heroSubtitle) document.getElementById('heroSubtitle').innerText = data.heroSubtitle;
-                if (data.heroBtnText) document.getElementById('heroBtnText').innerText = data.heroBtnText;
-                
-                if (data.aboutTitle) document.getElementById('aboutTitle').innerText = data.aboutTitle;
-                if (data.aboutText1) document.getElementById('aboutText1').innerText = data.aboutText1;
-                if (data.aboutText2) document.getElementById('aboutText2').innerText = data.aboutText2;
-
-                if (data.treatmentsTitle) document.getElementById('treatmentsTitle').innerText = data.treatmentsTitle;
-                if (data.treatments && data.treatments.length > 0) {
-                    const grid = document.getElementById('treatmentsGrid');
-                    grid.innerHTML = '';
-                    data.treatments.forEach(t => {
-                        const imgHtml = t.imgUrl ? `<img src="${t.imgUrl}" class="card-img" style="display:block;" onerror="this.style.display='none'">` : '';
-                        const iconHtml = t.icon ? `<i class="fa-solid ${t.icon}"></i>` : '';
-                        
-                        grid.innerHTML += `
-                            <div class="card">
-                                ${imgHtml}
-                                ${!t.imgUrl ? iconHtml : ''}
-                                <h3>${t.name}</h3>
-                                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.6rem;">${t.desc}</p>
-                                <span style="font-weight: 600; color: var(--primary-green); font-size: 0.85rem;">${t.time}</span>
-                            </div>
-                        `;
-                    });
-                }
-
-                if (data.differentialsTitle) document.getElementById('differentialsTitle').innerText = data.differentialsTitle;
-                if (data.differentials && data.differentials.length > 0) {
-                    const diffGrid = document.getElementById('differentialsGrid');
-                    diffGrid.innerHTML = '';
-                    data.differentials.forEach(d => {
-                        diffGrid.innerHTML += `
-                            <div class="card">
-                                <i class="fa-solid ${d.icon || 'fa-star'}"></i>
-                                <h3>${d.title}</h3>
-                                <p style="color: var(--text-muted); font-size: 0.95rem;">${d.desc}</p>
-                            </div>
-                        `;
-                    });
-                }
-
-                if (data.contactTitle) document.getElementById('contactTitle').innerText = data.contactTitle;
-                if (data.phone) {
-                    document.getElementById('phone').innerText = data.phone;
-                    const cleanPhone = data.phone.replace(/\D/g, '');
-                    document.getElementById('whatsappBtn').href = `https://wa.me/55${cleanPhone}`;
-                }
-                if (data.address) document.getElementById('address').innerText = data.address;
-
             } catch (err) {
-                console.error("Erro ao carregar dados do site:", err);
+                console.log("Usando armazenamento local (Offline/Static Mode)");
             }
+
+            if (!data) return;
+
+            // Renderiza Logo
+            const logoImg = document.getElementById('siteLogo');
+            if (data.logoUrl && data.logoUrl.trim() !== '') {
+                logoImg.src = data.logoUrl;
+                logoImg.style.display = 'inline-block';
+            } else {
+                logoImg.style.display = 'none';
+            }
+
+            // Renderiza Hero Image
+            const heroImg = document.getElementById('heroImage');
+            if (data.heroImageUrl && data.heroImageUrl.trim() !== '') {
+                heroImg.src = data.heroImageUrl;
+                heroImg.style.display = 'block';
+            } else {
+                heroImg.style.display = 'none';
+            }
+
+            // Renderiza About Image
+            const aboutImg = document.getElementById('aboutImage');
+            if (data.aboutImageUrl && data.aboutImageUrl.trim() !== '') {
+                aboutImg.src = data.aboutImageUrl;
+                aboutImg.style.display = 'block';
+            } else {
+                aboutImg.style.display = 'none';
+            }
+
+            // Renderiza Textos
+            if (data.brandName) document.getElementById('brandName').innerText = data.brandName;
+            if (data.heroTitle) document.getElementById('heroTitle').innerText = data.heroTitle;
+            if (data.heroSubtitle) document.getElementById('heroSubtitle').innerText = data.heroSubtitle;
+            if (data.heroBtnText) document.getElementById('heroBtnText').innerText = data.heroBtnText;
+            
+            if (data.aboutTitle) document.getElementById('aboutTitle').innerText = data.aboutTitle;
+            if (data.aboutText1) document.getElementById('aboutText1').innerText = data.aboutText1;
+            if (data.aboutText2) document.getElementById('aboutText2').innerText = data.aboutText2;
+
+            // Renderiza Tratamentos
+            if (data.treatmentsTitle) document.getElementById('treatmentsTitle').innerText = data.treatmentsTitle;
+            if (data.treatments && data.treatments.length > 0) {
+                const grid = document.getElementById('treatmentsGrid');
+                grid.innerHTML = '';
+                data.treatments.forEach(t => {
+                    const hasImg = t.imgUrl && t.imgUrl.trim() !== '';
+                    const imgHtml = hasImg ? `<img src="${t.imgUrl}" class="card-img" style="display:block;" onerror="this.style.display='none'">` : '';
+                    const iconHtml = !hasImg && t.icon ? `<i class="fa-solid ${t.icon}"></i>` : '';
+                    
+                    grid.innerHTML += `
+                        <div class="card">
+                            ${imgHtml}
+                            ${iconHtml}
+                            <h3>${t.name}</h3>
+                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.6rem;">${t.desc}</p>
+                            ${t.time ? `<span style="font-weight: 600; color: var(--primary-green); font-size: 0.85rem;">${t.time}</span>` : ''}
+                        </div>
+                    `;
+                });
+            }
+
+            // Renderiza Diferenciais
+            if (data.differentialsTitle) document.getElementById('differentialsTitle').innerText = data.differentialsTitle;
+            if (data.differentials && data.differentials.length > 0) {
+                const diffGrid = document.getElementById('differentialsGrid');
+                diffGrid.innerHTML = '';
+                data.differentials.forEach(d => {
+                    diffGrid.innerHTML += `
+                        <div class="card">
+                            <i class="fa-solid ${d.icon || 'fa-star'}"></i>
+                            <h3>${d.title}</h3>
+                            <p style="color: var(--text-muted); font-size: 0.95rem;">${d.desc}</p>
+                        </div>
+                    `;
+                });
+            }
+
+            // Renderiza Contato
+            if (data.contactTitle) document.getElementById('contactTitle').innerText = data.contactTitle;
+            if (data.phone) {
+                document.getElementById('phone').innerText = data.phone;
+                const cleanPhone = data.phone.replace(/\D/g, '');
+                document.getElementById('whatsappBtn').href = `https://wa.me/55${cleanPhone}`;
+            }
+            if (data.address) document.getElementById('address').innerText = data.address;
         }
 
         document.addEventListener('DOMContentLoaded', loadPageData);
