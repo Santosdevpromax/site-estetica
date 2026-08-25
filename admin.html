@@ -21,6 +21,43 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-dark); display: flex; min-height: 100vh; }
 
+        /* Tela de Login (Overlay) */
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(35, 45, 32, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .login-card {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        .login-card h2 { color: var(--primary-green); margin-bottom: 0.5rem; }
+        .login-card p { font-size: 0.85rem; color: #666; margin-bottom: 1.5rem; }
+        .login-card input {
+            width: 100%;
+            padding: 0.9rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        /* Dashboard */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -47,11 +84,7 @@
             color: #ccc;
         }
 
-        .nav-item:hover, .nav-item.active { 
-            background: var(--primary-green); 
-            color: #fff; 
-            font-weight: 600;
-        }
+        .nav-item:hover, .nav-item.active { background: var(--primary-green); color: #fff; font-weight: 600; }
 
         .main-content { flex: 1; padding: 2.5rem; overflow-y: auto; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
@@ -92,7 +125,19 @@
         }
         .btn-save:hover { opacity: 0.9; transform: translateY(-2px); }
 
-        .treatment-card {
+        .btn-logout {
+            background: transparent;
+            color: #e53e3e;
+            border: 1px solid #e53e3e;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .dynamic-item-card {
             border: 1px solid var(--border);
             padding: 1.5rem;
             border-radius: 8px;
@@ -103,6 +148,19 @@
 </head>
 <body>
 
+    <!-- TELA DE LOGIN -->
+    <div id="loginOverlay">
+        <div class="login-card">
+            <h2>Alcione Pacheco</h2>
+            <p>Acesso Restrito ao Painel Admin</p>
+            <form onsubmit="handleLogin(event)">
+                <input type="password" id="inputPassword" placeholder="Digite a senha" required autofocus>
+                <button type="submit" class="btn-save" style="width: 100%;">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PAINEL ADMIN -->
     <div class="sidebar">
         <div>
             <div class="brand">
@@ -111,16 +169,20 @@
             </div>
             <ul class="nav-list">
                 <li class="nav-item active" onclick="switchTab('geral', this)">
-                    <i class="fa-solid fa-house"></i> Conteúdo Geral
+                    <i class="fa-solid fa-house"></i> Geral & Logo
                 </li>
                 <li class="nav-item" onclick="switchTab('tratamentos', this)">
                     <i class="fa-solid fa-sparkles"></i> Tratamentos
+                </li>
+                <li class="nav-item" onclick="switchTab('diferenciais', this)">
+                    <i class="fa-solid fa-star"></i> Diferenciais
                 </li>
                 <li class="nav-item" onclick="switchTab('contato', this)">
                     <i class="fa-solid fa-address-book"></i> Contato
                 </li>
             </ul>
         </div>
+        <button onclick="logout()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
     </div>
 
     <div class="main-content">
@@ -130,8 +192,20 @@
                 <button type="submit" class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Salvar Alterações</button>
             </div>
 
-            <!-- Aba 1: Conteúdo Geral -->
+            <!-- Aba 1: Geral & Logo -->
             <div id="tab-geral" class="tab-content active">
+                <div class="card">
+                    <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Marca & Cabeçalho</h3>
+                    <div class="form-group">
+                        <label>Nome da Marca</label>
+                        <input type="text" id="brandName">
+                    </div>
+                    <div class="form-group">
+                        <label>URL do Logo (Link da Imagem)</label>
+                        <input type="text" id="logoUrl" placeholder="https://link-da-imagem.com/logo.png">
+                    </div>
+                </div>
+
                 <div class="card">
                     <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Seção Inicial (Hero)</h3>
                     <div class="form-group">
@@ -141,6 +215,10 @@
                     <div class="form-group">
                         <label>Subtítulo</label>
                         <textarea id="heroSubtitle"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Texto do Botão de Ação</label>
+                        <input type="text" id="heroBtnText">
                     </div>
                 </div>
 
@@ -168,16 +246,37 @@
                         <h3 style="color: var(--primary-green);">Gerenciamento de Tratamentos</h3>
                         <button type="button" class="btn-save" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="addTreatmentField()">+ Novo Tratamento</button>
                     </div>
-                    <div id="treatmentsList">
-                        <!-- Tratamentos carregados via JS -->
+                    <div class="form-group">
+                        <label>Título da Seção de Tratamentos</label>
+                        <input type="text" id="treatmentsTitle">
                     </div>
+                    <div id="treatmentsList"></div>
                 </div>
             </div>
 
-            <!-- Aba 3: Contato -->
+            <!-- Aba 3: Diferenciais -->
+            <div id="tab-diferenciais" class="tab-content">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--primary-green);">Gerenciamento de Diferenciais</h3>
+                        <button type="button" class="btn-save" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="addDifferentialField()">+ Novo Diferencial</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Título da Seção de Diferenciais</label>
+                        <input type="text" id="differentialsTitle">
+                    </div>
+                    <div id="differentialsList"></div>
+                </div>
+            </div>
+
+            <!-- Aba 4: Contato -->
             <div id="tab-contato" class="tab-content">
                 <div class="card">
                     <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Informações de Contato</h3>
+                    <div class="form-group">
+                        <label>Título da Seção de Contato</label>
+                        <input type="text" id="contactTitle">
+                    </div>
                     <div class="form-group">
                         <label>Telefone / WhatsApp</label>
                         <input type="text" id="phone">
@@ -192,7 +291,40 @@
     </div>
 
     <script>
+        // SENHA DE ACESSO AO PAINEL (Altere aqui se desejar)
+        const ADMIN_PASSWORD = "alcioneestetica";
+
         let treatmentsData = [];
+        let differentialsData = [];
+
+        function checkAuth() {
+            const isAuth = sessionStorage.getItem('adminAuth');
+            if (isAuth === 'true') {
+                document.getElementById('loginOverlay').style.display = 'none';
+                loadData();
+            } else {
+                document.getElementById('loginOverlay').style.display = 'flex';
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const inputPass = document.getElementById('inputPassword').value;
+
+            if (inputPass === ADMIN_PASSWORD) {
+                sessionStorage.setItem('adminAuth', 'true');
+                document.getElementById('loginOverlay').style.display = 'none';
+                loadData();
+            } else {
+                alert('Senha incorreta!');
+                document.getElementById('inputPassword').value = '';
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminAuth');
+            window.location.reload();
+        }
 
         function switchTab(tabName, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
@@ -208,22 +340,37 @@
                 const data = await res.json();
                 
                 if (data) {
-                    if (document.getElementById('heroTitle')) document.getElementById('heroTitle').value = data.heroTitle || '';
-                    if (document.getElementById('heroSubtitle')) document.getElementById('heroSubtitle').value = data.heroSubtitle || '';
-                    if (document.getElementById('aboutTitle')) document.getElementById('aboutTitle').value = data.aboutTitle || '';
-                    if (document.getElementById('aboutText1')) document.getElementById('aboutText1').value = data.aboutText1 || '';
-                    if (document.getElementById('aboutText2')) document.getElementById('aboutText2').value = data.aboutText2 || '';
-                    if (document.getElementById('phone')) document.getElementById('phone').value = data.phone || '';
-                    if (document.getElementById('address')) document.getElementById('address').value = data.address || '';
+                    setVal('brandName', data.brandName || 'Alcione Pacheco');
+                    setVal('logoUrl', data.logoUrl || '');
+                    setVal('heroTitle', data.heroTitle || '');
+                    setVal('heroSubtitle', data.heroSubtitle || '');
+                    setVal('heroBtnText', data.heroBtnText || 'Agendar Consulta');
+                    setVal('aboutTitle', data.aboutTitle || '');
+                    setVal('aboutText1', data.aboutText1 || '');
+                    setVal('aboutText2', data.aboutText2 || '');
+                    setVal('treatmentsTitle', data.treatmentsTitle || 'Tratamentos');
+                    setVal('differentialsTitle', data.differentialsTitle || 'Nossos Diferenciais');
+                    setVal('contactTitle', data.contactTitle || 'Contato & Localização');
+                    setVal('phone', data.phone || '');
+                    setVal('address', data.address || '');
                     
                     treatmentsData = data.treatments || [];
+                    differentialsData = data.differentials || [];
+
                     renderTreatmentsList();
+                    renderDifferentialsList();
                 }
             } catch (err) {
                 console.error("Erro ao carregar dados:", err);
             }
         }
 
+        function setVal(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.value = value;
+        }
+
+        /* TRATAMENTOS */
         function renderTreatmentsList() {
             const container = document.getElementById('treatmentsList');
             if (!container) return;
@@ -231,26 +378,26 @@
 
             treatmentsData.forEach((t, index) => {
                 container.innerHTML += `
-                    <div class="treatment-card">
+                    <div class="dynamic-item-card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
                             <strong>Tratamento #${index + 1}</strong>
                             <button type="button" style="color: #dc2626; background: none; border: none; cursor: pointer; font-weight: 600;" onclick="removeTreatment(${index})"><i class="fa-solid fa-trash"></i> Remover</button>
                         </div>
                         <div class="form-group">
-                            <label>Ícone FontAwesome (ex: fa-sparkles, fa-leaf, fa-wand-magic-sparkles)</label>
-                            <input type="text" value="${t.icon || 'fa-sparkles'}" onchange="updateTreatment(${index}, 'icon', this.value)">
+                            <label>Ícone FontAwesome (ex: fa-face-smile, fa-sparkles, fa-leaf)</label>
+                            <input type="text" value="${t.icon || 'fa-sparkles'}" onchange="treatmentsData[${index}].icon = this.value">
                         </div>
                         <div class="form-group">
                             <label>Nome do Tratamento</label>
-                            <input type="text" value="${t.name || ''}" onchange="updateTreatment(${index}, 'name', this.value)">
+                            <input type="text" value="${t.name || ''}" onchange="treatmentsData[${index}].name = this.value">
                         </div>
                         <div class="form-group">
                             <label>Descrição</label>
-                            <textarea onchange="updateTreatment(${index}, 'desc', this.value)">${t.desc || ''}</textarea>
+                            <textarea onchange="treatmentsData[${index}].desc = this.value">${t.desc || ''}</textarea>
                         </div>
                         <div class="form-group">
                             <label>Tempo / Duração (ex: 60 min)</label>
-                            <input type="text" value="${t.time || ''}" onchange="updateTreatment(${index}, 'time', this.value)">
+                            <input type="text" value="${t.time || ''}" onchange="treatmentsData[${index}].time = this.value">
                         </div>
                     </div>
                 `;
@@ -267,21 +414,65 @@
             renderTreatmentsList();
         }
 
-        function updateTreatment(index, field, value) {
-            treatmentsData[index][field] = value;
+        /* DIFERENCIAIS */
+        function renderDifferentialsList() {
+            const container = document.getElementById('differentialsList');
+            if (!container) return;
+            container.innerHTML = '';
+
+            differentialsData.forEach((d, index) => {
+                container.innerHTML += `
+                    <div class="dynamic-item-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                            <strong>Diferencial #${index + 1}</strong>
+                            <button type="button" style="color: #dc2626; background: none; border: none; cursor: pointer; font-weight: 600;" onclick="removeDifferential(${index})"><i class="fa-solid fa-trash"></i> Remover</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Ícone FontAwesome (ex: fa-user-doctor, fa-microscope, fa-leaf)</label>
+                            <input type="text" value="${d.icon || 'fa-star'}" onchange="differentialsData[${index}].icon = this.value">
+                        </div>
+                        <div class="form-group">
+                            <label>Título</label>
+                            <input type="text" value="${d.title || ''}" onchange="differentialsData[${index}].title = this.value">
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição</label>
+                            <textarea onchange="differentialsData[${index}].desc = this.value">${d.desc || ''}</textarea>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
+        function addDifferentialField() {
+            differentialsData.push({ icon: 'fa-star', title: '', desc: '' });
+            renderDifferentialsList();
+        }
+
+        function removeDifferential(index) {
+            differentialsData.splice(index, 1);
+            renderDifferentialsList();
+        }
+
+        /* SALVAMENTO */
         async function saveData(e) {
             e.preventDefault();
             const updatedData = {
+                brandName: document.getElementById('brandName').value,
+                logoUrl: document.getElementById('logoUrl').value,
                 heroTitle: document.getElementById('heroTitle').value,
                 heroSubtitle: document.getElementById('heroSubtitle').value,
+                heroBtnText: document.getElementById('heroBtnText').value,
                 aboutTitle: document.getElementById('aboutTitle').value,
                 aboutText1: document.getElementById('aboutText1').value,
                 aboutText2: document.getElementById('aboutText2').value,
+                treatmentsTitle: document.getElementById('treatmentsTitle').value,
+                treatments: treatmentsData,
+                differentialsTitle: document.getElementById('differentialsTitle').value,
+                differentials: differentialsData,
+                contactTitle: document.getElementById('contactTitle').value,
                 phone: document.getElementById('phone').value,
-                address: document.getElementById('address').value,
-                treatments: treatmentsData
+                address: document.getElementById('address').value
             };
 
             try {
@@ -297,7 +488,7 @@
             }
         }
 
-        document.addEventListener('DOMContentLoaded', loadData);
+        document.addEventListener('DOMContentLoaded', checkAuth);
     </script>
 </body>
 </html>
