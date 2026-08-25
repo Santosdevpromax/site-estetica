@@ -17,7 +17,7 @@ if (!fs.existsSync(DATA_FILE)) {
         aboutTitle: "Alcione Pacheco Estética Avançada",
         aboutText1: "Combinando ciência de ponta com um olhar refinado para a harmonia natural do rosto e do corpo, nossa clínica é um refúgio para quem busca cuidar da pele com elegância.",
         aboutText2: "Cada protocolo é cuidadosamente desenhado após uma avaliação minuciosa, garantindo segurança, conforto e resultados visíveis desde as primeiras sessões.",
-        phone: "(11) 99999-9999",
+        phone: "(35) 998167478",
         address: "Atendimento Presencial com Hora Marcada",
         treatments: [
             {
@@ -63,8 +63,6 @@ app.post('/api/content', (req, res) => {
 app.get('/admin', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
+module.exports = app;
 
-app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
-    console.log(`Painel Admin em http://localhost:${PORT}/admin`);
-});
+
