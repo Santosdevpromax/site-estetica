@@ -69,7 +69,7 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        .form-group { margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1.2rem; }
         .form-group label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; }
         .form-group input, .form-group textarea {
             width: 100%;
@@ -78,7 +78,7 @@
             border-radius: 8px;
             font-size: 0.95rem;
         }
-        .form-group textarea { min-height: 90px; resize: vertical; }
+        .form-group textarea { min-height: 80px; resize: vertical; }
 
         .btn-save {
             background: var(--primary-green);
@@ -91,6 +91,14 @@
             transition: all 0.3s;
         }
         .btn-save:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .treatment-card {
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: #fafafa;
+        }
     </style>
 </head>
 <body>
@@ -156,8 +164,13 @@
             <!-- Aba 2: Tratamentos -->
             <div id="tab-tratamentos" class="tab-content">
                 <div class="card">
-                    <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Gerenciamento de Tratamentos</h3>
-                    <p style="color: #666;">Os tratamentos são sincronizados automaticamente com a página inicial do site.</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--primary-green);">Gerenciamento de Tratamentos</h3>
+                        <button type="button" class="btn-save" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="addTreatmentField()">+ Novo Tratamento</button>
+                    </div>
+                    <div id="treatmentsList">
+                        <!-- Tratamentos carregados via JS -->
+                    </div>
                 </div>
             </div>
 
@@ -179,7 +192,8 @@
     </div>
 
     <script>
-        // Função para alternar abas do menu lateral
+        let treatmentsData = [];
+
         function switchTab(tabName, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -188,7 +202,6 @@
             element.classList.add('active');
         }
 
-        // Carregar dados existentes da API
         async function loadData() {
             try {
                 const res = await fetch('/api/content');
@@ -202,13 +215,62 @@
                     if (document.getElementById('aboutText2')) document.getElementById('aboutText2').value = data.aboutText2 || '';
                     if (document.getElementById('phone')) document.getElementById('phone').value = data.phone || '';
                     if (document.getElementById('address')) document.getElementById('address').value = data.address || '';
+                    
+                    treatmentsData = data.treatments || [];
+                    renderTreatmentsList();
                 }
             } catch (err) {
                 console.error("Erro ao carregar dados:", err);
             }
         }
 
-        // Enviar alterações
+        function renderTreatmentsList() {
+            const container = document.getElementById('treatmentsList');
+            if (!container) return;
+            container.innerHTML = '';
+
+            treatmentsData.forEach((t, index) => {
+                container.innerHTML += `
+                    <div class="treatment-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+                            <strong>Tratamento #${index + 1}</strong>
+                            <button type="button" style="color: #dc2626; background: none; border: none; cursor: pointer; font-weight: 600;" onclick="removeTreatment(${index})"><i class="fa-solid fa-trash"></i> Remover</button>
+                        </div>
+                        <div class="form-group">
+                            <label>Ícone FontAwesome (ex: fa-sparkles, fa-leaf, fa-wand-magic-sparkles)</label>
+                            <input type="text" value="${t.icon || 'fa-sparkles'}" onchange="updateTreatment(${index}, 'icon', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>Nome do Tratamento</label>
+                            <input type="text" value="${t.name || ''}" onchange="updateTreatment(${index}, 'name', this.value)">
+                        </div>
+                        <div class="form-group">
+                            <label>Descrição</label>
+                            <textarea onchange="updateTreatment(${index}, 'desc', this.value)">${t.desc || ''}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Tempo / Duração (ex: 60 min)</label>
+                            <input type="text" value="${t.time || ''}" onchange="updateTreatment(${index}, 'time', this.value)">
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function addTreatmentField() {
+            treatmentsData.push({ icon: 'fa-sparkles', name: '', desc: '', time: '' });
+            renderTreatmentsList();
+        }
+
+        function removeTreatment(index) {
+            treatmentsData.splice(index, 1);
+            renderTreatmentsList();
+        }
+
+        function updateTreatment(index, field, value) {
+            treatmentsData[index][field] = value;
+        }
+
         async function saveData(e) {
             e.preventDefault();
             const updatedData = {
@@ -218,7 +280,8 @@
                 aboutText1: document.getElementById('aboutText1').value,
                 aboutText2: document.getElementById('aboutText2').value,
                 phone: document.getElementById('phone').value,
-                address: document.getElementById('address').value
+                address: document.getElementById('address').value,
+                treatments: treatmentsData
             };
 
             try {
