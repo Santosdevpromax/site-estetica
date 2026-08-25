@@ -5,9 +5,11 @@ const path = require('path');
 const app = express();
 
 app.use(express.json());
+
+// Permite ler arquivos estáticos da raiz e da pasta public
+app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Conteúdo padrão de fallback
 const initialData = {
     heroTitle: "Cuidado minimalista, resultados extraordinários.",
     heroSubtitle: "Protocolos estéticos avançados focados em rejuvenescimento natural, saúde da pele.",
@@ -40,6 +42,19 @@ const initialData = {
 
 const DATA_FILE = path.join(__dirname, 'data.json');
 
+// Rota Principal (Carrega index.html automaticamente)
+app.get('/', (req, res) => {
+    const publicIndex = path.join(__dirname, 'public', 'index.html');
+    const rootIndex = path.join(__dirname, 'index.html');
+    
+    if (fs.existsSync(publicIndex)) {
+        return res.sendFile(publicIndex);
+    } else if (fs.existsSync(rootIndex)) {
+        return res.sendFile(rootIndex);
+    }
+    res.status(404).send("Arquivo index.html não foi encontrado no projeto.");
+});
+
 // GET API
 app.get('/api/content', (req, res) => {
     try {
@@ -55,13 +70,20 @@ app.get('/api/content', (req, res) => {
 
 // POST API
 app.post('/api/content', (req, res) => {
-    // Servidores serverless não gravam arquivos locais em produção
-    res.status(400).json({ error: "Salvamento de arquivos não suportado em ambiente Serverless." });
+    res.status(400).json({ error: "Salvamento não suportado em ambiente Serverless." });
 });
 
-// Admin Route
+// Rota Admin
 app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+    const publicAdmin = path.join(__dirname, 'public', 'admin.html');
+    const rootAdmin = path.join(__dirname, 'admin.html');
+    
+    if (fs.existsSync(publicAdmin)) {
+        return res.sendFile(publicAdmin);
+    } else if (fs.existsSync(rootAdmin)) {
+        return res.sendFile(rootAdmin);
+    }
+    res.status(404).send("Arquivo admin.html não foi encontrado no projeto.");
 });
 
 module.exports = app;
