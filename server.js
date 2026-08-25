@@ -10,6 +10,11 @@ app.use(express.json());
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Cole aqui as suas chaves do JSONBin.io
+const JSONBIN_BIN_ID = '6a8d25d9da38895dfe0d54aa';
+const JSONBIN_MASTER_KEY = '$2a$10$pqK/RRsBQUtlA6zpFiCapOonDsnDdQe3BEdxS3hm8lRv4JnC7iE1O';
+
+
 const initialData = {
     heroTitle: "Cuidado minimalista, resultados extraordinários.",
     heroSubtitle: "Protocolos estéticos avançados focados em rejuvenescimento natural, saúde da pele.",
