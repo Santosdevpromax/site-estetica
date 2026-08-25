@@ -18,7 +18,6 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
         
-        /* FUNDO ANIMADO EM TOM DE VERDE */
         body {
             background: linear-gradient(-45deg, #1e291c, #2d3e2a, #4a5c44, #354632);
             background-size: 400% 400%;
@@ -35,7 +34,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* HEADER */
         header {
             position: fixed;
             top: 0;
@@ -52,19 +50,8 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
-        .logo-container { 
-            display: flex; 
-            align-items: center; 
-            text-decoration: none; 
-            gap: 12px; 
-        }
-        
-        .logo-img { 
-            max-height: 45px; 
-            width: auto; 
-            object-fit: contain; 
-            display: none; 
-        }
+        .logo-container { display: flex; align-items: center; text-decoration: none; gap: 12px; }
+        .logo-img { max-height: 45px; width: auto; object-fit: contain; display: none; }
         .logo-text { font-size: 1.25rem; font-weight: 700; color: var(--primary-green); }
 
         nav { display: flex; gap: 1.5rem; align-items: center; }
@@ -80,9 +67,7 @@
             cursor: pointer;
         }
 
-        /* SEÇÕES E BALÕES BRANCOS */
         section { padding: 4rem 2rem 2rem 2rem; max-width: 1200px; margin: 0 auto; }
-
         .section-title { 
             text-align: center; 
             font-size: 2.2rem; 
@@ -92,9 +77,8 @@
             text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
-        /* BALÃO HERO PRINCIPAL */
         .hero {
-            min-height: 55vh;
+            min-height: 50vh;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -105,7 +89,6 @@
             gap: 2rem;
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
-
         .hero-content { flex: 1; }
         .hero h1 { font-size: 2.4rem; color: var(--primary-green); margin-bottom: 1rem; font-weight: 700; }
         .hero p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; }
@@ -123,12 +106,11 @@
         }
         .btn:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
 
-        /* CARDS BRANCOS DOS TRATAMENTOS */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
 
         .card {
             background: var(--card-bg);
-            padding: 1.8rem;
+            padding: 2rem;
             border-radius: var(--radius);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             text-align: center;
@@ -136,11 +118,10 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow: hidden;
         }
         .card:hover { transform: translateY(-8px); box-shadow: 0 18px 35px rgba(0,0,0,0.25); }
+        .card-icon { font-size: 2.2rem; color: var(--primary-green); margin-bottom: 1rem; }
         
-        /* FOTO DO TRATAMENTO NO CARD */
         .treatment-card-img { 
             width: 100%; 
             height: 200px; 
@@ -148,7 +129,6 @@
             border-radius: 12px; 
             margin-bottom: 1.2rem; 
             display: block; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
         .card h3 { color: var(--primary-green); margin-bottom: 0.8rem; font-size: 1.3rem; }
@@ -187,7 +167,7 @@
 
     <header>
         <a href="#inicio" class="logo-container">
-            <img id="siteLogo" class="logo-img" src="" alt="Logo">
+            <img id="siteLogo" class="logo-img" src="" alt="" onerror="this.style.display='none'">
             <span class="logo-text" id="brandName">Alcione Pacheco</span>
         </a>
         <button class="menu-toggle" id="menuToggle" aria-label="Abrir Menu">
@@ -195,6 +175,7 @@
         </button>
         <nav id="navbar">
             <a href="#inicio" onclick="closeMenu()">Início</a>
+            <a href="#diferenciais" onclick="closeMenu()">Diferenciais</a>
             <a href="#tratamentos" onclick="closeMenu()">Tratamentos</a>
             <a href="#contato" onclick="closeMenu()">Contato</a>
         </nav>
@@ -208,6 +189,12 @@
                 <a href="#contato" class="btn" id="heroBtnText">Agendar Consulta</a>
             </div>
         </div>
+    </section>
+
+    <!-- ABA DIFERENCIAIS RESTAURADA -->
+    <section id="diferenciais">
+        <h2 class="section-title" id="diffsTitle">Por que escolher a clínica?</h2>
+        <div class="grid" id="diffsGrid"></div>
     </section>
 
     <section id="tratamentos">
@@ -262,7 +249,7 @@
 
             if (!data) return;
 
-            // EXIBIÇÃO DA LOGO
+            // LOGO (EXIBE SE EXISTIR E VALIDA SE NÃO DÁ ERRO)
             const logoImg = document.getElementById('siteLogo');
             if (data.logoUrl && data.logoUrl.trim() !== '') {
                 logoImg.src = data.logoUrl;
@@ -271,20 +258,40 @@
                 logoImg.style.display = 'none';
             }
 
-            // TEXTOS PRINCIPAIS
             if (data.brandName) document.getElementById('brandName').innerText = data.brandName;
             if (data.heroTitle) document.getElementById('heroTitle').innerText = data.heroTitle;
             if (data.heroSubtitle) document.getElementById('heroSubtitle').innerText = data.heroSubtitle;
             if (data.heroBtnText) document.getElementById('heroBtnText').innerText = data.heroBtnText;
 
-            // RENDERIZAR TRATAMENTOS COM FOTOS
+            // CARREGAR DIFERENCIAIS
+            if (data.diffsTitle) document.getElementById('diffsTitle').innerText = data.diffsTitle;
+            const diffsGrid = document.getElementById('diffsGrid');
+            if (data.differentials && data.differentials.length > 0) {
+                diffsGrid.innerHTML = '';
+                data.differentials.forEach(d => {
+                    diffsGrid.innerHTML += `
+                        <div class="card">
+                            <div class="card-icon"><i class="${d.icon || 'fa-solid fa-star'}"></i></div>
+                            <h3>${d.title || ''}</h3>
+                            <p style="color: var(--text-muted); font-size: 0.95rem;">${d.desc || ''}</p>
+                        </div>
+                    `;
+                });
+            } else {
+                diffsGrid.innerHTML = `
+                    <div class="card"><div class="card-icon"><i class="fa-solid fa-gem"></i></div><h3>Atendimento Exclusivo</h3><p style="color: var(--text-muted);">Planos totalmente personalizados para cada tipo de pele.</p></div>
+                    <div class="card"><div class="card-icon"><i class="fa-solid fa-certificate"></i></div><h3>Tecnologia Avançada</h3><p style="color: var(--text-muted);">Produtos e equipamentos de alta performance.</p></div>
+                    <div class="card"><div class="card-icon"><i class="fa-solid fa-heart"></i></div><h3>Resultados Naturais</h3><p style="color: var(--text-muted);">Foco no rejuvenescimento sutil e elegante.</p></div>
+                `;
+            }
+
+            // CARREGAR TRATAMENTOS
             if (data.treatmentsTitle) document.getElementById('treatmentsTitle').innerText = data.treatmentsTitle;
             if (data.treatments && data.treatments.length > 0) {
                 const grid = document.getElementById('treatmentsGrid');
                 grid.innerHTML = '';
                 data.treatments.forEach(t => {
                     const imgHtml = t.imageUrl ? `<img src="${t.imageUrl}" class="treatment-card-img" alt="${t.name}">` : '';
-                    
                     grid.innerHTML += `
                         <div class="card">
                             ${imgHtml}
