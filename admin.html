@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin | Alcione Pacheco Estética</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --bg-color: #f4f6f8;
@@ -65,8 +65,8 @@
 
         .form-group { margin-bottom: 1.2rem; }
         .form-group label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; }
-        .form-group input, .form-group textarea {
-            width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem;
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 0.8rem; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; background: #fff;
         }
 
         .file-upload-box {
@@ -161,7 +161,7 @@
                 </div>
             </div>
 
-            <!-- Aba 2: Diferenciais (RESTAURADA) -->
+            <!-- Aba 2: Diferenciais -->
             <div id="tab-diferenciais" class="tab-content">
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -203,7 +203,6 @@
         let diffsData = [];
         let logoBase64Data = "";
 
-        // COMPRESSOR DE IMAGENS (Resolve erro de arquivo pesado)
         function compressImage(file, maxWidth = 600, quality = 0.7) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -335,6 +334,7 @@
             if (!container) return;
             container.innerHTML = '';
             diffsData.forEach((d, index) => {
+                const currentIcon = d.icon || 'fa-solid fa-star';
                 container.innerHTML += `
                     <div class="dynamic-item-card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
@@ -343,7 +343,19 @@
                         </div>
                         <div class="form-group"><label>Título</label><input type="text" value="${d.title || ''}" onchange="diffsData[${index}].title = this.value"></div>
                         <div class="form-group"><label>Descrição</label><input type="text" value="${d.desc || ''}" onchange="diffsData[${index}].desc = this.value"></div>
-                        <div class="form-group"><label>Ícone FontAwesome (Ex: fa-solid fa-star)</label><input type="text" value="${d.icon || 'fa-solid fa-star'}" onchange="diffsData[${index}].icon = this.value"></div>
+                        <div class="form-group">
+                            <label>Escolher Ícone</label>
+                            <select onchange="diffsData[${index}].icon = this.value">
+                                <option value="fa-solid fa-star" ${currentIcon === 'fa-solid fa-star' ? 'selected' : ''}>⭐ Estrela</option>
+                                <option value="fa-solid fa-gem" ${currentIcon === 'fa-solid fa-gem' ? 'selected' : ''}>💎 Diamante</option>
+                                <option value="fa-solid fa-heart" ${currentIcon === 'fa-solid fa-heart' ? 'selected' : ''}>❤️ Coração</option>
+                                <option value="fa-solid fa-certificate" ${currentIcon === 'fa-solid fa-certificate' ? 'selected' : ''}>📜 Certificado / Qualidade</option>
+                                <option value="fa-solid fa-shield-halved" ${currentIcon === 'fa-solid fa-shield-halved' ? 'selected' : ''}>🛡️ Segurança</option>
+                                <option value="fa-solid fa-user-doctor" ${currentIcon === 'fa-solid fa-user-doctor' ? 'selected' : ''}>🩺 Especialista</option>
+                                <option value="fa-solid fa-sparkles" ${currentIcon === 'fa-solid fa-sparkles' ? 'selected' : ''}>✨ Brilho / Estética</option>
+                                <option value="fa-solid fa-leaf" ${currentIcon === 'fa-solid fa-leaf' ? 'selected' : ''}>🍃 Natural</option>
+                            </select>
+                        </div>
                     </div>
                 `;
             });

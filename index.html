@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alcione Pacheco | Estética Avançada</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --primary-green: #4a5c44;
@@ -191,7 +191,6 @@
         </div>
     </section>
 
-    <!-- ABA DIFERENCIAIS RESTAURADA -->
     <section id="diferenciais">
         <h2 class="section-title" id="diffsTitle">Por que escolher a clínica?</h2>
         <div class="grid" id="diffsGrid"></div>
@@ -249,7 +248,6 @@
 
             if (!data) return;
 
-            // LOGO (EXIBE SE EXISTIR E VALIDA SE NÃO DÁ ERRO)
             const logoImg = document.getElementById('siteLogo');
             if (data.logoUrl && data.logoUrl.trim() !== '') {
                 logoImg.src = data.logoUrl;
@@ -263,26 +261,21 @@
             if (data.heroSubtitle) document.getElementById('heroSubtitle').innerText = data.heroSubtitle;
             if (data.heroBtnText) document.getElementById('heroBtnText').innerText = data.heroBtnText;
 
-            // CARREGAR DIFERENCIAIS
+            // CARREGAR DIFERENCIAIS COM TRATAMENTO DE ÍCONE
             if (data.diffsTitle) document.getElementById('diffsTitle').innerText = data.diffsTitle;
             const diffsGrid = document.getElementById('diffsGrid');
             if (data.differentials && data.differentials.length > 0) {
                 diffsGrid.innerHTML = '';
                 data.differentials.forEach(d => {
+                    const iconClass = (d.icon && d.icon.includes('fa-')) ? d.icon : 'fa-solid fa-star';
                     diffsGrid.innerHTML += `
                         <div class="card">
-                            <div class="card-icon"><i class="${d.icon || 'fa-solid fa-star'}"></i></div>
+                            <div class="card-icon"><i class="${iconClass}"></i></div>
                             <h3>${d.title || ''}</h3>
                             <p style="color: var(--text-muted); font-size: 0.95rem;">${d.desc || ''}</p>
                         </div>
                     `;
                 });
-            } else {
-                diffsGrid.innerHTML = `
-                    <div class="card"><div class="card-icon"><i class="fa-solid fa-gem"></i></div><h3>Atendimento Exclusivo</h3><p style="color: var(--text-muted);">Planos totalmente personalizados para cada tipo de pele.</p></div>
-                    <div class="card"><div class="card-icon"><i class="fa-solid fa-certificate"></i></div><h3>Tecnologia Avançada</h3><p style="color: var(--text-muted);">Produtos e equipamentos de alta performance.</p></div>
-                    <div class="card"><div class="card-icon"><i class="fa-solid fa-heart"></i></div><h3>Resultados Naturais</h3><p style="color: var(--text-muted);">Foco no rejuvenescimento sutil e elegante.</p></div>
-                `;
             }
 
             // CARREGAR TRATAMENTOS
