@@ -194,16 +194,16 @@
                 <button type="submit" class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Salvar Alterações</button>
             </div>
 
-            <!-- Aba 1: Geral & Logo & Hero -->
+            <!-- Aba 1: Geral & Logo -->
             <div id="tab-geral" class="tab-content active">
                 <div class="card">
                     <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Marca & Logo</h3>
                     <div class="form-group">
-                        <label>Nome da Marca (Texto)</label>
+                        <label>Nome da Marca (Texto ao lado da logo)</label>
                         <input type="text" id="brandName">
                     </div>
                     <div class="form-group">
-                        <label>URL Direta da Imagem da Logo (ex: Postimages, Imgur ou .png/.jpg)</label>
+                        <label>URL Direta da Logo (ex: Postimages, Imgur ou arquivo .png/.jpg)</label>
                         <input type="text" id="logoUrl" placeholder="https://i.postimg.cc/sua-logo.png">
                     </div>
                 </div>
@@ -223,7 +223,7 @@
                         <input type="text" id="heroBtnText">
                     </div>
                     <div class="form-group">
-                        <label>URL da Imagem Inicial (Hero)</label>
+                        <label>URL da Imagem da Capa (Hero)</label>
                         <input type="text" id="heroImageUrl" placeholder="https://exemplo.com/foto-hero.jpg">
                     </div>
                 </div>
@@ -423,11 +423,11 @@
                             <button type="button" style="color: #dc2626; background: none; border: none; cursor: pointer; font-weight: 600;" onclick="removeTreatment(${index})"><i class="fa-solid fa-trash"></i> Remover</button>
                         </div>
                         <div class="form-group">
-                            <label>URL da Imagem do Card (Opcional)</label>
-                            <input type="text" value="${t.imgUrl || ''}" placeholder="https://exemplo.com/foto.jpg" onchange="treatmentsData[${index}].imgUrl = this.value">
+                            <label>URL da Imagem do Tratamento (Que aparece no card do cliente)</label>
+                            <input type="text" value="${t.imgUrl || ''}" placeholder="https://i.postimg.cc/exemplo.jpg" onchange="treatmentsData[${index}].imgUrl = this.value">
                         </div>
                         <div class="form-group">
-                            <label>Ícone (ex: fa-sparkles)</label>
+                            <label>Ícone FontAwesome (Usado se não tiver imagem - ex: fa-sparkles)</label>
                             <input type="text" value="${t.icon || 'fa-sparkles'}" onchange="treatmentsData[${index}].icon = this.value">
                         </div>
                         <div class="form-group">
@@ -439,7 +439,7 @@
                             <textarea onchange="treatmentsData[${index}].desc = this.value">${t.desc || ''}</textarea>
                         </div>
                         <div class="form-group">
-                            <label>Tempo / Duração</label>
+                            <label>Duração / Tempo</label>
                             <input type="text" value="${t.time || ''}" onchange="treatmentsData[${index}].time = this.value">
                         </div>
                     </div>
@@ -480,7 +480,7 @@
                         </div>
                         <div class="form-group">
                             <label>Nome / Título do Procedimento</label>
-                            <input type="text" value="${ba.title || ''}" placeholder="Ex: Preenchimento Labial" onchange="beforeAfterData[${index}].title = this.value">
+                            <input type="text" value="${ba.title || ''}" placeholder="Ex: Limpeza de Pele Profunda" onchange="beforeAfterData[${index}].title = this.value">
                         </div>
                         <div class="form-group">
                             <label>Descrição / Observação</label>

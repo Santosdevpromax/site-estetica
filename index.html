@@ -9,36 +9,64 @@
     <style>
         :root {
             --primary-green: #4a5c44;
-            --primary-dark: #384634;
-            --bg-light: #f7f9f6;
-            --bg-white: #ffffff;
+            --primary-dark: #2a3727;
+            --card-bg: #ffffff;
             --text-dark: #2c332a;
             --text-muted: #666666;
-            --radius: 12px;
+            --radius: 16px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
-        body { background-color: var(--bg-white); color: var(--text-dark); line-height: 1.6; overflow-x: hidden; }
+        
+        /* FUNDO ANIMADO EM TOM DE VERDE */
+        body {
+            background: linear-gradient(-45deg, #1b2619, #2d3b2a, #4a5c44, #384634);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
 
-        /* HEADER & NAU */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* HEADER */
         header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid #e2e8f0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             z-index: 1000;
-            padding: 1rem 2rem;
+            padding: 0.9rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
-        .logo-container { display: flex; align-items: center; text-decoration: none; gap: 10px; }
-        .logo-img { max-height: 45px; width: auto; object-fit: contain; display: none; }
-        .logo-text { font-size: 1.2rem; font-weight: 700; color: var(--primary-green); }
+        .logo-container { 
+            display: flex; 
+            align-items: center; 
+            text-decoration: none; 
+            gap: 12px; 
+        }
+        
+        /* CORREÇÃO E FORMATO DA LOGO */
+        .logo-img { 
+            max-height: 48px; 
+            width: auto; 
+            object-fit: contain; 
+            display: block; 
+        }
+        .logo-text { font-size: 1.25rem; font-weight: 700; color: var(--primary-green); }
 
         nav { display: flex; gap: 1.5rem; align-items: center; }
         nav a { text-decoration: none; color: var(--text-dark); font-weight: 500; transition: color 0.3s; font-size: 0.95rem; }
@@ -54,30 +82,40 @@
             padding: 5px;
         }
 
-        /* SEÇÕES */
-        section { padding: 5rem 2rem 3rem 2rem; max-width: 1200px; margin: 0 auto; }
-        
+        /* SEÇÕES E BALÕES BRANCOS */
+        section { padding: 4rem 2rem 2rem 2rem; max-width: 1200px; margin: 0 auto; }
+
+        .section-title { 
+            text-align: center; 
+            font-size: 2.2rem; 
+            color: #ffffff; 
+            margin-bottom: 2.5rem; 
+            font-weight: 700; 
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
         .hero {
-            min-height: 65vh;
+            min-height: 60vh;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: var(--bg-light);
+            background: var(--card-bg);
             border-radius: var(--radius);
-            margin-top: 4rem;
-            padding: 3rem;
+            margin-top: 5rem;
+            padding: 3.5rem;
             gap: 2rem;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
 
         .hero-content { flex: 1; }
-        .hero h1 { font-size: 2.2rem; color: var(--primary-green); margin-bottom: 1rem; font-weight: 700; }
-        .hero p { font-size: 1.05rem; color: var(--text-muted); margin-bottom: 2rem; }
-        .hero-img { flex: 1; max-width: 450px; width: 100%; height: 320px; border-radius: var(--radius); object-fit: cover; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        .hero h1 { font-size: 2.4rem; color: var(--primary-green); margin-bottom: 1rem; font-weight: 700; }
+        .hero p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; }
+        .hero-img { flex: 1; max-width: 450px; width: 100%; height: 320px; border-radius: 12px; object-fit: cover; display: none; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
 
         .btn {
             display: inline-block;
             background-color: var(--primary-green);
-            color: var(--bg-white);
+            color: #ffffff;
             padding: 0.9rem 2.2rem;
             border-radius: 50px;
             text-decoration: none;
@@ -85,81 +123,95 @@
             transition: all 0.3s ease;
             border: none;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(74, 92, 68, 0.4);
         }
         .btn:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
 
-        .about-wrapper { display: flex; align-items: center; gap: 3rem; margin-top: 1rem; }
-        .about-text { flex: 1; }
-        .about-img { flex: 1; max-width: 450px; width: 100%; height: 320px; border-radius: var(--radius); object-fit: cover; display: none; box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        /* CARDS BRANCOS DAS SEÇÕES */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
 
-        .section-title { text-align: center; font-size: 2rem; color: var(--primary-green); margin-bottom: 2.5rem; font-weight: 700; }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-        
-        /* CARD PADRÃO */
         .card {
-            background: var(--bg-white);
-            padding: 1.8rem;
+            background: var(--card-bg);
+            padding: 2rem;
             border-radius: var(--radius);
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
             text-align: center;
-            transition: transform 0.3s;
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow: hidden;
         }
-        .card:hover { transform: translateY(-5px); }
-        .card i { font-size: 2.2rem; color: var(--primary-green); margin-bottom: 1rem; }
-        .card-img { width: 100%; height: 180px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem; display: none; }
-        .card h3 { color: var(--primary-green); margin-bottom: 0.8rem; font-size: 1.2rem; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 18px 35px rgba(0,0,0,0.25); }
+        .card i { font-size: 2.5rem; color: var(--primary-green); margin-bottom: 1rem; }
+        
+        /* IMAGEM DOS TRATAMENTOS */
+        .card-img { 
+            width: 100%; 
+            height: 200px; 
+            object-fit: cover; 
+            border-radius: 10px; 
+            margin-bottom: 1.2rem; 
+            display: none; 
+            transition: transform 0.3s ease;
+        }
+        .card:hover .card-img { transform: scale(1.03); }
 
-        /* ESTILOS ANTES E DEPOIS */
-        .ba-card {
-            background: var(--bg-white);
-            padding: 1.5rem;
+        .card h3 { color: var(--primary-green); margin-bottom: 0.8rem; font-size: 1.3rem; }
+
+        .about-card {
+            background: var(--card-bg);
+            padding: 3rem;
             border-radius: var(--radius);
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 3rem;
         }
-        .ba-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 1rem;
+        .about-text { flex: 1; }
+        .about-img { flex: 1; max-width: 450px; width: 100%; height: 320px; border-radius: 12px; object-fit: cover; display: none; }
+
+        /* GALERIA ANTES E DEPOIS */
+        .ba-card {
+            background: var(--card-bg);
+            padding: 1.8rem;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transition: transform 0.3s ease;
         }
+        .ba-card:hover { transform: translateY(-6px); }
+        .ba-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.2rem; }
         .ba-img-wrapper {
             position: relative;
             width: 100%;
-            height: 200px;
-            border-radius: 8px;
+            height: 210px;
+            border-radius: 10px;
             overflow: hidden;
             background: #eee;
         }
-        .ba-img-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .ba-img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
         .ba-tag {
             position: absolute;
             bottom: 8px;
             left: 8px;
-            background: rgba(35, 45, 32, 0.85);
+            background: rgba(35, 45, 32, 0.9);
             color: #fff;
-            padding: 3px 10px;
+            padding: 4px 10px;
             border-radius: 4px;
             font-size: 0.75rem;
             font-weight: 700;
-            letter-spacing: 1px;
         }
-        .ba-tag.after {
-            background: rgba(74, 92, 68, 0.9);
+        .ba-tag.after { background: rgba(74, 92, 68, 0.95); }
+
+        .contact-box {
+            background: var(--card-bg);
+            padding: 3.5rem 2rem;
+            border-radius: var(--radius);
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
         }
 
-        .contact-box { background-color: var(--bg-light); padding: 3rem 2rem; border-radius: var(--radius); text-align: center; }
-
-        footer { text-align: center; padding: 2rem; background: var(--primary-dark); color: white; margin-top: 4rem; }
+        footer { text-align: center; padding: 2rem; color: rgba(255,255,255,0.8); margin-top: 3rem; font-size: 0.9rem; }
 
         @media (max-width: 768px) {
             .menu-toggle { display: block; }
@@ -172,15 +224,14 @@
                 width: 100%;
                 background: #ffffff;
                 padding: 1.5rem 2rem;
-                border-bottom: 1px solid #e2e8f0;
-                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.15);
                 gap: 1.2rem;
                 text-align: center;
             }
             nav.active { display: flex; }
             .hero { flex-direction: column; text-align: center; padding: 2rem 1.5rem; }
             .hero-img { max-width: 100%; }
-            .about-wrapper { flex-direction: column; text-align: center; }
+            .about-card { flex-direction: column; text-align: center; padding: 2rem 1.5rem; }
             .about-img { max-width: 100%; }
             .ba-grid { grid-template-columns: 1fr; }
             .ba-img-wrapper { height: 180px; }
@@ -191,7 +242,7 @@
 
     <header>
         <a href="#inicio" class="logo-container">
-            <img id="siteLogo" class="logo-img" src="" alt="Logo">
+            <img id="siteLogo" class="logo-img" src="" alt="Logo" style="display: none;">
             <span class="logo-text" id="brandName">Alcione Pacheco</span>
         </a>
         <button class="menu-toggle" id="menuToggle" aria-label="Abrir Menu">
@@ -219,10 +270,11 @@
     </section>
 
     <section id="sobre">
-        <h2 class="section-title" id="aboutTitle">Alcione Pacheco Estética Avançada</h2>
-        <div class="about-wrapper">
+        <h2 class="section-title">Sobre Nós</h2>
+        <div class="about-card">
             <div class="about-text">
-                <p id="aboutText1" style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-dark);"></p>
+                <h3 id="aboutTitle" style="font-size: 1.8rem; color: var(--primary-green); margin-bottom: 1rem;">Alcione Pacheco Estética Avançada</h3>
+                <p id="aboutText1" style="font-size: 1.05rem; margin-bottom: 1rem; color: var(--text-dark);"></p>
                 <p id="aboutText2" style="color: var(--text-muted);"></p>
             </div>
             <img id="aboutImage" class="about-img" src="" onerror="this.style.display='none'">
@@ -234,7 +286,6 @@
         <div class="grid" id="treatmentsGrid"></div>
     </section>
 
-    <!-- SEÇÃO ANTES E DEPOIS -->
     <section id="antes-depois">
         <h2 class="section-title" id="beforeAfterTitle">Resultados (Antes & Depois)</h2>
         <div class="grid" id="beforeAfterGrid"></div>
@@ -248,7 +299,7 @@
     <section id="contato">
         <h2 class="section-title" id="contactTitle">Contato & Localização</h2>
         <div class="contact-box">
-            <p style="font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem;" id="phone">(35) 998167478</p>
+            <p style="font-size: 1.3rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.5rem;" id="phone">(35) 998167478</p>
             <p style="color: var(--text-muted); margin-bottom: 2rem;" id="address">Atendimento Presencial com Hora Marcada</p>
             <a href="#" id="whatsappBtn" target="_blank" class="btn"><i class="fa-brands fa-whatsapp"></i> Falar no WhatsApp</a>
         </div>
@@ -259,20 +310,14 @@
     </footer>
 
     <script>
-        // Lógica do Menu Sanduíche
         const menuToggle = document.getElementById('menuToggle');
         const navbar = document.getElementById('navbar');
         const menuIcon = document.getElementById('menuIcon');
 
         menuToggle.addEventListener('click', () => {
             navbar.classList.toggle('active');
-            if (navbar.classList.contains('active')) {
-                menuIcon.classList.remove('fa-bars');
-                menuIcon.classList.add('fa-xmark');
-            } else {
-                menuIcon.classList.remove('fa-xmark');
-                menuIcon.classList.add('fa-bars');
-            }
+            menuIcon.classList.toggle('fa-bars');
+            menuIcon.classList.toggle('fa-xmark');
         });
 
         function closeMenu() {
@@ -281,10 +326,8 @@
             menuIcon.classList.add('fa-bars');
         }
 
-        // Carregamento de Dados
         async function loadPageData() {
             let data = null;
-
             const localStored = localStorage.getItem('siteContent');
             if (localStored) {
                 try { data = JSON.parse(localStored); } catch(e){}
@@ -300,17 +343,17 @@
 
             if (!data) return;
 
-            // Renderiza Logo com tratamento de erro
+            // CARREGAMENTO DA LOGO COM VERIFICAÇÃO DE ERRO E PROPORÇÃO
             const logoImg = document.getElementById('siteLogo');
             if (data.logoUrl && data.logoUrl.trim() !== '') {
-                logoImg.onload = function() { logoImg.style.display = 'inline-block'; };
-                logoImg.onerror = function() { logoImg.style.display = 'none'; };
                 logoImg.src = data.logoUrl;
+                logoImg.onload = function() { logoImg.style.display = 'block'; };
+                logoImg.onerror = function() { logoImg.style.display = 'none'; };
             } else {
                 logoImg.style.display = 'none';
             }
 
-            // Renderiza Hero Image
+            // IMAGEM HERO E SOBRE
             const heroImg = document.getElementById('heroImage');
             if (data.heroImageUrl && data.heroImageUrl.trim() !== '') {
                 heroImg.src = data.heroImageUrl;
@@ -319,7 +362,6 @@
                 heroImg.style.display = 'none';
             }
 
-            // Renderiza About Image
             const aboutImg = document.getElementById('aboutImage');
             if (data.aboutImageUrl && data.aboutImageUrl.trim() !== '') {
                 aboutImg.src = data.aboutImageUrl;
@@ -328,7 +370,7 @@
                 aboutImg.style.display = 'none';
             }
 
-            // Textos principais
+            // TEXTOS PRINCIPAIS
             if (data.brandName) document.getElementById('brandName').innerText = data.brandName;
             if (data.heroTitle) document.getElementById('heroTitle').innerText = data.heroTitle;
             if (data.heroSubtitle) document.getElementById('heroSubtitle').innerText = data.heroSubtitle;
@@ -338,7 +380,7 @@
             if (data.aboutText1) document.getElementById('aboutText1').innerText = data.aboutText1;
             if (data.aboutText2) document.getElementById('aboutText2').innerText = data.aboutText2;
 
-            // Tratamentos
+            // TRATAMENTOS (COM SUPORTE A IMAGENS CADASTRADAS)
             if (data.treatmentsTitle) document.getElementById('treatmentsTitle').innerText = data.treatmentsTitle;
             if (data.treatments && data.treatments.length > 0) {
                 const grid = document.getElementById('treatmentsGrid');
@@ -353,14 +395,14 @@
                             ${imgHtml}
                             ${iconHtml}
                             <h3>${t.name}</h3>
-                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.6rem;">${t.desc}</p>
-                            ${t.time ? `<span style="font-weight: 600; color: var(--primary-green); font-size: 0.85rem;">${t.time}</span>` : ''}
+                            <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.8rem;">${t.desc}</p>
+                            ${t.time ? `<span style="font-weight: 600; color: var(--primary-green); font-size: 0.85rem;">⏱ ${t.time}</span>` : ''}
                         </div>
                     `;
                 });
             }
 
-            // Renderiza Antes e Depois
+            // ANTES E DEPOIS
             if (data.beforeAfterTitle) document.getElementById('beforeAfterTitle').innerText = data.beforeAfterTitle;
             const baGrid = document.getElementById('beforeAfterGrid');
             if (data.beforeAfter && data.beforeAfter.length > 0) {
@@ -378,7 +420,7 @@
                                     <span class="ba-tag after">DEPOIS</span>
                                 </div>
                             </div>
-                            <h3 style="color: var(--primary-green); font-size: 1.1rem; margin-bottom: 0.4rem;">${item.title || ''}</h3>
+                            <h3 style="color: var(--primary-green); font-size: 1.15rem; margin-bottom: 0.4rem;">${item.title || ''}</h3>
                             <p style="color: var(--text-muted); font-size: 0.9rem;">${item.desc || ''}</p>
                         </div>
                     `;
@@ -387,7 +429,7 @@
                 document.getElementById('antes-depois').style.display = 'none';
             }
 
-            // Diferenciais
+            // DIFERENCIAIS
             if (data.differentialsTitle) document.getElementById('differentialsTitle').innerText = data.differentialsTitle;
             if (data.differentials && data.differentials.length > 0) {
                 const diffGrid = document.getElementById('differentialsGrid');
@@ -403,7 +445,7 @@
                 });
             }
 
-            // Contato
+            // CONTATO
             if (data.contactTitle) document.getElementById('contactTitle').innerText = data.contactTitle;
             if (data.phone) {
                 document.getElementById('phone').innerText = data.phone;
