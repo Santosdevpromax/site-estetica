@@ -21,7 +21,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-dark); display: flex; min-height: 100vh; }
 
-        /* Tela de Login (Overlay) */
         #loginOverlay {
             position: fixed;
             top: 0;
@@ -57,7 +56,6 @@
             text-align: center;
         }
 
-        /* Dashboard */
         .sidebar {
             width: 260px;
             background-color: var(--sidebar-bg);
@@ -148,7 +146,6 @@
 </head>
 <body>
 
-    <!-- TELA DE LOGIN -->
     <div id="loginOverlay">
         <div class="login-card">
             <h2>Alcione Pacheco</h2>
@@ -160,7 +157,6 @@
         </div>
     </div>
 
-    <!-- PAINEL ADMIN -->
     <div class="sidebar">
         <div>
             <div class="brand">
@@ -195,14 +191,14 @@
             <!-- Aba 1: Geral & Logo -->
             <div id="tab-geral" class="tab-content active">
                 <div class="card">
-                    <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Marca & Cabeçalho</h3>
+                    <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Marca & Logo</h3>
                     <div class="form-group">
                         <label>Nome da Marca</label>
                         <input type="text" id="brandName">
                     </div>
                     <div class="form-group">
-                        <label>URL do Logo (Link da Imagem)</label>
-                        <input type="text" id="logoUrl" placeholder="https://link-da-imagem.com/logo.png">
+                        <label>URL da Imagem da Logo</label>
+                        <input type="text" id="logoUrl" placeholder="https://exemplo.com/sua-logo.png">
                     </div>
                 </div>
 
@@ -220,6 +216,10 @@
                         <label>Texto do Botão de Ação</label>
                         <input type="text" id="heroBtnText">
                     </div>
+                    <div class="form-group">
+                        <label>URL da Imagem Lateral (Hero)</label>
+                        <input type="text" id="heroImageUrl" placeholder="https://exemplo.com/imagem-hero.jpg">
+                    </div>
                 </div>
 
                 <div class="card">
@@ -235,6 +235,10 @@
                     <div class="form-group">
                         <label>Texto 2</label>
                         <textarea id="aboutText2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>URL da Imagem de Sobre</label>
+                        <input type="text" id="aboutImageUrl" placeholder="https://exemplo.com/foto-alcione.jpg">
                     </div>
                 </div>
             </div>
@@ -291,9 +295,7 @@
     </div>
 
     <script>
-        // SENHA DE ACESSO AO PAINEL (Altere aqui se desejar)
         const ADMIN_PASSWORD = "alcioneestetica";
-
         let treatmentsData = [];
         let differentialsData = [];
 
@@ -345,9 +347,11 @@
                     setVal('heroTitle', data.heroTitle || '');
                     setVal('heroSubtitle', data.heroSubtitle || '');
                     setVal('heroBtnText', data.heroBtnText || 'Agendar Consulta');
+                    setVal('heroImageUrl', data.heroImageUrl || '');
                     setVal('aboutTitle', data.aboutTitle || '');
                     setVal('aboutText1', data.aboutText1 || '');
                     setVal('aboutText2', data.aboutText2 || '');
+                    setVal('aboutImageUrl', data.aboutImageUrl || '');
                     setVal('treatmentsTitle', data.treatmentsTitle || 'Tratamentos');
                     setVal('differentialsTitle', data.differentialsTitle || 'Nossos Diferenciais');
                     setVal('contactTitle', data.contactTitle || 'Contato & Localização');
@@ -370,7 +374,6 @@
             if (el) el.value = value;
         }
 
-        /* TRATAMENTOS */
         function renderTreatmentsList() {
             const container = document.getElementById('treatmentsList');
             if (!container) return;
@@ -384,7 +387,11 @@
                             <button type="button" style="color: #dc2626; background: none; border: none; cursor: pointer; font-weight: 600;" onclick="removeTreatment(${index})"><i class="fa-solid fa-trash"></i> Remover</button>
                         </div>
                         <div class="form-group">
-                            <label>Ícone FontAwesome (ex: fa-face-smile, fa-sparkles, fa-leaf)</label>
+                            <label>URL da Imagem do Tratamento (Opcional)</label>
+                            <input type="text" value="${t.imgUrl || ''}" placeholder="https://exemplo.com/imagem.jpg" onchange="treatmentsData[${index}].imgUrl = this.value">
+                        </div>
+                        <div class="form-group">
+                            <label>Ícone FontAwesome (Usado caso não tenha imagem, ex: fa-face-smile)</label>
                             <input type="text" value="${t.icon || 'fa-sparkles'}" onchange="treatmentsData[${index}].icon = this.value">
                         </div>
                         <div class="form-group">
@@ -396,7 +403,7 @@
                             <textarea onchange="treatmentsData[${index}].desc = this.value">${t.desc || ''}</textarea>
                         </div>
                         <div class="form-group">
-                            <label>Tempo / Duração (ex: 60 min)</label>
+                            <label>Tempo / Duração</label>
                             <input type="text" value="${t.time || ''}" onchange="treatmentsData[${index}].time = this.value">
                         </div>
                     </div>
@@ -405,7 +412,7 @@
         }
 
         function addTreatmentField() {
-            treatmentsData.push({ icon: 'fa-sparkles', name: '', desc: '', time: '' });
+            treatmentsData.push({ imgUrl: '', icon: 'fa-sparkles', name: '', desc: '', time: '' });
             renderTreatmentsList();
         }
 
@@ -414,7 +421,6 @@
             renderTreatmentsList();
         }
 
-        /* DIFERENCIAIS */
         function renderDifferentialsList() {
             const container = document.getElementById('differentialsList');
             if (!container) return;
@@ -428,7 +434,7 @@
                             <button type="button" style="color: #dc2626; background: none; border: none; cursor: pointer; font-weight: 600;" onclick="removeDifferential(${index})"><i class="fa-solid fa-trash"></i> Remover</button>
                         </div>
                         <div class="form-group">
-                            <label>Ícone FontAwesome (ex: fa-user-doctor, fa-microscope, fa-leaf)</label>
+                            <label>Ícone FontAwesome</label>
                             <input type="text" value="${d.icon || 'fa-star'}" onchange="differentialsData[${index}].icon = this.value">
                         </div>
                         <div class="form-group">
@@ -454,7 +460,6 @@
             renderDifferentialsList();
         }
 
-        /* SALVAMENTO */
         async function saveData(e) {
             e.preventDefault();
             const updatedData = {
@@ -463,9 +468,11 @@
                 heroTitle: document.getElementById('heroTitle').value,
                 heroSubtitle: document.getElementById('heroSubtitle').value,
                 heroBtnText: document.getElementById('heroBtnText').value,
+                heroImageUrl: document.getElementById('heroImageUrl').value,
                 aboutTitle: document.getElementById('aboutTitle').value,
                 aboutText1: document.getElementById('aboutText1').value,
                 aboutText2: document.getElementById('aboutText2').value,
+                aboutImageUrl: document.getElementById('aboutImageUrl').value,
                 treatmentsTitle: document.getElementById('treatmentsTitle').value,
                 treatments: treatmentsData,
                 differentialsTitle: document.getElementById('differentialsTitle').value,
