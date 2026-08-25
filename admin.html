@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo | Alcione Pacheco Estética</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #f4f6f8;
+            --sidebar-bg: #2a2827;
+            --primary-gold: #c5a059;
+            --text-light: #fdfbf7;
+            --text-dark: #333;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --radius: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-dark); display: flex; min-height: 100vh; }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--text-light);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .brand h2 { font-size: 1.3rem; color: var(--primary-gold); }
+        .brand p { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #888; margin-bottom: 2rem; }
+
+        .nav-list { list-style: none; }
+        .nav-item {
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: #ccc;
+        }
+
+        .nav-item:hover, .nav-item.active { background: rgba(197, 160, 89, 0.2); color: var(--primary-gold); }
+
+        .main-content { flex: 1; padding: 2.5rem; overflow-y: auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .header h1 { font-size: 1.8rem; color: var(--text-dark); }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 2rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin-bottom: 2rem;
+        }
+
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        .form-group textarea { min-height: 90px; resize: vertical; }
+
+        .btn-save {
+            background: var(--primary-gold);
+            color: #fff;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-save:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .status-msg {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+        .status-msg.success { background: #d4edda; color: #155724; display: block; }
+
+        .repeater-item {
+            background: #f9f9f9;
+            padding: 1.2rem;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        .btn-remove {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+        .btn-add {
+            background: #28a745;
+            color: #fff;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div>
+            <div class="brand">
+                <h2>Alcione Pacheco</h2>
+                <p>Painel de Controle</p>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item active"><i class="fa-solid fa-house"></i> Geral & Hero</li>
+                <li class="nav-item"><i class="fa-solid fa-spa"></i> Tratamentos</li>
+                <li class="nav-item"><i class="fa-solid fa-address-book"></i> Contato</li>
+            </ul>
+        </div>
+        <div style="font-size: 0.8rem; color: #777;">
+            Painel Administrativo v1.0
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="header">
+            <h1>Editar Conteúdo do Site</h1>
+            <a href="/" target="_blank" style="color: var(--primary-gold); text-decoration: none; font-weight: 500;">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Site ao Vivo
+            </a>
+        </div>
+
+        <div id="status-msg" class="status-msg"></div>
+
+        <form id="admin-form">
+            <div class="card">
+                <h3 style="margin-bottom: 1.5rem; color: var(--primary-gold);">Página Inicial (Hero)</h3>
+                <div class="form-group">
+                    <label>Título Principal (Hero)</label>
+                    <input type="text" id="heroTitle">
+                </div>
+                <div class="form-group">
+                    <label>Subtítulo / Descrição</label>
+                    <textarea id="heroSubtitle"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 1.5rem; color: var(--primary-gold);">Sobre a Clínica</h3>
+                <div class="form-group">
+                    <label>Título da Seção Sobre</label>
+                    <input type="text" id="aboutTitle">
+                </div>
+                <div class="form-group">
+                    <label>Parágrafo 1</label>
+                    <textarea id="aboutText1"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Parágrafo 2</label>
+                    <textarea id="aboutText2"></textarea>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 1.5rem; color: var(--primary-gold);">Contato & Informações</h3>
+                <div class="form-group">
+                    <label>Telefone / WhatsApp</label>
+                    <input type="text" id="phone">
+                </div>
+                <div class="form-group">
+                    <label>Endereço / Localização</label>
+                    <input type="text" id="address">
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 1.5rem; color: var(--primary-gold);">Lista de Tratamentos</h3>
+                <div id="treatments-container"></div>
+                <button type="button" class="btn-add" id="btn-add-treatment">+ Adicionar Tratamento</button>
+            </div>
+
+            <button type="submit" class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Salvar Todas as Alterações</button>
+        </form>
+    </main>
+
+    <script>
+        let currentData = {};
+
+        async function loadAdminData() {
+            try {
+                const res = await fetch('/api/content');
+                if(res.ok) currentData = await res.json();
+                else currentData = JSON.parse(localStorage.getItem('alcione_pacheco_data') || '{}');
+            } catch(e) {
+                currentData = JSON.parse(localStorage.getItem('alcione_pacheco_data') || '{}');
+            }
+
+            document.getElementById('heroTitle').value = currentData.heroTitle || '';
+            document.getElementById('heroSubtitle').value = currentData.heroSubtitle || '';
+            document.getElementById('aboutTitle').value = currentData.aboutTitle || '';
+            document.getElementById('aboutText1').value = currentData.aboutText1 || '';
+            document.getElementById('aboutText2').value = currentData.aboutText2 || '';
+            document.getElementById('phone').value = currentData.phone || '';
+            document.getElementById('address').value = currentData.address || '';
+
+            renderTreatments(currentData.treatments || []);
+        }
+
+        function renderTreatments(treatments) {
+            const container = document.getElementById('treatments-container');
+            container.innerHTML = '';
+            treatments.forEach((t, index) => {
+                const div = document.createElement('div');
+                div.className = 'repeater-item';
+                div.innerHTML = `
+                    <button type="button" class="btn-remove" onclick="removeTreatment(${index})">&times;</button>
+                    <div class="form-group">
+                        <label>Nome do Tratamento</label>
+                        <input type="text" value="${t.name || ''}" onchange="updateTreatment(${index}, 'name', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <textarea onchange="updateTreatment(${index}, 'desc', this.value)">${t.desc || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Duração / Detalhes</label>
+                        <input type="text" value="${t.time || ''}" onchange="updateTreatment(${index}, 'time', this.value)">
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function updateTreatment(index, key, val) {
+            currentData.treatments[index][key] = val;
+        }
+
+        function removeTreatment(index) {
+            currentData.treatments.splice(index, 1);
+            renderTreatments(currentData.treatments);
+        }
+
+        document.getElementById('btn-add-treatment').addEventListener('click', () => {
+            if(!currentData.treatments) currentData.treatments = [];
+            currentData.treatments.push({ name: 'Novo Tratamento', desc: 'Descrição do procedimento', time: '45 min' });
+            renderTreatments(currentData.treatments);
+        });
+
+        document.getElementById('admin-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            currentData.heroTitle = document.getElementById('heroTitle').value;
+            currentData.heroSubtitle = document.getElementById('heroSubtitle').value;
+            currentData.aboutTitle = document.getElementById('aboutTitle').value;
+            currentData.aboutText1 = document.getElementById('aboutText1').value;
+            currentData.aboutText2 = document.getElementById('aboutText2').value;
+            currentData.phone = document.getElementById('phone').value;
+            currentData.address = document.getElementById('address').value;
+
+            try {
+                const res = await fetch('/api/content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(currentData)
+                });
+                if(!res.ok) throw new Error();
+            } catch(e) {
+                localStorage.setItem('alcione_pacheco_data', JSON.stringify(currentData));
+            }
+
+            const msg = document.getElementById('status-msg');
+            msg.className = 'status-msg success';
+            msg.textContent = 'Alterações salvas com sucesso!';
+            setTimeout(() => { msg.className = 'status-msg'; }, 3000);
+        });
+
+        document.addEventListener('DOMContentLoaded', loadAdminData);
+    </script>
+</body>
+</html>

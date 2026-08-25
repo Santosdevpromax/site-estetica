@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alcione Pacheco | Estética Avançada</title>
+    <meta name="description" content="Clínica de estética avançada Alcione Pacheco. Rejuvenescimento, limpeza de pele, harmonização e tratamentos corporais com elegância e excelência.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-color: #fdfbf7;
+            --text-dark: #2a2827;
+            --text-muted: #6e6a67;
+            --gold-accent: #c5a059;
+            --gold-light: #e6d3af;
+            --card-bg: rgba(255, 255, 255, 0.75);
+            --border-subtle: rgba(197, 160, 89, 0.2);
+            --font-title: 'Cormorant Garamond', serif;
+            --font-body: 'Montserrat', sans-serif;
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --shadow-soft: 0 15px 35px rgba(0, 0, 0, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Fundo Animado Minimalista (Ambient Aurora Glow) */
+        .ambient-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.35;
+            animation: floatOrb 22s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: #e8d9c5;
+            top: -15%;
+            left: -10%;
+        }
+
+        .orb-2 {
+            width: 600px;
+            height: 600px;
+            background: #d8c2b0;
+            bottom: -20%;
+            right: -15%;
+            animation-duration: 28s;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: #f0e2d3;
+            top: 45%;
+            left: 40%;
+            animation-duration: 18s;
+            animation-delay: -10s;
+        }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, 60px) scale(1.08); }
+            100% { transform: translate(-40px, 90px) scale(0.92); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header / Navbar */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(253, 251, 247, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border-subtle);
+            transition: var(--transition);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 85px;
+        }
+
+        .brand-logo {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-family: var(--font-title);
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .brand-logo span {
+            font-family: var(--font-body);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--gold-accent);
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--gold-accent);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: var(--gold-accent);
+        }
+
+        .btn-gold {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background-color: var(--gold-accent);
+            color: #ffffff;
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+            transition: var(--transition);
+            border: 1px solid var(--gold-accent);
+            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.25);
+        }
+
+        .btn-gold:hover {
+            background-color: transparent;
+            color: var(--gold-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(197, 160, 89, 0.35);
+        }
+
+        .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background-color: transparent;
+            color: var(--text-dark);
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+            transition: var(--transition);
+            border: 1px solid var(--gold-accent);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--gold-accent);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 100px;
+            position: relative;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--gold-accent);
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            padding: 0.3rem 0.8rem;
+            background: rgba(197, 160, 89, 0.1);
+            border-radius: 20px;
+        }
+
+        .hero-title {
+            font-family: var(--font-title);
+            font-size: 4.2rem;
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 300;
+            margin-bottom: 2.5rem;
+            max-width: 580px;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .hero-card-preview {
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 24px;
+            padding: 3rem 2.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-soft);
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem auto;
+            border: 2px solid var(--gold-accent);
+            padding: 5px;
+            object-fit: cover;
+            background: #fff;
+        }
+
+        .hero-card-title {
+            font-family: var(--font-title);
+            font-size: 2rem;
+            font-weight: 500;
+        }
+
+        .hero-card-subtitle {
+            font-size: 0.85rem;
+            color: var(--gold-accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        /* Seções */
+        section {
+            padding: 8rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 650px;
+            margin: 0 auto 4.5rem auto;
+        }
+
+        .section-subtitle {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--gold-accent);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-family: var(--font-title);
+            font-size: 3rem;
+            font-weight: 400;
+            line-height: 1.2;
+        }
+
+        /* Grid de Tratamentos */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 2.8rem;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--gold-accent);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .service-icon {
+            font-size: 2rem;
+            color: var(--gold-accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .service-name {
+            font-family: var(--font-title);
+            font-size: 1.9rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .service-desc {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 300;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .service-time {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .service-link {
+            text-decoration: none;
+            color: var(--gold-accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .service-link:hover {
+            gap: 0.8rem;
+        }
+
+        /* Sobre */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .about-content h2 {
+            font-family: var(--font-title);
+            font-size: 3.2rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .about-content p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .stats-wrapper {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .stat-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-family: var(--font-title);
+            font-size: 3rem;
+            color: var(--gold-accent);
+            font-weight: 400;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        /* Agendamento & Contato */
+        .contact-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-subtle);
+            border-radius: 28px;
+            padding: 5rem 3rem;
+            text-align: center;
+            backdrop-filter: blur(12px);
+            max-width: 850px;
+            margin: 0 auto;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .contact-card h2 {
+            font-family: var(--font-title);
+            font-size: 3.5rem;
+            font-weight: 400;
+            margin-bottom: 1rem;
+        }
+
+        .contact-card p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 300;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .contact-info-list {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .contact-info-item i {
+            color: var(--gold-accent);
+            font-size: 1.2rem;
+        }
+
+        /* Floating WhatsApp */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            color: #ffffff;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
+            z-index: 999;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 0;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Responsividade */
+        @media (max-width: 992px) {
+            .hero-grid, .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+            .hero-title { font-size: 3.2rem; }
+            .hero-card-preview { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                top: 85px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 85px);
+                background: var(--bg-color);
+                flex-direction: column;
+                justify-content: center;
+                transition: var(--transition);
+            }
+            .nav-menu.active { left: 0; }
+            .mobile-toggle { display: block; }
+            .hero-title { font-size: 2.6rem; }
+            section { padding: 5rem 0; }
+            .contact-card { padding: 3rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fundo Animado Minimalista -->
+    <div class="ambient-background">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="brand-logo">
+                    Alcione Pacheco
+                    <span>Estética Avançada</span>
+                </a>
+
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="#tratamentos" class="nav-link">Tratamentos</a></li>
+                    <li><a href="#sobre" class="nav-link">Sobre</a></li>
+                    <li><a href="#diferenciais" class="nav-link">Diferenciais</a></li>
+                    <li><a href="#contato" class="nav-link">Contato</a></li>
+                </ul>
+
+                <a href="https://wa.me/5511999999999?text=Olá!%20Gostaria%20de%20agendar%20uma%20consulta" target="_blank" class="btn-gold">
+                    <i class="fa-brands fa-whatsapp"></i> Agendar
+                </a>
+
+                <button class="mobile-toggle" id="mobile-toggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-text-content">
+                    <span class="hero-tag">Sua beleza em sua melhor versão</span>
+                    <h1 class="hero-title" id="hero-title">Cuidado minimalista, resultados extraordinários.</h1>
+                    <p class="hero-description" id="hero-subtitle">Protocolos estéticos avançados focados em rejuvenescimento natural, saúde da pele e bem-estar integrado com atendimento exclusivo.</p>
+                    <div class="hero-cta">
+                        <a href="https://wa.me/5511999999999?text=Olá!%20Quero%20agendar%20uma%20avaliação" target="_blank" class="btn-gold">
+                            <i class="fa-solid fa-calendar-check"></i> Agendar Avaliação
+                        </a>
+                        <a href="#tratamentos" class="btn-outline">Ver Tratamentos</a>
+                    </div>
+                </div>
+
+                <div class="hero-card-preview">
+                    <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=300&q=80" alt="Alcione Pacheco" class="hero-avatar">
+                    <h3 class="hero-card-title">Alcione Pacheco</h3>
+                    <p class="hero-card-subtitle">Especialista em Estética</p>
+                    <p style="font-size: 0.9rem; color: var(--text-muted); font-weight: 300;">"Oferecendo um conceito de beleza elegante, discreto e duradouro."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Tratamentos -->
+    <section id="tratamentos">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-subtitle">Procedimentos Exclusivos</span>
+                <h2 class="section-title">Tratamentos Sob Medida</h2>
+            </div>
+
+            <div class="services-grid" id="services-grid">
+                <!-- Preenchido via JS / API -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Sobre -->
+    <section id="sobre">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content">
+                    <span class="section-subtitle">Conceito & Filosofia</span>
+                    <h2 id="about-title">Alcione Pacheco Estética Avançada</h2>
+                    <p id="about-text-1">Combinando ciência de ponta com um olhar refinado para a harmonia natural do rosto e do corpo, nossa clínica é um refúgio para quem busca cuidar da pele com elegância.</p>
+                    <p id="about-text-2">Cada protocolo é cuidadosamente desenhado após uma avaliação minuciosa, garantindo segurança, conforto e resultados visíveis desde as primeiras sessões.</p>
+                </div>
+
+                <div class="stats-wrapper">
+                    <div class="stat-box">
+                        <div class="stat-number">+8</div>
+                        <div class="stat-label">Anos de Experiência</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Protocolos Exclusivos</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">+2k</div>
+                        <div class="stat-label">Clientes Atendidas</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">5.0</div>
+                        <div class="stat-label">Avaliação de Satisfação</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section: Contato -->
+    <section id="contato">
+        <div class="container">
+            <div class="contact-card">
+                <span class="section-subtitle">Atendimento Exclusivo</span>
+                <h2>Pronta para agendar seu momento?</h2>
+                <p>Clique no botão abaixo para ser atendida diretamente no WhatsApp e reservar o seu horário personalizado.</p>
+                
+                <a href="https://wa.me/5511999999999?text=Olá!%20Gostaria%20de%20reservar%20um%20horário" target="_blank" class="btn-gold" style="font-size: 0.9rem; padding: 1rem 2.5rem;">
+                    <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Falar com Alcione Pacheco
+                </a>
+
+                <div class="contact-info-list">
+                    <div class="contact-info-item">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span id="contact-address">Atendimento Presencial com Hora Marcada</span>
+                    </div>
+                    <div class="contact-info-item">
+                        <i class="fa-solid fa-phone"></i>
+                        <span id="contact-phone">(11) 99999-9999</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating WhatsApp -->
+    <a href="https://wa.me/5511999999999?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20os%20tratamentos" target="_blank" class="whatsapp-float" title="Agendar no WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; <span id="year"></span> Alcione Pacheco Estética Avançada. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- Script de Carregamento Dinâmico -->
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Mobile Toggle Menu
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        mobileToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Default Data
+        const defaultData = {
+            heroTitle: "Cuidado minimalista, resultados extraordinários.",
+            heroSubtitle: "Protocolos estéticos avançados focados em rejuvenescimento natural, saúde da pele e bem-estar integrado com atendimento exclusivo.",
+            aboutTitle: "Alcione Pacheco Estética Avançada",
+            aboutText1: "Combinando ciência de ponta com um olhar refinado para a harmonia natural do rosto e do corpo, nossa clínica é um refúgio para quem busca cuidar da pele com elegância.",
+            aboutText2: "Cada protocolo é cuidadosamente desenhado após uma avaliação minuciosa, garantindo segurança, conforto e resultados visíveis desde as primeiras sessões.",
+            phone: "(11) 99999-9999",
+            address: "Atendimento Presencial com Hora Marcada",
+            treatments: [
+                {
+                    icon: "fa-sparkles",
+                    name: "Limpeza de Pele Deep Glow",
+                    desc: "Higienização profunda com extração delicada, peeling de diamantes e fototerapia LED para restauração instantânea do viço.",
+                    time: "60 min"
+                },
+                {
+                    icon: "fa-wand-magic-sparkles",
+                    name: "Bioestimulação de Colágeno",
+                    desc: "Tratamento focado na firmeza e rejuvenescimento tissular, estimulando as fibras elásticas de forma natural.",
+                    time: "45 min"
+                },
+                {
+                    icon: "fa-feather-pointed",
+                    name: "Contorno & Harmonização Subtle",
+                    desc: "Aprimoramento dos traços faciais com técnica refinada que prioriza a naturalidade e equilíbrio dos volumes.",
+                    time: "60 min"
+                },
+                {
+                    icon: "fa-droplet",
+                    name: "Hidratação Celular Profunda",
+                    desc: "Infusão de ativos biocompatíveis e ácido hialurônico para peles desidratadas e opacas.",
+                    time: "50 min"
+                }
+            ]
+        };
+
+        async function loadContent() {
+            let data = defaultData;
+            try {
+                const res = await fetch('/api/content');
+                if (res.ok) {
+                    data = await res.json();
+                } else {
+                    const local = localStorage.getItem('alcione_pacheco_data');
+                    if (local) data = JSON.parse(local);
+                }
+            } catch (e) {
+                const local = localStorage.getItem('alcione_pacheco_data');
+                if (local) data = JSON.parse(local);
+            }
+
+            // Populate UI
+            if (data.heroTitle) document.getElementById('hero-title').textContent = data.heroTitle;
+            if (data.heroSubtitle) document.getElementById('hero-subtitle').textContent = data.heroSubtitle;
+            if (data.aboutTitle) document.getElementById('about-title').textContent = data.aboutTitle;
+            if (data.aboutText1) document.getElementById('about-text-1').textContent = data.aboutText1;
+            if (data.aboutText2) document.getElementById('about-text-2').textContent = data.aboutText2;
+            if (data.phone) document.getElementById('contact-phone').textContent = data.phone;
+            if (data.address) document.getElementById('contact-address').textContent = data.address;
+
+            // Render Services
+            const grid = document.getElementById('services-grid');
+            grid.innerHTML = '';
+            (data.treatments || defaultData.treatments).forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                card.innerHTML = `
+                    <div>
+                        <i class="fa-solid ${item.icon || 'fa-sparkles'} service-icon"></i>
+                        <h3 class="service-name">${item.name}</h3>
+                        <p class="service-desc">${item.desc}</p>
+                    </div>
+                    <div class="service-footer">
+                        <span class="service-time"><i class="fa-regular fa-clock"></i> ${item.time || '45 min'}</span>
+                        <a href="https://wa.me/5511999999999?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20${encodeURIComponent(item.name)}" target="_blank" class="service-link">
+                            Agendar <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadContent);
+    </script>
+</body>
+</html>
