@@ -45,7 +45,6 @@
         }
 
         .login-card h2 { color: var(--primary-green); margin-bottom: 0.5rem; }
-        .login-card p { font-size: 0.85rem; color: #666; margin-bottom: 1.5rem; }
         .login-card input {
             width: 100%;
             padding: 0.9rem;
@@ -109,7 +108,35 @@
             border-radius: 8px;
             font-size: 0.95rem;
         }
-        .form-group textarea { min-height: 80px; resize: vertical; }
+        
+        .file-upload-box {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            padding: 1.2rem;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .file-upload-box input[type="file"] { display: none; }
+        .file-upload-btn {
+            background: var(--primary-green);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            display: inline-block;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .preview-img {
+            max-height: 100px;
+            border-radius: 8px;
+            margin-top: 0.8rem;
+            display: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
 
         .btn-save {
             background: var(--primary-green);
@@ -149,7 +176,7 @@
     <div id="loginOverlay">
         <div class="login-card">
             <h2>Alcione Pacheco</h2>
-            <p>Acesso Restrito ao Painel Admin</p>
+            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1.5rem;">Acesso Restrito ao Painel Admin</p>
             <form onsubmit="handleLogin(event)">
                 <input type="password" id="inputPassword" placeholder="Digite a senha" required autofocus>
                 <button type="submit" class="btn-save" style="width: 100%;">Entrar</button>
@@ -167,17 +194,8 @@
                 <li class="nav-item active" onclick="switchTab('geral', this)">
                     <i class="fa-solid fa-house"></i> Geral & Logo
                 </li>
-                <li class="nav-item" onclick="switchTab('sobre', this)">
-                    <i class="fa-solid fa-user"></i> Sobre
-                </li>
                 <li class="nav-item" onclick="switchTab('tratamentos', this)">
                     <i class="fa-solid fa-sparkles"></i> Tratamentos
-                </li>
-                <li class="nav-item" onclick="switchTab('antes-depois', this)">
-                    <i class="fa-solid fa-images"></i> Antes e Depois
-                </li>
-                <li class="nav-item" onclick="switchTab('diferenciais', this)">
-                    <i class="fa-solid fa-star"></i> Diferenciais
                 </li>
                 <li class="nav-item" onclick="switchTab('contato', this)">
                     <i class="fa-solid fa-address-book"></i> Contato
@@ -197,62 +215,45 @@
             <!-- Aba 1: Geral & Logo -->
             <div id="tab-geral" class="tab-content active">
                 <div class="card">
-                    <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Marca & Logo</h3>
+                    <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Logo da Loja</h3>
                     <div class="form-group">
-                        <label>Nome da Marca (Texto ao lado da logo)</label>
+                        <label>Nome da Marca (Texto exibido ao lado da logo)</label>
                         <input type="text" id="brandName">
                     </div>
                     <div class="form-group">
-                        <label>URL Direta da Logo (ex: Postimages, Imgur ou arquivo .png/.jpg)</label>
-                        <input type="text" id="logoUrl" placeholder="https://i.postimg.cc/sua-logo.png">
+                        <label>Subir Logo do Computador/Celular</label>
+                        <div class="file-upload-box">
+                            <i class="fa-solid fa-image" style="font-size: 1.8rem; color: #94a3b8;"></i>
+                            <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px;">Selecione o arquivo da sua logo</p>
+                            <label class="file-upload-btn">
+                                Selecionar Logo
+                                <input type="file" accept="image/*" onchange="uploadLogo(event)">
+                            </label>
+                            <div>
+                                <img id="logoPreview" class="preview-img">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="card">
-                    <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Seção Inicial (Hero)</h3>
+                    <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Seção Inicial (Texto Principal)</h3>
                     <div class="form-group">
                         <label>Título Principal</label>
                         <input type="text" id="heroTitle">
                     </div>
                     <div class="form-group">
                         <label>Subtítulo</label>
-                        <textarea id="heroSubtitle"></textarea>
+                        <textarea id="heroSubtitle" style="width: 100%; min-height: 70px; padding: 0.8rem; border-radius: 8px; border: 1px solid var(--border);"></textarea>
                     </div>
                     <div class="form-group">
-                        <label>Texto do Botão de Ação</label>
+                        <label>Texto do Botão</label>
                         <input type="text" id="heroBtnText">
                     </div>
-                    <div class="form-group">
-                        <label>URL da Imagem da Capa (Hero)</label>
-                        <input type="text" id="heroImageUrl" placeholder="https://exemplo.com/foto-hero.jpg">
-                    </div>
                 </div>
             </div>
 
-            <!-- Aba 2: Sobre -->
-            <div id="tab-sobre" class="tab-content">
-                <div class="card">
-                    <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Sobre a Clínica</h3>
-                    <div class="form-group">
-                        <label>Título da Seção Sobre</label>
-                        <input type="text" id="aboutTitle">
-                    </div>
-                    <div class="form-group">
-                        <label>Parágrafo 1</label>
-                        <textarea id="aboutText1"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Parágrafo 2</label>
-                        <textarea id="aboutText2"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>URL da Imagem da Seção Sobre</label>
-                        <input type="text" id="aboutImageUrl" placeholder="https://exemplo.com/foto-alcione.jpg">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Aba 3: Tratamentos -->
+            <!-- Aba 2: Tratamentos com Upload de Foto -->
             <div id="tab-tratamentos" class="tab-content">
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -267,42 +268,12 @@
                 </div>
             </div>
 
-            <!-- Aba 4: Antes e Depois -->
-            <div id="tab-antes-depois" class="tab-content">
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                        <h3 style="color: var(--primary-green);">Galeria Antes & Depois</h3>
-                        <button type="button" class="btn-save" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="addBeforeAfterField()">+ Novo Caso (Antes/Depois)</button>
-                    </div>
-                    <div class="form-group">
-                        <label>Título da Seção Antes e Depois</label>
-                        <input type="text" id="beforeAfterTitle">
-                    </div>
-                    <div id="beforeAfterList"></div>
-                </div>
-            </div>
-
-            <!-- Aba 5: Diferenciais -->
-            <div id="tab-diferenciais" class="tab-content">
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                        <h3 style="color: var(--primary-green);">Gerenciamento de Diferenciais</h3>
-                        <button type="button" class="btn-save" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="addDifferentialField()">+ Novo Diferencial</button>
-                    </div>
-                    <div class="form-group">
-                        <label>Título da Seção de Diferenciais</label>
-                        <input type="text" id="differentialsTitle">
-                    </div>
-                    <div id="differentialsList"></div>
-                </div>
-            </div>
-
-            <!-- Aba 6: Contato -->
+            <!-- Aba 3: Contato -->
             <div id="tab-contato" class="tab-content">
                 <div class="card">
                     <h3 style="color: var(--primary-green); margin-bottom: 1rem;">Informações de Contato</h3>
                     <div class="form-group">
-                        <label>Título da Seção de Contato</label>
+                        <label>Título da Seção</label>
                         <input type="text" id="contactTitle">
                     </div>
                     <div class="form-group">
@@ -321,8 +292,7 @@
     <script>
         const ADMIN_PASSWORD = "alcioneestetica";
         let treatmentsData = [];
-        let beforeAfterData = [];
-        let differentialsData = [];
+        let logoBase64Data = "";
 
         function checkAuth() {
             const isAuth = sessionStorage.getItem('adminAuth');
@@ -360,9 +330,37 @@
             element.classList.add('active');
         }
 
+        // FUNÇÃO PARA CONVERTER IMAGEM DO COMPUTADOR
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function uploadLogo(e) {
+            const file = e.target.files[0];
+            if (file) {
+                logoBase64Data = await fileToBase64(file);
+                const logoPrev = document.getElementById('logoPreview');
+                logoPrev.src = logoBase64Data;
+                logoPrev.style.display = 'inline-block';
+            }
+        }
+
+        async function uploadTreatmentImg(e, index) {
+            const file = e.target.files[0];
+            if (file) {
+                const base64 = await fileToBase64(file);
+                treatmentsData[index].imageUrl = base64;
+                renderTreatmentsList();
+            }
+        }
+
         async function loadData() {
             let data = null;
-
             const localStored = localStorage.getItem('siteContent');
             if (localStored) {
                 try { data = JSON.parse(localStored); } catch(e){}
@@ -378,29 +376,22 @@
 
             if (data) {
                 setVal('brandName', data.brandName || 'Alcione Pacheco');
-                setVal('logoUrl', data.logoUrl || '');
+                if (data.logoUrl) {
+                    logoBase64Data = data.logoUrl;
+                    const logoPrev = document.getElementById('logoPreview');
+                    logoPrev.src = data.logoUrl;
+                    logoPrev.style.display = 'inline-block';
+                }
                 setVal('heroTitle', data.heroTitle || '');
                 setVal('heroSubtitle', data.heroSubtitle || '');
                 setVal('heroBtnText', data.heroBtnText || 'Agendar Consulta');
-                setVal('heroImageUrl', data.heroImageUrl || '');
-                setVal('aboutTitle', data.aboutTitle || '');
-                setVal('aboutText1', data.aboutText1 || '');
-                setVal('aboutText2', data.aboutText2 || '');
-                setVal('aboutImageUrl', data.aboutImageUrl || '');
                 setVal('treatmentsTitle', data.treatmentsTitle || 'Tratamentos');
-                setVal('beforeAfterTitle', data.beforeAfterTitle || 'Resultados (Antes & Depois)');
-                setVal('differentialsTitle', data.differentialsTitle || 'Nossos Diferenciais');
                 setVal('contactTitle', data.contactTitle || 'Contato & Localização');
                 setVal('phone', data.phone || '');
                 setVal('address', data.address || '');
                 
                 treatmentsData = data.treatments || [];
-                beforeAfterData = data.beforeAfter || [];
-                differentialsData = data.differentials || [];
-
                 renderTreatmentsList();
-                renderBeforeAfterList();
-                renderDifferentialsList();
             }
         }
 
@@ -409,37 +400,44 @@
             if (el) el.value = value;
         }
 
-        /* TRATAMENTOS */
         function renderTreatmentsList() {
             const container = document.getElementById('treatmentsList');
             if (!container) return;
             container.innerHTML = '';
 
             treatmentsData.forEach((t, index) => {
+                const imgPreviewHtml = t.imageUrl ? `<img src="${t.imageUrl}" class="preview-img" style="display:inline-block; max-height:120px;">` : '';
+
                 container.innerHTML += `
                     <div class="dynamic-item-card">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
                             <strong>Tratamento #${index + 1}</strong>
                             <button type="button" style="color: #dc2626; background: none; border: none; cursor: pointer; font-weight: 600;" onclick="removeTreatment(${index})"><i class="fa-solid fa-trash"></i> Remover</button>
                         </div>
+                        
                         <div class="form-group">
-                            <label>URL da Imagem do Tratamento (Que aparece no card do cliente)</label>
-                            <input type="text" value="${t.imgUrl || ''}" placeholder="https://i.postimg.cc/exemplo.jpg" onchange="treatmentsData[${index}].imgUrl = this.value">
+                            <label>Foto do Tratamento (Subir do Computador/Celular)</label>
+                            <div class="file-upload-box">
+                                <i class="fa-solid fa-camera" style="font-size: 1.5rem; color: #94a3b8;"></i>
+                                <p style="font-size: 0.8rem; color: #64748b;">Escolha a imagem que os clientes verão no card</p>
+                                <label class="file-upload-btn">
+                                    Escolher Imagem
+                                    <input type="file" accept="image/*" onchange="uploadTreatmentImg(event, ${index})">
+                                </label>
+                                <div>${imgPreviewHtml}</div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Ícone FontAwesome (Usado se não tiver imagem - ex: fa-sparkles)</label>
-                            <input type="text" value="${t.icon || 'fa-sparkles'}" onchange="treatmentsData[${index}].icon = this.value">
-                        </div>
+
                         <div class="form-group">
                             <label>Nome do Tratamento</label>
                             <input type="text" value="${t.name || ''}" onchange="treatmentsData[${index}].name = this.value">
                         </div>
                         <div class="form-group">
                             <label>Descrição</label>
-                            <textarea onchange="treatmentsData[${index}].desc = this.value">${t.desc || ''}</textarea>
+                            <textarea style="width: 100%; min-height:60px; padding: 0.8rem; border-radius:8px; border:1px solid var(--border);" onchange="treatmentsData[${index}].desc = this.value">${t.desc || ''}</textarea>
                         </div>
                         <div class="form-group">
-                            <label>Duração / Tempo</label>
+                            <label>Duração / Obs (Ex: 50 min)</label>
                             <input type="text" value="${t.time || ''}" onchange="treatmentsData[${index}].time = this.value">
                         </div>
                     </div>
@@ -448,7 +446,7 @@
         }
 
         function addTreatmentField() {
-            treatmentsData.push({ imgUrl: '', icon: 'fa-sparkles', name: '', desc: '', time: '' });
+            treatmentsData.push({ imageUrl: '', name: '', desc: '', time: '' });
             renderTreatmentsList();
         }
 
@@ -457,110 +455,16 @@
             renderTreatmentsList();
         }
 
-        /* ANTES E DEPOIS */
-        function renderBeforeAfterList() {
-            const container = document.getElementById('beforeAfterList');
-            if (!container) return;
-            container.innerHTML = '';
-
-            beforeAfterData.forEach((ba, index) => {
-                container.innerHTML += `
-                    <div class="dynamic-item-card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
-                            <strong>Caso #${index + 1}</strong>
-                            <button type="button" style="color: #dc2626; background: none; border: none; cursor: pointer; font-weight: 600;" onclick="removeBeforeAfter(${index})"><i class="fa-solid fa-trash"></i> Remover</button>
-                        </div>
-                        <div class="form-group">
-                            <label>URL da Foto ANTES</label>
-                            <input type="text" value="${ba.beforeUrl || ''}" placeholder="https://exemplo.com/antes.jpg" onchange="beforeAfterData[${index}].beforeUrl = this.value">
-                        </div>
-                        <div class="form-group">
-                            <label>URL da Foto DEPOIS</label>
-                            <input type="text" value="${ba.afterUrl || ''}" placeholder="https://exemplo.com/depois.jpg" onchange="beforeAfterData[${index}].afterUrl = this.value">
-                        </div>
-                        <div class="form-group">
-                            <label>Nome / Título do Procedimento</label>
-                            <input type="text" value="${ba.title || ''}" placeholder="Ex: Limpeza de Pele Profunda" onchange="beforeAfterData[${index}].title = this.value">
-                        </div>
-                        <div class="form-group">
-                            <label>Descrição / Observação</label>
-                            <textarea onchange="beforeAfterData[${index}].desc = this.value">${ba.desc || ''}</textarea>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function addBeforeAfterField() {
-            beforeAfterData.push({ beforeUrl: '', afterUrl: '', title: '', desc: '' });
-            renderBeforeAfterList();
-        }
-
-        function removeBeforeAfter(index) {
-            beforeAfterData.splice(index, 1);
-            renderBeforeAfterList();
-        }
-
-        /* DIFERENCIAIS */
-        function renderDifferentialsList() {
-            const container = document.getElementById('differentialsList');
-            if (!container) return;
-            container.innerHTML = '';
-
-            differentialsData.forEach((d, index) => {
-                container.innerHTML += `
-                    <div class="dynamic-item-card">
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
-                            <strong>Diferencial #${index + 1}</strong>
-                            <button type="button" style="color: #dc2626; background: none; border: none; cursor: pointer; font-weight: 600;" onclick="removeDifferential(${index})"><i class="fa-solid fa-trash"></i> Remover</button>
-                        </div>
-                        <div class="form-group">
-                            <label>Ícone FontAwesome</label>
-                            <input type="text" value="${d.icon || 'fa-star'}" onchange="differentialsData[${index}].icon = this.value">
-                        </div>
-                        <div class="form-group">
-                            <label>Título</label>
-                            <input type="text" value="${d.title || ''}" onchange="differentialsData[${index}].title = this.value">
-                        </div>
-                        <div class="form-group">
-                            <label>Descrição</label>
-                            <textarea onchange="differentialsData[${index}].desc = this.value">${d.desc || ''}</textarea>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function addDifferentialField() {
-            differentialsData.push({ icon: 'fa-star', title: '', desc: '' });
-            renderDifferentialsList();
-        }
-
-        function removeDifferential(index) {
-            differentialsData.splice(index, 1);
-            renderDifferentialsList();
-        }
-
-        /* SALVAR DADOS */
         async function saveData(e) {
             e.preventDefault();
             const updatedData = {
                 brandName: document.getElementById('brandName').value,
-                logoUrl: document.getElementById('logoUrl').value,
+                logoUrl: logoBase64Data,
                 heroTitle: document.getElementById('heroTitle').value,
                 heroSubtitle: document.getElementById('heroSubtitle').value,
                 heroBtnText: document.getElementById('heroBtnText').value,
-                heroImageUrl: document.getElementById('heroImageUrl').value,
-                aboutTitle: document.getElementById('aboutTitle').value,
-                aboutText1: document.getElementById('aboutText1').value,
-                aboutText2: document.getElementById('aboutText2').value,
-                aboutImageUrl: document.getElementById('aboutImageUrl').value,
                 treatmentsTitle: document.getElementById('treatmentsTitle').value,
                 treatments: treatmentsData,
-                beforeAfterTitle: document.getElementById('beforeAfterTitle').value,
-                beforeAfter: beforeAfterData,
-                differentialsTitle: document.getElementById('differentialsTitle').value,
-                differentials: differentialsData,
                 contactTitle: document.getElementById('contactTitle').value,
                 phone: document.getElementById('phone').value,
                 address: document.getElementById('address').value
