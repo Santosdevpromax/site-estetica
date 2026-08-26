@@ -166,7 +166,7 @@
                     <input type="text" id="addressInput" required>
                 </div>
 
-                <button type="submit" class="btn-action"><i class="fa-solid fa-floppy-disk"></i> Salvar Informações Gerais</button>
+                <button type="submit" class="btn-action" id="saveBtn"><i class="fa-solid fa-floppy-disk"></i> Salvar Informações no Firebase</button>
             </form>
         </div>
 
@@ -198,64 +198,40 @@
     </div>
 
     <script type="module">
-        import { db } from "./firebase.js";
-        import { ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { db, ref, set, onValue } from "./firebase.js";
+        import { remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        const defaultData = {
+        let currentData = {
             logoUrl: "",
-            brandName: "Alcione Pacheco",
-            heroTitle: "Cuidado minimalista, resultados extraordinários.",
-            heroSubtitle: "Protocolos estéticos avançados focados em rejuvenescimento natural e saúde da pele.",
-            heroBtnText: "Agendar Consulta",
-            diffsTitle: "Por que escolher a clínica?",
-            differentials: [
-                { icon: "fa-solid fa-gem", title: "Atendimento Exclusivo", desc: "Protocolos 100% personalizados para a sua pele." },
-                { icon: "fa-solid fa-certificate", title: "Tecnologia Avançada", desc: "Equipamentos de alta precisão e segurança." },
-                { icon: "fa-solid fa-heart", title: "Resultados Naturais", desc: "Rejuvenescimento sem exageros e com harmonia." }
-            ],
-            treatmentsTitle: "Tratamentos",
-            treatments: [
-                {
-                    name: "Limpeza de Pele Profunda",
-                    desc: "Remoção de impurezas e hidratação intensa.",
-                    imageUrl: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=500",
-                    topics: "Extração de cravos\nPeeling de diamante\nMáscara calmante",
-                    time: "1h 30min"
-                },
-                {
-                    name: "Peeling Químico",
-                    desc: "Renovação celular para atenuação de manchas e linhas.",
-                    imageUrl: "https://images.unsplash.com/photo-1512290900673-7002b5217a15?w=500",
-                    topics: "Clareamento de manchas\nEstímulo de colágeno\nTextura uniforme",
-                    time: "1h"
-                }
-            ],
-            contactTitle: "Contato & Localização",
-            phone: "(35) 998167478",
-            address: "Atendimento Presencial com Hora Marcada"
+            brandName: "",
+            heroTitle: "",
+            heroSubtitle: "",
+            heroBtnText: "",
+            phone: "",
+            address: "",
+            differentials: [],
+            treatments: []
         };
 
-        function getStoredData() {
-            const stored = localStorage.getItem('siteContent');
-            if (!stored) return defaultData;
-            try {
-                const parsed = JSON.parse(stored);
-                return { ...defaultData, ...parsed };
-            } catch (e) {
-                return defaultData;
-            }
+        // Carrega os dados direto do Firebase em Tempo Real
+        function listenToFirebaseData() {
+            const siteRef = ref(db, 'siteContent');
+            onValue(siteRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    currentData = {
+                        ...data,
+                        differentials: data.differentials ? (Array.isArray(data.differentials) ? data.differentials : Object.values(data.differentials)) : [],
+                        treatments: data.treatments ? (Array.isArray(data.treatments) ? data.treatments : Object.values(data.treatments)) : []
+                    };
+                    populateGeneralForm();
+                    renderDiffs();
+                    renderTreatments();
+                }
+            });
         }
 
-        let currentData = getStoredData();
-
-        function saveData(showAlert = false) {
-            localStorage.setItem('siteContent', JSON.stringify(currentData));
-            if (showAlert) {
-                alert('Alterações salvas com sucesso!');
-            }
-        }
-
-        function loadGeneralForm() {
+        function populateGeneralForm() {
             document.getElementById('logoUrlInput').value = currentData.logoUrl || '';
             document.getElementById('brandNameInput').value = currentData.brandName || '';
             document.getElementById('heroTitleInput').value = currentData.heroTitle || '';
@@ -263,6 +239,17 @@
             document.getElementById('heroBtnTextInput').value = currentData.heroBtnText || '';
             document.getElementById('phoneInput').value = currentData.phone || '';
             document.getElementById('addressInput').value = currentData.address || '';
+        }
+
+        async function saveToFirebase(showAlert = false) {
+            try {
+                const siteRef = ref(db, 'siteContent');
+                await set(siteRef, currentData);
+                if (showAlert) alert('Alterações salvas com sucesso no banco de dados!');
+            } catch (err) {
+                console.error("Erro ao salvar:", err);
+                alert("Erro ao salvar alterações.");
+            }
         }
 
         document.getElementById('generalForm').addEventListener('submit', (e) => {
@@ -274,13 +261,13 @@
             currentData.heroBtnText = document.getElementById('heroBtnTextInput').value;
             currentData.phone = document.getElementById('phoneInput').value;
             currentData.address = document.getElementById('addressInput').value;
-            saveData(true);
+            saveToFirebase(true);
         });
 
         function renderDiffs() {
             const container = document.getElementById('diffsList');
             container.innerHTML = '';
-            (currentData.differentials || []).forEach((diff, index) => {
+            currentData.differentials.forEach((diff, index) => {
                 const box = document.createElement('div');
                 box.className = 'item-box';
                 box.innerHTML = `
@@ -307,25 +294,23 @@
 
         window.updateDiff = (index, field, value) => {
             currentData.differentials[index][field] = value;
-            saveData(false);
+            saveToFirebase(false);
         };
 
         window.removeDiff = (index) => {
             currentData.differentials.splice(index, 1);
-            saveData(false);
-            renderDiffs();
+            saveToFirebase(false);
         };
 
         document.getElementById('addDiffBtn').addEventListener('click', () => {
             currentData.differentials.push({ icon: 'fa-solid fa-star', title: 'Novo Diferencial', desc: 'Descrição' });
-            saveData(false);
-            renderDiffs();
+            saveToFirebase(false);
         });
 
         function renderTreatments() {
             const container = document.getElementById('treatmentsList');
             container.innerHTML = '';
-            (currentData.treatments || []).forEach((t, index) => {
+            currentData.treatments.forEach((t, index) => {
                 const box = document.createElement('div');
                 box.className = 'item-box';
                 box.innerHTML = `
@@ -342,12 +327,12 @@
                         <input type="text" value="${t.imageUrl || ''}" onchange="updateTreatment(${index}, 'imageUrl', this.value)">
                     </div>
                     <div class="form-group">
-                        <label>Descrição Curta</label>
-                        <input type="text" value="${t.desc || ''}" onchange="updateTreatment(${index}, 'desc', this.value)">
+                        <label>Descrição</label>
+                        <textarea onchange="updateTreatment(${index}, 'desc', this.value)">${t.desc || ''}</textarea>
                     </div>
                     <div class="form-group">
-                        <label>Tópicos (1 por linha)</label>
-                        <textarea rows="3" onchange="updateTreatment(${index}, 'topics', this.value)">${t.topics || ''}</textarea>
+                        <label>Tópicos (um por linha)</label>
+                        <textarea onchange="updateTreatment(${index}, 'topics', this.value)">${t.topics || ''}</textarea>
                     </div>
                     <div class="form-group">
                         <label>Duração/Tempo</label>
@@ -360,64 +345,53 @@
 
         window.updateTreatment = (index, field, value) => {
             currentData.treatments[index][field] = value;
-            saveData(false);
+            saveToFirebase(false);
         };
 
         window.removeTreatment = (index) => {
             currentData.treatments.splice(index, 1);
-            saveData(false);
-            renderTreatments();
+            saveToFirebase(false);
         };
 
         document.getElementById('addTreatmentBtn').addEventListener('click', () => {
             currentData.treatments.push({ name: 'Novo Tratamento', desc: '', imageUrl: '', topics: '', time: '' });
-            saveData(false);
-            renderTreatments();
+            saveToFirebase(false);
         });
 
-        const adminList = document.getElementById('adminFeedbacksList');
-        const feedbacksRef = ref(db, 'feedbacks');
-
-        onValue(feedbacksRef, (snapshot) => {
-            const data = snapshot.val();
-            adminList.innerHTML = '';
-
-            if (!data) {
-                adminList.innerHTML = '<p style="color: #666;">Nenhum feedback registrado.</p>';
-                return;
-            }
-
-            Object.keys(data).forEach(key => {
-                const item = data[key];
-                const div = document.createElement('div');
-                div.className = 'fb-admin-card';
-                div.innerHTML = `
-                    <div style="flex: 1;">
-                        <strong>${item.name || 'Anônimo'}</strong> <small style="color:#777;">(${item.date || ''})</small>
-                        <p style="font-size:0.9rem; color:#444; margin-top:4px;">"${item.text || ''}"</p>
-                    </div>
-                    <button class="btn-delete" data-id="${key}"><i class="fa-solid fa-trash"></i> Excluir</button>
-                `;
-                adminList.appendChild(div);
-            });
-
-            document.querySelectorAll('#adminFeedbacksList .btn-delete[data-id]').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const id = e.currentTarget.getAttribute('data-id');
-                    if (confirm('Deseja realmente apagar este feedback?')) {
-                        try {
-                            await remove(ref(db, `feedbacks/${id}`));
-                        } catch (err) {
-                            alert('Erro ao excluir feedback: ' + err.message);
-                        }
-                    }
+        // Moderação de Feedbacks
+        function listenToAdminFeedbacks() {
+            const container = document.getElementById('adminFeedbacksList');
+            const fbRef = ref(db, 'feedbacks');
+            onValue(fbRef, (snapshot) => {
+                const data = snapshot.val();
+                container.innerHTML = '';
+                if (!data) {
+                    container.innerHTML = '<p style="color:#666;">Nenhum feedback recebido ainda.</p>';
+                    return;
+                }
+                Object.entries(data).forEach(([key, fb]) => {
+                    const card = document.createElement('div');
+                    card.className = 'fb-admin-card';
+                    card.innerHTML = `
+                        <div>
+                            <strong>${fb.name}</strong> <small>(${fb.date || ''})</small>
+                            <p style="margin-top:0.3rem;">${fb.text}</p>
+                        </div>
+                        <button class="btn-delete" onclick="deleteFeedback('${key}')"><i class="fa-solid fa-trash"></i> Excluir</button>
+                    `;
+                    container.appendChild(card);
                 });
             });
-        });
+        }
 
-        loadGeneralForm();
-        renderDiffs();
-        renderTreatments();
+        window.deleteFeedback = async (key) => {
+            if (confirm("Deseja realmente excluir este feedback?")) {
+                await remove(ref(db, `feedbacks/${key}`));
+            }
+        };
+
+        listenToFirebaseData();
+        listenToAdminFeedbacks();
     </script>
 </body>
 </html>
