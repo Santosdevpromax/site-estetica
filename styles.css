@@ -1,3 +1,6 @@
+/* =========================================================
+   1. VARIÁVEIS E CONFIGURAÇÕES GLOBAIS
+   ========================================================= */
 :root {
   --bg-dark: #111a13;
   --card-bg: #f8f9f7;
@@ -8,27 +11,31 @@
   --border-radius-card: 24px;
   --border-radius-img: 18px;
   --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --transition-fast: 0.2s ease;
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* RESET & BASE */
-* {
+/* RESET & ESTRUTURA BASE */
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  background-color: var(--bg-dark) !important;
+  background-color: var(--bg-dark);
   font-family: var(--font-family);
   color: var(--text-dark);
   line-height: 1.6;
   padding-bottom: 60px;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
   overflow-x: hidden;
 }
 
 /* CANVAS DE BACKGROUND ANIMADO */
-#bg-canvas, canvas {
+#bg-canvas, 
+canvas {
   position: fixed;
   top: 0;
   left: 0;
@@ -39,18 +46,21 @@ body {
 }
 
 /* CONTAINER PRINCIPAL */
-main, .container {
+main, 
+.container {
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 20px;
-  box-sizing: border-box;
 }
 
-/* NAVBAR */
+/* =========================================================
+   2. NAVEGAÇÃO / NAVBAR
+   ========================================================= */
 .navbar {
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -73,6 +83,7 @@ main, .container {
 }
 
 .logo {
+  display: block;
   width: 44px;
   height: 44px;
   object-fit: contain;
@@ -96,6 +107,8 @@ main, .container {
   flex-direction: column;
   gap: 5px;
   cursor: pointer;
+  padding: 8px;
+  touch-action: manipulation;
 }
 
 .menu-toggle span {
@@ -103,17 +116,34 @@ main, .container {
   height: 2px;
   background-color: var(--brand-green);
   border-radius: 2px;
+  transition: transform var(--transition-fast);
 }
 
-/* ESTRUTURA DOS CARDS */
-.card, .hero-card, .content-card, .treatment-card, .contact-card {
-  background-color: var(--card-bg) !important;
-  border-radius: var(--border-radius-card) !important;
+/* =========================================================
+   3. CARDS E SEÇÕES REUTILIZÁVEIS
+   ========================================================= */
+.card, 
+.hero-card, 
+.content-card, 
+.treatment-card, 
+.contact-card,
+.feedback-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius-card);
   padding: 36px 32px;
   margin-top: 28px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25) !important;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.section-title {
+  color: #ffffff;
+  font-size: 1.9rem;
+  font-weight: 700;
+  text-align: center;
+  margin-top: 48px;
+  margin-bottom: 12px;
 }
 
 /* HERO SECTION */
@@ -137,7 +167,9 @@ main, .container {
 }
 
 /* BOTÕES */
-.btn-primary, .btn-whatsapp {
+.btn,
+.btn-primary, 
+.btn-whatsapp {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -150,14 +182,20 @@ main, .container {
   padding: 16px 24px;
   border-radius: 30px;
   text-decoration: none;
-  transition: background 0.2s ease;
-  box-sizing: border-box;
   border: none;
   cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color var(--transition-fast), transform var(--transition-fast);
 }
 
-.btn-primary:hover, .btn-whatsapp:hover {
+.btn-primary:hover, 
+.btn-whatsapp:hover {
   background-color: var(--brand-green-hover);
+}
+
+.btn-primary:active,
+.btn-whatsapp:active {
+  transform: scale(0.98);
 }
 
 /* SOBRE / INSTITUCIONAL */
@@ -176,63 +214,63 @@ main, .container {
   text-align: justify;
 }
 
-/* TÍTULOS DE SEÇÃO */
-.section-title {
-  color: #ffffff;
-  font-size: 1.9rem;
-  font-weight: 700;
+/* =========================================================
+   4. GRIDS DE DIFERENCIAIS E TRATAMENTOS
+   ========================================================= */
+.diferenciais-grid, 
+.features-grid, 
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin: 32px 0;
+}
+
+.diferencial-card, 
+.feature-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius-card);
+  padding: 32px 24px;
   text-align: center;
-  margin-top: 48px;
-  margin-bottom: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth);
 }
 
-/* GRID DE DIFERENCIAIS (DESKTOP EM 3 COLUNAS) */
-.diferenciais-grid, .features-grid, .cards-container {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
-  gap: 24px !important;
-  margin: 32px 0 !important;
-}
-
-.diferencial-card, .feature-card {
-  background-color: var(--card-bg) !important;
-  border-radius: var(--border-radius-card) !important;
-  padding: 32px 24px !important;
-  text-align: center !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: center !important;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.diferencial-card:hover, .feature-card:hover {
+.diferencial-card:hover, 
+.feature-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 }
 
-.diferencial-card .icon, .feature-card .icon, .diferencial-card svg {
-  width: 48px !important;
-  height: 48px !important;
-  margin-bottom: 16px !important;
-  color: var(--brand-green) !important;
+.diferencial-card .icon, 
+.feature-card .icon, 
+.diferencial-card svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+  color: var(--brand-green);
 }
 
-.diferencial-card h3, .feature-card h3 {
-  color: var(--text-dark) !important;
-  font-size: 1.2rem !important;
-  font-weight: 700 !important;
-  margin-bottom: 10px !important;
+.diferencial-card h3, 
+.feature-card h3 {
+  color: var(--text-dark);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
 }
 
-.diferencial-card p, .feature-card p {
-  color: var(--text-muted) !important;
-  font-size: 0.92rem !important;
-  line-height: 1.5 !important;
+.diferencial-card p, 
+.feature-card p {
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
 }
 
-/* TRATAMENTOS */
+/* DETALHES DE TRATAMENTO */
 .treatment-card h3 {
   font-size: 1.5rem;
   color: var(--brand-green);
@@ -305,6 +343,7 @@ main, .container {
   color: var(--brand-green);
   text-decoration: underline;
   margin-bottom: 12px;
+  display: inline-block;
 }
 
 .address {
@@ -313,7 +352,9 @@ main, .container {
   margin-bottom: 24px;
 }
 
-/* PAINEL ADMINISTRATIVO */
+/* =========================================================
+   5. PAINEL ADMINISTRATIVO
+   ========================================================= */
 .admin-main { max-width: 850px; }
 
 .btn-secondary-sm {
@@ -325,6 +366,7 @@ main, .container {
   text-decoration: none;
   font-weight: 600;
   font-size: 0.85rem;
+  touch-action: manipulation;
 }
 
 .admin-metrics {
@@ -389,7 +431,8 @@ main, .container {
   color: var(--brand-green);
 }
 
-.form-group input, .form-group textarea {
+.form-group input, 
+.form-group textarea {
   width: 100%;
   padding: 12px;
   border: 1px solid #d0d7d1;
@@ -400,87 +443,86 @@ main, .container {
   color: var(--text-dark);
 }
 
-.form-group input:focus, .form-group textarea:focus {
+.form-group input:focus, 
+.form-group textarea:focus {
   outline: none;
   border-color: var(--brand-green);
   box-shadow: 0 0 0 2px rgba(61, 79, 64, 0.15);
 }
 
-/* HARMONIZAÇÃO E RESPONSIVIDADE MOBILE (MESMO PADRÃO ELEGANTE DO DESKTOP) */
+/* =========================================================
+   6. RESPONSIVIDADE (MEDIA QUERIES UNIFICADAS)
+   ========================================================= */
+
+/* TECLADOS / DISPOSITIVOS MÉDIOS (TABLETS - 900px) */
 @media (max-width: 900px) {
-  .diferenciais-grid, .features-grid, .cards-container {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
+  .diferenciais-grid, 
+  .features-grid, 
+  .cards-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
   }
 }
 
+/* SMARTPHONES / MOBILE (768px) */
 @media (max-width: 768px) {
-  main, .container {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 16px !important;
+  main, 
+  .container {
+    padding: 0 16px;
   }
 
-  .card, .hero-card, .content-card, .treatment-card, .contact-card {
-    padding: 24px 20px !important;
-    border-radius: 20px !important;
-    margin-top: 20px !important;
+  .logo {
+    width: 38px;
+    height: 38px;
+  }
+
+  .card, 
+  .hero-card, 
+  .content-card, 
+  .treatment-card, 
+  .contact-card,
+  .feedback-card {
+    padding: 20px 16px;
+    border-radius: 18px;
+    margin-top: 16px;
   }
 
   .hero-card h1 {
-    font-size: 1.65rem !important;
-    line-height: 1.25 !important;
+    font-size: 1.6rem;
+    line-height: 1.25;
   }
 
   .section-title {
-    font-size: 1.45rem !important;
-    margin-top: 36px !important;
+    font-size: 1.45rem;
+    margin-top: 36px;
   }
 
   .content-card h2 {
-    font-size: 1.3rem !important;
+    font-size: 1.3rem;
   }
 
   p {
-    font-size: 0.92rem !important;
-    line-height: 1.6 !important;
+    font-size: 0.92rem;
+    line-height: 1.6;
+  }
+
+  .diferenciais-grid, 
+  .features-grid, 
+  .cards-container {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
-/* =========================================================
-   AJUSTE DE LOGO E HARMONIZAÇÃO MOBILE (ACRÉSCIMO)
-   ========================================================= */
 
-/* Garante exibição perfeita do logotipo */
-.logo {
-  display: block !important;
-  width: 40px !important;
-  height: 40px !important;
-  object-fit: contain !important;
-}
-
-/* Reduz o estufamento do celular e espelha o padrão do desktop */
-@media (max-width: 768px) {
-  main, .container {
-    width: 100% !important;
-    padding: 0 16px !important;
+/* TRAMAS COMPACTAS (DISPOSITIVOS PEQUENOS - 480px) */
+@media (max-width: 480px) {
+  .brand-text {
+    font-size: 0.95rem;
   }
 
-  /* Exibe cards de diferenciais lado a lado em 2 colunas */
-  .diferenciais-grid, .features-grid, .cards-container {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
-  }
-
-  /* Reduz o tamanho excessivo das caixas no mobile */
-  .card, .hero-card, .content-card, .treatment-card, .feedback-card {
-    padding: 20px 16px !important;
-    border-radius: 18px !important;
-    margin-top: 16px !important;
-  }
-
-  .hero-card h1 {
-    font-size: 1.6rem !important;
-    line-height: 1.25 !important;
+  .btn-primary, 
+  .btn-whatsapp {
+    padding: 14px 18px;
+    font-size: 0.95rem;
   }
 }
