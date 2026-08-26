@@ -113,13 +113,14 @@
         <div>
             <div class="brand">
                 <h2>Alcione Pacheco</h2>
-                <p>Painel Admin <span style="font-size:0.75rem; background:#4a5c44; padding:2px 8px; border-radius:10px; color:#fff;">v1.2.0</span></p>
+                <p>Painel Admin <span style="font-size:0.75rem; background:#4a5c44; padding:2px 8px; border-radius:10px; color:#fff;">v1.3.0</span></p>
             </div>
             <ul class="nav-list">
                 <li class="nav-item active" onclick="switchTab('geral', this)"><i class="fa-solid fa-house"></i> Geral & Logo</li>
                 <li class="nav-item" onclick="switchTab('diferenciais', this)"><i class="fa-solid fa-star"></i> Diferenciais</li>
                 <li class="nav-item" onclick="switchTab('tratamentos', this)"><i class="fa-solid fa-sparkles"></i> Tratamentos</li>
                 <li class="nav-item" onclick="switchTab('contato', this)"><i class="fa-solid fa-address-book"></i> Contato</li>
+                <li class="nav-item" onclick="switchTab('feedbacks', this)"><i class="fa-solid fa-comments"></i> Feedbacks</li>
             </ul>
         </div>
         <button onclick="logout()" class="btn-logout"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
@@ -174,7 +175,7 @@
                 </div>
             </div>
 
-            <!-- Aba 3: Tratamentos (Com suporte a tópicos) -->
+            <!-- Aba 3: Tratamentos -->
             <div id="tab-tratamentos" class="tab-content">
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -193,6 +194,16 @@
                     <div class="form-group"><label>Título da Seção</label><input type="text" id="contactTitle"></div>
                     <div class="form-group"><label>Telefone / WhatsApp</label><input type="text" id="phone"></div>
                     <div class="form-group"><label>Endereço / Localização</label><input type="text" id="address"></div>
+                </div>
+            </div>
+
+            <!-- Aba 5: Feedbacks (NOVO!) -->
+            <div id="tab-feedbacks" class="tab-content">
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <h3 style="color: var(--primary-green);">Feedbacks e Avaliações dos Clientes</h3>
+                    </div>
+                    <div id="adminFeedbacksList"></div>
                 </div>
             </div>
         </form>
@@ -259,6 +270,9 @@
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.getElementById('tab-' + tabName).classList.add('active');
             element.classList.add('active');
+            if (tabName === 'feedbacks') {
+                renderAdminFeedbacks();
+            }
         }
 
         async function uploadLogo(e) {
@@ -323,6 +337,8 @@
                 renderTreatmentsList();
                 renderDiffsList();
             }
+
+            renderAdminFeedbacks();
         }
 
         function setVal(id, value) {
@@ -418,6 +434,49 @@
         function removeTreatment(index) {
             treatmentsData.splice(index, 1);
             renderTreatmentsList();
+        }
+
+        // FUNÇÃO DE RENDERIZAR FEEDBACKS NO ADMIN
+        function renderAdminFeedbacks() {
+            const container = document.getElementById('adminFeedbacksList');
+            if (!container) return;
+            const feedbacks = JSON.parse(localStorage.getItem('siteFeedbacks') || '[]');
+            container.innerHTML = '';
+
+            if (feedbacks.length === 0) {
+                container.innerHTML = '<p style="color: #666; text-align: center; padding: 2rem 0;">Nenhum feedback recebido até o momento.</p>';
+                return;
+            }
+
+            feedbacks.forEach((fb, index) => {
+                const imgHtml = fb.image ? `<img src="${fb.image}" style="max-height: 120px; border-radius: 8px; margin-top: 10px; display: block;">` : '';
+                container.innerHTML += `
+                    <div class="dynamic-item-card" style="position: relative;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                            <div>
+                                <strong style="font-size: 1.05rem; color: var(--primary-green);">${fb.name}</strong>
+                                <span style="font-size: 0.8rem; color: #888; margin-left: 8px;">(${fb.date || 'Sem data'})</span>
+                            </div>
+                            <button type="button" style="color: #dc2626; background: rgba(220, 38, 38, 0.1); border: 1px solid #dc2626; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;" onclick="deleteFeedback(${index})">
+                                <i class="fa-solid fa-trash"></i> Excluir Feedback
+                            </button>
+                        </div>
+                        <p style="color: var(--text-dark); font-size: 0.95rem; line-height: 1.5; margin-top: 0.5rem;">"${fb.text}"</p>
+                        ${imgHtml}
+                    </div>
+                `;
+            });
+        }
+
+        // EXCLUIR FEEDBACK
+        function deleteFeedback(index) {
+            if (confirm('Tem certeza de que deseja excluir este feedback?')) {
+                const feedbacks = JSON.parse(localStorage.getItem('siteFeedbacks') || '[]');
+                feedbacks.splice(index, 1);
+                localStorage.setItem('siteFeedbacks', JSON.stringify(feedbacks));
+                renderAdminFeedbacks();
+                alert('Feedback excluído com sucesso!');
+            }
         }
 
         async function saveData(e) {

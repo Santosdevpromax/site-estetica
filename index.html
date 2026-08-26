@@ -134,7 +134,6 @@
 
         .card h3 { color: var(--primary-green); margin-bottom: 0.8rem; font-size: 1.3rem; }
 
-        /* Estilização dos tópicos dos tratamentos */
         .treatment-topics {
             text-align: left;
             width: 100%;
@@ -311,7 +310,7 @@
     <footer>
         <p>&copy; Alcione Pacheco Estética Avançada. Todos os direitos reservados.</p>
         <p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);">
-            Desenvolvido por <strong>Pedro Santos</strong> | <span class="version-tag">v1.2.0</span>
+            Desenvolvido por <strong>Pedro Santos</strong> | <span class="version-tag">v1.3.0</span>
         </p>
     </footer>
 
@@ -462,7 +461,6 @@
                     data.treatments.forEach(t => {
                         const imgHtml = t.imageUrl ? `<img src="${t.imageUrl}" class="treatment-card-img" alt="${t.name}">` : '';
                         
-                        // RENDERIZAR TÓPICOS DO TRATAMENTO
                         let topicsHtml = '';
                         if (t.topics && t.topics.trim() !== '') {
                             const listItems = t.topics.split('\n').filter(item => item.trim() !== '');
