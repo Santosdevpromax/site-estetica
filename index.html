@@ -5,377 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="https://i.ibb.co/CK8tMBD8/Code-Generated-Image.png">
     <title>Alcione Pacheco | Estética Avançada</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root {
-            --primary-green: #4a5c44;
-            --primary-dark: #1e291c;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --text-dark: #2c332a;
-            --text-muted: #666666;
-            --radius: 16px;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
-        
-        body {
-            background-color: #121a11;
-            color: var(--text-dark);
-            line-height: 1.6;
-            overflow-x: hidden;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        #bgCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -2;
-            pointer-events: none;
-        }
-
-        .glow-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(90px);
-            opacity: 0.35;
-            z-index: -1;
-            pointer-events: none;
-            animation: floatGlow 12s ease-in-out infinite alternate;
-        }
-        .orb-1 { width: 400px; height: 400px; background: #4a5c44; top: -100px; left: -100px; }
-        .orb-2 { width: 500px; height: 500px; background: #2d4529; bottom: -150px; right: -100px; animation-delay: -6s; }
-        .orb-3 { width: 350px; height: 350px; background: #627a5a; top: 40%; left: 50%; transform: translate(-50%, -50%); animation-duration: 16s; }
-
-        @keyframes floatGlow {
-            0% { transform: translateY(0) scale(1); }
-            100% { transform: translateY(-40px) scale(1.15); }
-        }
-
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            z-index: 1000;
-            padding: 0.8rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        }
-
-        .logo-container { display: flex; align-items: center; text-decoration: none; gap: 12px; }
-        .logo-img { max-height: 45px; width: auto; object-fit: contain; }
-        .logo-text { font-size: 1.25rem; font-weight: 700; color: var(--primary-green); letter-spacing: 0.5px; }
-
-        nav { display: flex; gap: 1.5rem; align-items: center; }
-        nav a { text-decoration: none; color: var(--text-dark); font-weight: 500; transition: color 0.3s; font-size: 0.95rem; }
-        nav a:hover { color: var(--primary-green); }
-
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.6rem;
-            color: var(--primary-green);
-            cursor: pointer;
-        }
-
-        section { padding: 4rem 2rem 2rem 2rem; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
-        .section-title { 
-            text-align: center; 
-            font-size: 2.2rem; 
-            color: #ffffff; 
-            margin-bottom: 2.5rem; 
-            font-weight: 700; 
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            letter-spacing: 0.5px;
-        }
-
-        .hero {
-            min-height: 40vh;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: var(--radius);
-            margin-top: 5rem;
-            padding: 3.5rem;
-            gap: 2rem;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-        }
-        .hero-content { flex: 1; }
-        .hero h1 { font-size: 2.4rem; color: var(--primary-green); margin-bottom: 1rem; font-weight: 700; line-height: 1.2; }
-        .hero p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 2rem; }
-
-        .btn {
-            display: inline-block;
-            background-color: var(--primary-green);
-            color: #ffffff;
-            padding: 0.9rem 2.2rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(74, 92, 68, 0.5);
-            border: none;
-            cursor: pointer;
-            text-align: center;
-        }
-        .btn:hover { background-color: #2d3e2a; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(74, 92, 68, 0.7); }
-
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
-
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: var(--radius);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-            text-align: center;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 18px 35px rgba(0,0,0,0.35); }
-        .card-icon { font-size: 2.2rem; color: var(--primary-green); margin-bottom: 1rem; }
-        
-        .treatment-card-img { 
-            width: 100%; 
-            height: 200px; 
-            object-fit: cover; 
-            border-radius: 12px; 
-            margin-bottom: 1.2rem; 
-            display: block; 
-        }
-
-        .card h3 { color: var(--primary-green); margin-bottom: 0.8rem; font-size: 1.3rem; }
-
-        .treatment-topics {
-            text-align: left;
-            width: 100%;
-            margin: 0.8rem 0 1.2rem 0;
-            padding: 0;
-            list-style: none;
-            flex: 1;
-        }
-        .treatment-topics li {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-        }
-        .treatment-topics li i {
-            color: var(--primary-green);
-            font-size: 0.85rem;
-            margin-top: 4px;
-        }
-
-        .contact-box {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 3.5rem 2rem;
-            border-radius: var(--radius);
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .feedback-form-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 2.5rem;
-            border-radius: var(--radius);
-            max-width: 650px;
-            margin: 0 auto 3rem auto;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            text-align: left;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        .feedback-form-card label {
-            display: block;
-            font-weight: 600;
-            font-size: 0.9rem;
-            margin-bottom: 0.4rem;
-            color: var(--text-dark);
-        }
-        .feedback-form-card input[type="text"],
-        .feedback-form-card textarea {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 1rem;
-            margin-bottom: 1.2rem;
-        }
-
-        .feedbacks-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1.8rem;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .feedback-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: var(--radius);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-        .feedback-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.35);
-        }
-
-        .feedback-img-wrapper {
-            flex-shrink: 0;
-            width: 260px;
-            max-height: 320px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #f4f6f4;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
-        }
-
-        .feedback-card-img { 
-            width: 100%; 
-            height: auto; 
-            max-height: 320px; 
-            object-fit: contain; 
-            display: block; 
-            border-radius: 12px; 
-        }
-
-        .feedback-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .feedback-author {
-            font-weight: 700;
-            color: var(--primary-green);
-            margin-top: 1rem;
-        }
-
-        footer { 
-            text-align: center; 
-            padding: 2.5rem 1.5rem; 
-            color: rgba(255,255,255,0.9); 
-            margin-top: 4rem; 
-            font-size: 0.9rem; 
-            border-top: 1px solid rgba(255,255,255,0.1);
-            position: relative;
-            z-index: 1;
-        }
-
-        .version-tag {
-            background: rgba(255,255,255,0.15);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.78rem;
-            margin-left: 6px;
-        }
-
-        /* AJUSTES RESPONSIVOS MOBILE - MANTENDO MENU SANDUÍCHE E COPIANDO ESTILO DESKTOP */
-        @media (max-width: 768px) {
-            header {
-                padding: 0.8rem 1.2rem;
-            }
-            .logo-text {
-                font-size: 1.1rem;
-            }
-            .menu-toggle { 
-                display: block; 
-            }
-            nav {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background: rgba(255, 255, 255, 0.98);
-                backdrop-filter: blur(12px);
-                padding: 1.5rem;
-                box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-                gap: 1.2rem;
-                text-align: center;
-                border-bottom: 1px solid rgba(0,0,0,0.1);
-            }
-            nav.active { 
-                display: flex; 
-            }
-
-            section {
-                padding: 3rem 1.2rem 1.5rem 1.2rem;
-            }
-            .section-title {
-                font-size: 1.75rem;
-                margin-bottom: 1.8rem;
-            }
-
-            .hero { 
-                flex-direction: column;
-                text-align: center; 
-                padding: 2.2rem 1.5rem; 
-                margin-top: 4.5rem;
-                gap: 1.5rem;
-            }
-            .hero h1 {
-                font-size: 1.75rem;
-            }
-            .hero p {
-                font-size: 1rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .grid {
-                grid-template-columns: 1fr;
-                gap: 1.25rem;
-            }
-
-            .contact-box, .feedback-form-card {
-                padding: 2rem 1.25rem;
-            }
-
-            .feedback-card {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 1.5rem 1.25rem;
-                gap: 1.2rem;
-            }
-            .feedback-img-wrapper {
-                width: 100%;
-                max-height: 280px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -402,7 +34,7 @@
     </header>
 
     <section id="inicio">
-        <div class="hero">
+        <div class="hero card">
             <div class="hero-content">
                 <h1 id="heroTitle">Cuidado minimalista, resultados extraordinários.</h1>
                 <p id="heroSubtitle">Protocolos estéticos avançados focados em rejuvenescimento natural e saúde da pele.</p>
@@ -423,8 +55,8 @@
 
     <section id="contato">
         <h2 class="section-title" id="contactTitle">Contato & Localização</h2>
-        <div class="contact-box">
-            <p style="font-size: 1.3rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.5rem;" id="phone">(35) 998167478</p>
+        <div class="contact-box card">
+            <p style="font-size: 1.4rem; font-weight: 700; color: var(--brand-green); margin-bottom: 0.5rem;" id="phone">(35) 998167478</p>
             <p style="color: var(--text-muted); margin-bottom: 2rem;" id="address">Atendimento Presencial com Hora Marcada</p>
             <a href="#" id="whatsappBtn" target="_blank" class="btn"><i class="fa-brands fa-whatsapp"></i> Falar no WhatsApp</a>
         </div>
@@ -433,20 +65,20 @@
     <section id="feedbacks">
         <h2 class="section-title">Feedbacks dos Clientes</h2>
 
-        <div class="feedback-form-card">
-            <h3 style="color: var(--primary-green); margin-bottom: 1.2rem; text-align: center;">Deixe sua Avaliação</h3>
+        <div class="feedback-form-card card">
+            <h3 style="color: var(--brand-green); margin-bottom: 1.2rem; text-align: center;">Deixe sua Avaliação</h3>
             <form id="feedbackForm">
                 <div>
-                    <label>Seu Nome</label>
+                    <label for="fbName">Seu Nome</label>
                     <input type="text" id="fbName" placeholder="Ex: Maria Silva" required>
                 </div>
                 <div>
-                    <label>Seu Depoimento / Avaliação</label>
-                    <textarea id="fbText" placeholder="Conte-nos como foi sua experiência com o tratamento..." style="min-height: 90px;" required></textarea>
+                    <label for="fbText">Seu Depoimento / Avaliação</label>
+                    <textarea id="fbText" placeholder="Conte-nos como foi sua experiência com o tratamento..." style="min-height: 100px;" required></textarea>
                 </div>
                 <div>
-                    <label>Enviar Foto do Procedimento (Opcional)</label>
-                    <input type="file" id="fbImage" accept="image/*" style="margin-bottom: 1.5rem;">
+                    <label for="fbImage">Enviar Foto do Procedimento (Opcional)</label>
+                    <input type="file" id="fbImage" accept="image/*">
                 </div>
                 <button type="submit" class="btn" id="fbSubmitBtn" style="width: 100%;"><i class="fa-solid fa-paper-plane"></i> Enviar Feedback</button>
             </form>
@@ -559,40 +191,6 @@
     <script type="module">
         import { db, ref, push, set, onValue } from "./firebase.js";
 
-        const defaultData = {
-            logoUrl: "https://i.ibb.co/CK8tMBD8/Code-Generated-Image.png",
-            brandName: "Alcione Pacheco",
-            heroTitle: "Cuidado minimalista, resultados extraordinários.",
-            heroSubtitle: "Protocolos estéticos avançados focados em rejuvenescimento natural e saúde da pele.",
-            heroBtnText: "Agendar Consulta",
-            diffsTitle: "Por que escolher a clínica?",
-            differentials: [
-                { icon: "fa-solid fa-gem", title: "Atendimento Exclusivo", desc: "Protocolos 100% personalizados para a sua pele." },
-                { icon: "fa-solid fa-certificate", title: "Tecnologia Avançada", desc: "Equipamentos de alta precisão e segurança." },
-                { icon: "fa-solid fa-heart", title: "Resultados Naturais", desc: "Rejuvenescimento sem exageros e com harmonia." }
-            ],
-            treatmentsTitle: "Tratamentos",
-            treatments: [
-                {
-                    name: "Limpeza de Pele Profunda",
-                    desc: "Remoção de impurezas e hidratação intensa.",
-                    imageUrl: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=500",
-                    topics: "Extração de cravos\nPeeling de diamante\nMáscara calmante",
-                    time: "1h 30min"
-                },
-                {
-                    name: "Peeling Químico",
-                    desc: "Renovação celular para atenuação de manchas e linhas.",
-                    imageUrl: "https://images.unsplash.com/photo-1512290900673-7002b5217a15?w=500",
-                    topics: "Clareamento de manchas\nEstímulo de colágeno\nTextura uniforme",
-                    time: "1h"
-                }
-            ],
-            contactTitle: "Contato & Localização",
-            phone: "(35) 998167478",
-            address: "Atendimento Presencial com Hora Marcada"
-        };
-
         function compressFeedbackImage(file, maxWidth = 800, quality = 0.75) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -667,110 +265,84 @@
                 container.innerHTML = '';
 
                 if (!data) {
-                    container.innerHTML = '<p style="color: #ffffff; text-align: center; opacity: 0.9;">Nenhum feedback enviado ainda.</p>';
+                    container.innerHTML = '<p class="empty-feedback-msg">Nenhum feedback cadastrado ainda.</p>';
                     return;
                 }
 
-                const list = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                list.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                const list = Object.values(data).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
-                list.forEach(fb => {
-                    const imgHtml = fb.image 
-                        ? `<div class="feedback-img-wrapper"><img src="${fb.image}" class="feedback-card-img" alt="Foto procedimento"></div>` 
-                        : '';
-                    container.innerHTML += `
-                        <div class="feedback-card">
-                            ${imgHtml}
-                            <div class="feedback-info">
-                                <p style="font-style: italic; color: var(--text-muted); font-size: 0.98rem; line-height: 1.6;">"${fb.text}"</p>
-                                <div class="feedback-author">
-                                    ${fb.name} <span style="font-size: 0.78rem; color: #888; font-weight: 400;">(${fb.date || ''})</span>
-                                </div>
-                            </div>
+                list.forEach((item) => {
+                    const card = document.createElement('div');
+                    card.className = 'feedback-card card';
+                    card.innerHTML = `
+                        ${item.image ? `<div class="feedback-img-wrapper"><img src="${item.image}" alt="Foto Procedimento" class="feedback-card-img"></div>` : ''}
+                        <div class="feedback-info">
+                            <p style="font-size: 0.95rem; color: var(--text-dark); line-height: 1.5;">"${item.text}"</p>
+                            <p class="feedback-author">— ${item.name} <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);">(${item.date || ''})</span></p>
                         </div>
                     `;
+                    container.appendChild(card);
                 });
             });
         }
 
-        function loadPageData() {
-            let data = defaultData;
-            const localStored = localStorage.getItem('siteContent');
-            if (localStored) {
-                try {
-                    const parsed = JSON.parse(localStored);
-                    data = { ...defaultData, ...parsed };
-                } catch(e){}
-            }
+        function loadSiteContent() {
+            const siteRef = ref(db, 'siteContent');
+            onValue(siteRef, (snapshot) => {
+                const content = snapshot.val();
+                if (!content) return;
 
-            const logoImg = document.getElementById('siteLogo');
-            if (data.logoUrl && data.logoUrl.trim() !== '') {
-                logoImg.src = data.logoUrl;
-                logoImg.style.display = 'block';
-            } else {
-                logoImg.style.display = 'none';
-            }
+                if (content.brandName && document.getElementById('brandName')) document.getElementById('brandName').textContent = content.brandName;
+                if (content.logoUrl && document.getElementById('siteLogo')) document.getElementById('siteLogo').src = content.logoUrl;
+                if (content.heroTitle && document.getElementById('heroTitle')) document.getElementById('heroTitle').textContent = content.heroTitle;
+                if (content.heroSubtitle && document.getElementById('heroSubtitle')) document.getElementById('heroSubtitle').textContent = content.heroSubtitle;
+                if (content.heroBtnText && document.getElementById('heroBtnText')) document.getElementById('heroBtnText').textContent = content.heroBtnText;
+                if (content.diffsTitle && document.getElementById('diffsTitle')) document.getElementById('diffsTitle').textContent = content.diffsTitle;
+                if (content.treatmentsTitle && document.getElementById('treatmentsTitle')) document.getElementById('treatmentsTitle').textContent = content.treatmentsTitle;
+                if (content.contactTitle && document.getElementById('contactTitle')) document.getElementById('contactTitle').textContent = content.contactTitle;
+                if (content.phone && document.getElementById('phone')) document.getElementById('phone').textContent = content.phone;
+                if (content.address && document.getElementById('address')) document.getElementById('address').textContent = content.address;
 
-            if (data.brandName) document.getElementById('brandName').innerText = data.brandName;
-            if (data.heroTitle) document.getElementById('heroTitle').innerText = data.heroTitle;
-            if (data.heroSubtitle) document.getElementById('heroSubtitle').innerText = data.heroSubtitle;
-            if (data.heroBtnText) document.getElementById('heroBtnText').innerText = data.heroBtnText;
-            if (data.diffsTitle) document.getElementById('diffsTitle').innerText = data.diffsTitle;
-
-            const diffsGrid = document.getElementById('diffsGrid');
-            const differentialsList = (data.differentials && data.differentials.length > 0) ? data.differentials : defaultData.differentials;
-            diffsGrid.innerHTML = '';
-            differentialsList.forEach(d => {
-                const iconClass = (d.icon && d.icon.includes('fa-')) ? d.icon : 'fa-solid fa-star';
-                diffsGrid.innerHTML += `
-                    <div class="card">
-                        <div class="card-icon"><i class="${iconClass}"></i></div>
-                        <h3>${d.title || ''}</h3>
-                        <p style="color: var(--text-muted); font-size: 0.95rem;">${d.desc || ''}</p>
-                    </div>
-                `;
-            });
-
-            if (data.treatmentsTitle) document.getElementById('treatmentsTitle').innerText = data.treatmentsTitle;
-            const treatmentsList = (data.treatments && data.treatments.length > 0) ? data.treatments : defaultData.treatments;
-            const grid = document.getElementById('treatmentsGrid');
-            grid.innerHTML = '';
-            treatmentsList.forEach(t => {
-                const imgHtml = t.imageUrl ? `<img src="${t.imageUrl}" class="treatment-card-img" alt="${t.name}">` : '';
-                let topicsHtml = '';
-                if (t.topics && t.topics.trim() !== '') {
-                    const listItems = t.topics.split('\n').filter(item => item.trim() !== '');
-                    if (listItems.length > 0) {
-                        topicsHtml = '<ul class="treatment-topics">' + 
-                            listItems.map(item => `<li><i class="fa-solid fa-check"></i> <span>${item.replace(/^[-•*]\s*/, '')}</span></li>`).join('') + 
-                            '</ul>';
-                    }
+                if (document.getElementById('whatsappBtn') && content.phone) {
+                    const cleanPhone = content.phone.replace(/\D/g, '');
+                    document.getElementById('whatsappBtn').href = `https://wa.me/55${cleanPhone}`;
                 }
-                grid.innerHTML += `
-                    <div class="card">
-                        ${imgHtml}
-                        <h3>${t.name || 'Tratamento'}</h3>
-                        ${t.desc ? `<p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem;">${t.desc}</p>` : ''}
-                        ${topicsHtml}
-                        ${t.time ? `<span style="font-weight: 600; color: var(--primary-green); font-size: 0.85rem; margin-top: auto;">⏱ ${t.time}</span>` : ''}
-                    </div>
-                `;
-            });
 
-            if (data.contactTitle) document.getElementById('contactTitle').innerText = data.contactTitle;
-            if (data.phone) {
-                document.getElementById('phone').innerText = data.phone;
-                const cleanPhone = data.phone.replace(/\D/g, '');
-                document.getElementById('whatsappBtn').href = `https://wa.me/55${cleanPhone}`;
-            }
-            if (data.address) document.getElementById('address').innerText = data.address;
+                const diffsGrid = document.getElementById('diffsGrid');
+                if (diffsGrid && content.differentials) {
+                    const diffs = Array.isArray(content.differentials) ? content.differentials : Object.values(content.differentials);
+                    diffsGrid.innerHTML = diffs.map(item => `
+                        <div class="card">
+                            <i class="${item.icon || 'fa-solid fa-star'} card-icon"></i>
+                            <h3>${item.title || ''}</h3>
+                            <p style="color: var(--text-muted); font-size: 0.95rem;">${item.desc || ''}</p>
+                        </div>
+                    `).join('');
+                }
+
+                const treatmentsGrid = document.getElementById('treatmentsGrid');
+                if (treatmentsGrid && content.treatments) {
+                    const treatments = Array.isArray(content.treatments) ? content.treatments : Object.values(content.treatments);
+                    treatmentsGrid.innerHTML = treatments.map(item => `
+                        <div class="card">
+                            ${item.imageUrl ? `<img src="${item.imageUrl}" alt="${item.name}" class="treatment-card-img">` : ''}
+                            <h3>${item.name || ''}</h3>
+                            <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 0.8rem;">${item.desc || ''}</p>
+                            ${item.topics ? `
+                                <ul class="treatment-topics">
+                                    ${item.topics.split('\n').map(top => `<li><i class="fa-solid fa-check"></i> ${top}</li>`).join('')}
+                                </ul>
+                            ` : ''}
+                            ${item.time ? `<div class="info-badge"><i class="fa-regular fa-clock"></i> ${item.time}</div>` : ''}
+                        </div>
+                    `).join('');
+                }
+            });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadPageData();
-            listenToFeedbacks();
-            document.getElementById('feedbackForm')?.addEventListener('submit', submitFeedback);
-        });
+        document.getElementById('feedbackForm').addEventListener('submit', submitFeedback);
+        loadSiteContent();
+        listenToFeedbacks();
     </script>
 </body>
 </html>
