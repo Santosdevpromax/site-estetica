@@ -113,7 +113,7 @@
         <div>
             <div class="brand">
                 <h2>Alcione Pacheco</h2>
-                <p>Painel Admin <span style="font-size:0.75rem; background:#4a5c44; padding:2px 8px; border-radius:10px; color:#fff;">v1.3.0</span></p>
+                <p>Painel Admin <span style="font-size:0.75rem; background:#4a5c44; padding:2px 8px; border-radius:10px; color:#fff;">v1.4.0</span></p>
             </div>
             <ul class="nav-list">
                 <li class="nav-item active" onclick="switchTab('geral', this)"><i class="fa-solid fa-house"></i> Geral & Logo</li>
@@ -197,7 +197,7 @@
                 </div>
             </div>
 
-            <!-- Aba 5: Feedbacks (NOVO!) -->
+            <!-- Aba 5: Feedbacks -->
             <div id="tab-feedbacks" class="tab-content">
                 <div class="card">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -436,7 +436,6 @@
             renderTreatmentsList();
         }
 
-        // FUNÇÃO DE RENDERIZAR FEEDBACKS NO ADMIN
         function renderAdminFeedbacks() {
             const container = document.getElementById('adminFeedbacksList');
             if (!container) return;
@@ -449,9 +448,9 @@
             }
 
             feedbacks.forEach((fb, index) => {
-                const imgHtml = fb.image ? `<img src="${fb.image}" style="max-height: 120px; border-radius: 8px; margin-top: 10px; display: block;">` : '';
+                const imgHtml = fb.image ? `<img src="${fb.image}" style="max-height: 140px; border-radius: 8px; margin-top: 10px; display: block; object-fit: contain;">` : '';
                 container.innerHTML += `
-                    <div class="dynamic-item-card" style="position: relative;">
+                    <div class="dynamic-item-card">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
                             <div>
                                 <strong style="font-size: 1.05rem; color: var(--primary-green);">${fb.name}</strong>
@@ -468,7 +467,6 @@
             });
         }
 
-        // EXCLUIR FEEDBACK
         function deleteFeedback(index) {
             if (confirm('Tem certeza de que deseja excluir este feedback?')) {
                 const feedbacks = JSON.parse(localStorage.getItem('siteFeedbacks') || '[]');

@@ -123,7 +123,7 @@
         .card:hover { transform: translateY(-8px); box-shadow: 0 18px 35px rgba(0,0,0,0.25); }
         .card-icon { font-size: 2.2rem; color: var(--primary-green); margin-bottom: 1rem; }
         
-        .treatment-card-img, .feedback-card-img { 
+        .treatment-card-img { 
             width: 100%; 
             height: 200px; 
             object-fit: cover; 
@@ -190,11 +190,63 @@
             margin-bottom: 1.2rem;
         }
 
+        /* NOVO LAYOUT DE FEEDBACKS LADO A LADO */
+        .feedbacks-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.8rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .feedback-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .feedback-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.22);
+        }
+
+        .feedback-img-wrapper {
+            flex-shrink: 0;
+            width: 260px;
+            max-height: 320px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f4f6f4;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .feedback-card-img { 
+            width: 100%; 
+            height: auto; 
+            max-height: 320px; 
+            object-fit: contain; 
+            display: block; 
+            border-radius: 12px; 
+        }
+
+        .feedback-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
         .feedback-author {
             font-weight: 700;
             color: var(--primary-green);
-            margin-top: 0.8rem;
-            align-self: flex-start;
+            margin-top: 1rem;
         }
 
         footer { 
@@ -231,6 +283,16 @@
             }
             nav.active { display: flex; }
             .hero { text-align: center; padding: 2rem 1.5rem; }
+
+            .feedback-card {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1.2rem;
+            }
+            .feedback-img-wrapper {
+                width: 100%;
+                max-height: 300px;
+            }
         }
     </style>
 </head>
@@ -304,13 +366,13 @@
             </form>
         </div>
 
-        <div class="grid" id="feedbacksGrid"></div>
+        <div class="feedbacks-container" id="feedbacksGrid"></div>
     </section>
 
     <footer>
         <p>&copy; Alcione Pacheco Estética Avançada. Todos os direitos reservados.</p>
         <p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);">
-            Desenvolvido por <strong>Pedro Santos</strong> | <span class="version-tag">v1.3.0</span>
+            Desenvolvido por <strong>Pedro Santos</strong> | <span class="version-tag">v1.4.0</span>
         </p>
     </footer>
 
@@ -331,7 +393,7 @@
             menuIcon.classList.add('fa-bars');
         }
 
-        function compressFeedbackImage(file, maxWidth = 600, quality = 0.7) {
+        function compressFeedbackImage(file, maxWidth = 800, quality = 0.8) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -384,25 +446,29 @@
         }
 
         function renderFeedbacks() {
-            const grid = document.getElementById('feedbacksGrid');
-            if (!grid) return;
+            const container = document.getElementById('feedbacksGrid');
+            if (!container) return;
             
             const feedbacks = JSON.parse(localStorage.getItem('siteFeedbacks') || '[]');
-            grid.innerHTML = '';
+            container.innerHTML = '';
 
             if (feedbacks.length === 0) {
-                grid.innerHTML = '<p style="color: #ffffff; text-align: center; grid-column: 1/-1; opacity: 0.9;">Nenhum feedback enviado ainda. Seja o primeiro a avaliar!</p>';
+                container.innerHTML = '<p style="color: #ffffff; text-align: center; opacity: 0.9;">Nenhum feedback enviado ainda. Seja o primeiro a avaliar!</p>';
                 return;
             }
 
             feedbacks.forEach(fb => {
-                const imgHtml = fb.image ? `<img src="${fb.image}" class="feedback-card-img" alt="Foto do procedimento">` : '';
-                grid.innerHTML += `
-                    <div class="card" style="text-align: left; align-items: flex-start;">
+                const imgHtml = fb.image 
+                    ? `<div class="feedback-img-wrapper"><img src="${fb.image}" class="feedback-card-img" alt="Foto do procedimento"></div>` 
+                    : '';
+                container.innerHTML += `
+                    <div class="feedback-card">
                         ${imgHtml}
-                        <p style="font-style: italic; color: var(--text-muted); font-size: 0.95rem; flex: 1;">"${fb.text}"</p>
-                        <div class="feedback-author">
-                            ${fb.name} <span style="font-size: 0.75rem; color: #888; font-weight: 400;">(${fb.date})</span>
+                        <div class="feedback-info">
+                            <p style="font-style: italic; color: var(--text-muted); font-size: 0.98rem; line-height: 1.6;">"${fb.text}"</p>
+                            <div class="feedback-author">
+                                ${fb.name} <span style="font-size: 0.78rem; color: #888; font-weight: 400;">(${fb.date})</span>
+                            </div>
                         </div>
                     </div>
                 `;
