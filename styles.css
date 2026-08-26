@@ -446,3 +446,41 @@ main, .container {
     line-height: 1.6 !important;
   }
 }
+/* =========================================================
+   AJUSTE DE LOGO E HARMONIZAÇÃO MOBILE (ACRÉSCIMO)
+   ========================================================= */
+
+/* Garante exibição perfeita do logotipo */
+.logo {
+  display: block !important;
+  width: 40px !important;
+  height: 40px !important;
+  object-fit: contain !important;
+}
+
+/* Reduz o estufamento do celular e espelha o padrão do desktop */
+@media (max-width: 768px) {
+  main, .container {
+    width: 100% !important;
+    padding: 0 16px !important;
+  }
+
+  /* Exibe cards de diferenciais lado a lado em 2 colunas */
+  .diferenciais-grid, .features-grid, .cards-container {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  /* Reduz o tamanho excessivo das caixas no mobile */
+  .card, .hero-card, .content-card, .treatment-card, .feedback-card {
+    padding: 20px 16px !important;
+    border-radius: 18px !important;
+    margin-top: 16px !important;
+  }
+
+  .hero-card h1 {
+    font-size: 1.6rem !important;
+    line-height: 1.25 !important;
+  }
+}

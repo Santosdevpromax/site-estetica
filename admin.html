@@ -28,6 +28,8 @@
             margin-bottom: 2rem;
             padding-bottom: 1rem;
             border-bottom: 1px solid rgba(255,255,255,0.15);
+            flex-wrap: wrap;
+            gap: 1rem;
         }
         .header-admin h1 { font-size: 1.8rem; }
         
@@ -49,7 +51,17 @@
             margin-bottom: 2rem;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-        .card-admin h2 { color: var(--primary-green); margin-bottom: 1.5rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .card-admin h2 {
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
 
         .form-group { margin-bottom: 1.2rem; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 0.4rem; font-size: 0.9rem; }
@@ -90,6 +102,7 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.85rem;
+            transition: opacity 0.2s;
         }
         .btn-delete:hover { opacity: 0.85; }
 
@@ -103,6 +116,12 @@
             justify-content: space-between;
             align-items: center;
             gap: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .fb-admin-card { flex-direction: column; align-items: flex-start; }
+            .fb-admin-card .btn-delete { align-self: flex-end; }
         }
     </style>
 </head>
@@ -179,10 +198,9 @@
     </div>
 
     <script type="module">
-        import { db, ref, onValue } from "./firebase.js";
-        import { remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { db } from "./firebase.js";
+        import { ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Dados padrão caso o localStorage esteja limpo
         const defaultData = {
             logoUrl: "",
             brandName: "Alcione Pacheco",
@@ -230,12 +248,13 @@
 
         let currentData = getStoredData();
 
-        function saveData() {
+        function saveData(showAlert = false) {
             localStorage.setItem('siteContent', JSON.stringify(currentData));
-            alert('Alterações salvas com sucesso!');
+            if (showAlert) {
+                alert('Alterações salvas com sucesso!');
+            }
         }
 
-        // Carregar Form Geral
         function loadGeneralForm() {
             document.getElementById('logoUrlInput').value = currentData.logoUrl || '';
             document.getElementById('brandNameInput').value = currentData.brandName || '';
@@ -255,10 +274,9 @@
             currentData.heroBtnText = document.getElementById('heroBtnTextInput').value;
             currentData.phone = document.getElementById('phoneInput').value;
             currentData.address = document.getElementById('addressInput').value;
-            saveData();
+            saveData(true);
         });
 
-        // Renderizar Diferenciais
         function renderDiffs() {
             const container = document.getElementById('diffsList');
             container.innerHTML = '';
@@ -266,7 +284,7 @@
                 const box = document.createElement('div');
                 box.className = 'item-box';
                 box.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem; align-items:center;">
                         <strong>Diferencial #${index + 1}</strong>
                         <button type="button" class="btn-delete" onclick="removeDiff(${index})"><i class="fa-solid fa-trash"></i> Excluir</button>
                     </div>
@@ -289,22 +307,21 @@
 
         window.updateDiff = (index, field, value) => {
             currentData.differentials[index][field] = value;
-            localStorage.setItem('siteContent', JSON.stringify(currentData));
+            saveData(false);
         };
 
         window.removeDiff = (index) => {
             currentData.differentials.splice(index, 1);
-            saveData();
+            saveData(false);
             renderDiffs();
         };
 
         document.getElementById('addDiffBtn').addEventListener('click', () => {
             currentData.differentials.push({ icon: 'fa-solid fa-star', title: 'Novo Diferencial', desc: 'Descrição' });
-            saveData();
+            saveData(false);
             renderDiffs();
         });
 
-        // Renderizar Tratamentos
         function renderTreatments() {
             const container = document.getElementById('treatmentsList');
             container.innerHTML = '';
@@ -312,7 +329,7 @@
                 const box = document.createElement('div');
                 box.className = 'item-box';
                 box.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem; align-items:center;">
                         <strong>Tratamento #${index + 1}</strong>
                         <button type="button" class="btn-delete" onclick="removeTreatment(${index})"><i class="fa-solid fa-trash"></i> Excluir</button>
                     </div>
@@ -343,22 +360,21 @@
 
         window.updateTreatment = (index, field, value) => {
             currentData.treatments[index][field] = value;
-            localStorage.setItem('siteContent', JSON.stringify(currentData));
+            saveData(false);
         };
 
         window.removeTreatment = (index) => {
             currentData.treatments.splice(index, 1);
-            saveData();
+            saveData(false);
             renderTreatments();
         };
 
         document.getElementById('addTreatmentBtn').addEventListener('click', () => {
             currentData.treatments.push({ name: 'Novo Tratamento', desc: '', imageUrl: '', topics: '', time: '' });
-            saveData();
+            saveData(false);
             renderTreatments();
         });
 
-        // Carregar Feedbacks do Firebase
         const adminList = document.getElementById('adminFeedbacksList');
         const feedbacksRef = ref(db, 'feedbacks');
 
@@ -378,24 +394,27 @@
                 div.innerHTML = `
                     <div style="flex: 1;">
                         <strong>${item.name || 'Anônimo'}</strong> <small style="color:#777;">(${item.date || ''})</small>
-                        <p style="font-size:0.9rem; color:#444; margin-top:4px;">"${item.text}"</p>
+                        <p style="font-size:0.9rem; color:#444; margin-top:4px;">"${item.text || ''}"</p>
                     </div>
                     <button class="btn-delete" data-id="${key}"><i class="fa-solid fa-trash"></i> Excluir</button>
                 `;
                 adminList.appendChild(div);
             });
 
-            document.querySelectorAll('.btn-delete[data-id]').forEach(btn => {
+            document.querySelectorAll('#adminFeedbacksList .btn-delete[data-id]').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.currentTarget.getAttribute('data-id');
                     if (confirm('Deseja realmente apagar este feedback?')) {
-                        await remove(ref(db, `feedbacks/${id}`));
+                        try {
+                            await remove(ref(db, `feedbacks/${id}`));
+                        } catch (err) {
+                            alert('Erro ao excluir feedback: ' + err.message);
+                        }
                     }
                 });
             });
         });
 
-        // Inicializar
         loadGeneralForm();
         renderDiffs();
         renderTreatments();
