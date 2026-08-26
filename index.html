@@ -10,8 +10,8 @@
     <style>
         :root {
             --primary-green: #4a5c44;
-            --primary-dark: #2a3727;
-            --card-bg: #ffffff;
+            --primary-dark: #1e291c;
+            --card-bg: rgba(255, 255, 255, 0.95);
             --text-dark: #2c332a;
             --text-muted: #666666;
             --radius: 16px;
@@ -20,19 +20,63 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; scroll-behavior: smooth; }
         
         body {
-            background: linear-gradient(-45deg, #1e291c, #2d3e2a, #4a5c44, #354632);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            background-color: #121a11;
             color: var(--text-dark);
             line-height: 1.6;
             overflow-x: hidden;
             min-height: 100vh;
+            position: relative;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* Canvas Futurista de Fundo */
+        #bgCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Orbes Luminosos de Fundo (Glow Futurista) */
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.35;
+            z-index: -1;
+            pointer-events: none;
+            animation: floatGlow 12s ease-in-out infinite alternate;
+        }
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: #4a5c44;
+            top: -100px;
+            left: -100px;
+        }
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: #2d4529;
+            bottom: -150px;
+            right: -100px;
+            animation-delay: -6s;
+        }
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: #627a5a;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-duration: 16s;
+        }
+
+        @keyframes floatGlow {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-40px) scale(1.15); }
         }
 
         header {
@@ -40,20 +84,20 @@
             top: 0;
             left: 0;
             width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             z-index: 1000;
             padding: 0.8rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
 
         .logo-container { display: flex; align-items: center; text-decoration: none; gap: 12px; }
         .logo-img { max-height: 45px; width: auto; object-fit: contain; display: none; }
-        .logo-text { font-size: 1.25rem; font-weight: 700; color: var(--primary-green); }
+        .logo-text { font-size: 1.25rem; font-weight: 700; color: var(--primary-green); letter-spacing: 0.5px; }
 
         nav { display: flex; gap: 1.5rem; align-items: center; }
         nav a { text-decoration: none; color: var(--text-dark); font-weight: 500; transition: color 0.3s; font-size: 0.95rem; }
@@ -68,14 +112,15 @@
             cursor: pointer;
         }
 
-        section { padding: 4rem 2rem 2rem 2rem; max-width: 1200px; margin: 0 auto; }
+        section { padding: 4rem 2rem 2rem 2rem; max-width: 1200px; margin: 0 auto; position: relative; z-index: 1; }
         .section-title { 
             text-align: center; 
             font-size: 2.2rem; 
             color: #ffffff; 
             margin-bottom: 2.5rem; 
             font-weight: 700; 
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            letter-spacing: 0.5px;
         }
 
         .hero {
@@ -84,11 +129,13 @@
             align-items: center;
             justify-content: space-between;
             background: var(--card-bg);
+            backdrop-filter: blur(10px);
             border-radius: var(--radius);
             margin-top: 5rem;
             padding: 3.5rem;
             gap: 2rem;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.4);
         }
         .hero-content { flex: 1; }
         .hero h1 { font-size: 2.4rem; color: var(--primary-green); margin-bottom: 1rem; font-weight: 700; }
@@ -103,24 +150,26 @@
             text-decoration: none;
             font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(74, 92, 68, 0.4);
+            box-shadow: 0 4px 15px rgba(74, 92, 68, 0.5);
         }
-        .btn:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
+        .btn:hover { background-color: #2d3e2a; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(74, 92, 68, 0.7); }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; }
 
         .card {
             background: var(--card-bg);
+            backdrop-filter: blur(10px);
             padding: 2rem;
             border-radius: var(--radius);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
             text-align: center;
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
-        .card:hover { transform: translateY(-8px); box-shadow: 0 18px 35px rgba(0,0,0,0.25); }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 18px 35px rgba(0,0,0,0.35); }
         .card-icon { font-size: 2.2rem; color: var(--primary-green); margin-bottom: 1rem; }
         
         .treatment-card-img { 
@@ -158,20 +207,24 @@
 
         .contact-box {
             background: var(--card-bg);
+            backdrop-filter: blur(10px);
             padding: 3.5rem 2rem;
             border-radius: var(--radius);
             text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .feedback-form-card {
             background: var(--card-bg);
+            backdrop-filter: blur(10px);
             padding: 2.5rem;
             border-radius: var(--radius);
             max-width: 650px;
             margin: 0 auto 3rem auto;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         .feedback-form-card label {
             display: block;
@@ -190,7 +243,6 @@
             margin-bottom: 1.2rem;
         }
 
-        /* NOVO LAYOUT DE FEEDBACKS LADO A LADO */
         .feedbacks-container {
             display: flex;
             flex-direction: column;
@@ -201,17 +253,19 @@
 
         .feedback-card {
             background: var(--card-bg);
+            backdrop-filter: blur(10px);
             padding: 2rem;
             border-radius: var(--radius);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.25);
             display: flex;
             gap: 2rem;
             align-items: center;
             transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
         .feedback-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.22);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.35);
         }
 
         .feedback-img-wrapper {
@@ -251,11 +305,13 @@
 
         footer { 
             text-align: center; 
-            padding: 2rem; 
+            padding: 2.5rem 2rem; 
             color: rgba(255,255,255,0.9); 
-            margin-top: 3rem; 
+            margin-top: 4rem; 
             font-size: 0.9rem; 
             border-top: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            z-index: 1;
         }
 
         .version-tag {
@@ -297,6 +353,14 @@
     </style>
 </head>
 <body>
+
+    <!-- Canvas Futurista de Partículas -->
+    <canvas id="bgCanvas"></canvas>
+    
+    <!-- Orbes Luminosos de Atmosfera -->
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
 
     <header>
         <a href="#inicio" class="logo-container">
@@ -372,9 +436,95 @@
     <footer>
         <p>&copy; Alcione Pacheco Estética Avançada. Todos os direitos reservados.</p>
         <p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);">
-            Desenvolvido por <strong>Pedro Santos</strong> | <span class="version-tag">v1.4.0</span>
+            Desenvolvido por <strong>Pedro Santos</strong> | <span class="version-tag">v1.5.0</span>
         </p>
     </footer>
+
+    <!-- Script de Animação Futurista em Canvas -->
+    <script>
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let particlesArray = [];
+        const numberOfParticles = Math.min(Math.floor(window.innerWidth / 20), 55);
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = (Math.random() - 0.5) * 0.6;
+                this.speedY = (Math.random() - 0.5) * 0.6;
+                this.opacity = Math.random() * 0.5 + 0.3;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(139, 168, 130, ${this.opacity})`;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#8ba882';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < numberOfParticles; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function connectParticles() {
+            const maxDistance = 140;
+            for (let a = 0; a < particlesArray.length; a++) {
+                for (let b = a; b < particlesArray.length; b++) {
+                    const dx = particlesArray[a].x - particlesArray[b].x;
+                    const dy = particlesArray[a].y - particlesArray[b].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < maxDistance) {
+                        const opacity = 1 - (distance / maxDistance);
+                        ctx.strokeStyle = `rgba(122, 163, 115, ${opacity * 0.25})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                        ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particlesArray.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            connectParticles();
+            requestAnimationFrame(animateCanvas);
+        }
+
+        initParticles();
+        animateCanvas();
+    </script>
 
     <script>
         const menuToggle = document.getElementById('menuToggle');
