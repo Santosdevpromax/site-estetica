@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Santosdevpromax/site-estetica#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "firebase": "^12.18.0"
   }
 }
