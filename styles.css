@@ -10,6 +10,7 @@
   --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* RESET & BASE */
 * {
   margin: 0;
   padding: 0;
@@ -17,21 +18,36 @@
 }
 
 body {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-dark) !important;
   font-family: var(--font-family);
   color: var(--text-dark);
   line-height: 1.6;
   padding-bottom: 60px;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
-main {
+/* CANVAS DE BACKGROUND ANIMADO */
+#bg-canvas, canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* CONTAINER PRINCIPAL */
+main, .container {
   width: 100%;
-  max-width: 640px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
+/* NAVBAR */
 .navbar {
   background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(10px);
@@ -42,7 +58,7 @@ main {
 }
 
 .header-container {
-  max-width: 640px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 12px 20px;
   display: flex;
@@ -70,13 +86,8 @@ main {
   line-height: 1.1;
 }
 
-.brand-text span {
-  font-weight: 500;
-}
-
-.brand-text strong {
-  font-weight: 700;
-}
+.brand-text span { font-weight: 500; }
+.brand-text strong { font-weight: 700; }
 
 .menu-toggle {
   background: none;
@@ -94,21 +105,25 @@ main {
   border-radius: 2px;
 }
 
-.card {
-  background-color: var(--card-bg);
-  border-radius: var(--border-radius-card);
-  padding: 28px 24px;
-  margin-top: 24px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+/* ESTRUTURA DOS CARDS */
+.card, .hero-card, .content-card, .treatment-card, .contact-card {
+  background-color: var(--card-bg) !important;
+  border-radius: var(--border-radius-card) !important;
+  padding: 36px 32px;
+  margin-top: 28px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* HERO SECTION */
 .hero-card {
   text-align: center;
-  padding: 40px 24px;
+  padding: 48px 32px;
 }
 
 .hero-card h1 {
-  font-size: 2rem;
+  font-size: 2.3rem;
   font-weight: 700;
   color: var(--brand-green);
   line-height: 1.25;
@@ -121,6 +136,7 @@ main {
   margin-bottom: 28px;
 }
 
+/* BOTÕES */
 .btn-primary, .btn-whatsapp {
   display: inline-flex;
   align-items: center;
@@ -136,14 +152,17 @@ main {
   text-decoration: none;
   transition: background 0.2s ease;
   box-sizing: border-box;
+  border: none;
+  cursor: pointer;
 }
 
 .btn-primary:hover, .btn-whatsapp:hover {
   background-color: var(--brand-green-hover);
 }
 
+/* SOBRE / INSTITUCIONAL */
 .content-card h2 {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   color: var(--brand-green);
   margin-bottom: 16px;
   text-align: center;
@@ -153,19 +172,67 @@ main {
 .content-card p {
   color: var(--text-muted);
   margin-bottom: 14px;
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   text-align: justify;
 }
 
+/* TÍTULOS DE SEÇÃO */
 .section-title {
   color: #ffffff;
-  font-size: 1.8rem;
+  font-size: 1.9rem;
   font-weight: 700;
   text-align: center;
-  margin-top: 40px;
-  margin-bottom: 8px;
+  margin-top: 48px;
+  margin-bottom: 12px;
 }
 
+/* GRID DE DIFERENCIAIS (DESKTOP EM 3 COLUNAS) */
+.diferenciais-grid, .features-grid, .cards-container {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 24px !important;
+  margin: 32px 0 !important;
+}
+
+.diferencial-card, .feature-card {
+  background-color: var(--card-bg) !important;
+  border-radius: var(--border-radius-card) !important;
+  padding: 32px 24px !important;
+  text-align: center !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.diferencial-card:hover, .feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3) !important;
+}
+
+.diferencial-card .icon, .feature-card .icon, .diferencial-card svg {
+  width: 48px !important;
+  height: 48px !important;
+  margin-bottom: 16px !important;
+  color: var(--brand-green) !important;
+}
+
+.diferencial-card h3, .feature-card h3 {
+  color: var(--text-dark) !important;
+  font-size: 1.2rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 10px !important;
+}
+
+.diferencial-card p, .feature-card p {
+  color: var(--text-muted) !important;
+  font-size: 0.92rem !important;
+  line-height: 1.5 !important;
+}
+
+/* TRATAMENTOS */
 .treatment-card h3 {
   font-size: 1.5rem;
   color: var(--brand-green);
@@ -183,6 +250,7 @@ main {
 .image-wrapper img {
   width: 100%;
   height: auto;
+  max-height: 400px;
   display: block;
   object-fit: cover;
   border-radius: var(--border-radius-img);
@@ -219,7 +287,7 @@ main {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  background-color: rgba(61, 79, 64, 0.05);
+  background-color: rgba(61, 79, 64, 0.08);
   padding: 14px 16px;
   border-radius: 14px;
   font-size: 0.9rem;
@@ -227,13 +295,10 @@ main {
   font-weight: 500;
 }
 
-.timer-icon {
-  font-size: 1.1rem;
-}
+.timer-icon { font-size: 1.1rem; }
 
-.contact-card {
-  text-align: center;
-}
+/* CONTATO */
+.contact-card { text-align: center; }
 
 .phone-highlight {
   font-size: 1.6rem;
@@ -248,16 +313,136 @@ main {
   margin-bottom: 24px;
 }
 
-@media (min-width: 769px) {
-  main {
-    max-width: 780px;
+/* PAINEL ADMINISTRATIVO */
+.admin-main { max-width: 850px; }
+
+.btn-secondary-sm {
+  background-color: transparent;
+  border: 1px solid var(--brand-green);
+  color: var(--brand-green);
+  padding: 6px 14px;
+  border-radius: 20px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.admin-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.metric-card {
+  margin-top: 0;
+  text-align: center;
+  padding: 20px;
+}
+
+.metric-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--brand-green);
+}
+
+.metric-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.admin-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.admin-card-header h3 { color: var(--brand-green); }
+
+.status-badge {
+  background-color: #e6f4ea;
+  color: #137333;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--brand-green);
+}
+
+.form-group input, .form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d0d7d1;
+  border-radius: 10px;
+  font-family: var(--font-family);
+  font-size: 0.95rem;
+  background-color: #ffffff;
+  color: var(--text-dark);
+}
+
+.form-group input:focus, .form-group textarea:focus {
+  outline: none;
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 2px rgba(61, 79, 64, 0.15);
+}
+
+/* HARMONIZAÇÃO E RESPONSIVIDADE MOBILE (MESMO PADRÃO ELEGANTE DO DESKTOP) */
+@media (max-width: 900px) {
+  .diferenciais-grid, .features-grid, .cards-container {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
   }
-  
-  .card {
-    padding: 36px 32px;
+}
+
+@media (max-width: 768px) {
+  main, .container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 16px !important;
+  }
+
+  .card, .hero-card, .content-card, .treatment-card, .contact-card {
+    padding: 24px 20px !important;
+    border-radius: 20px !important;
+    margin-top: 20px !important;
   }
 
   .hero-card h1 {
-    font-size: 2.3rem;
+    font-size: 1.65rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .section-title {
+    font-size: 1.45rem !important;
+    margin-top: 36px !important;
+  }
+
+  .content-card h2 {
+    font-size: 1.3rem !important;
+  }
+
+  p {
+    font-size: 0.92rem !important;
+    line-height: 1.6 !important;
   }
 }
