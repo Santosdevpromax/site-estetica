@@ -513,6 +513,40 @@
     <script type="module">
         import { db, ref, push, set, onValue } from "./firebase.js";
 
+        const defaultData = {
+            logoUrl: "",
+            brandName: "Alcione Pacheco",
+            heroTitle: "Cuidado minimalista, resultados extraordinários.",
+            heroSubtitle: "Protocolos estéticos avançados focados em rejuvenescimento natural e saúde da pele.",
+            heroBtnText: "Agendar Consulta",
+            diffsTitle: "Por que escolher a clínica?",
+            differentials: [
+                { icon: "fa-solid fa-gem", title: "Atendimento Exclusivo", desc: "Protocolos 100% personalizados para a sua pele." },
+                { icon: "fa-solid fa-certificate", title: "Tecnologia Avançada", desc: "Equipamentos de alta precisão e segurança." },
+                { icon: "fa-solid fa-heart", title: "Resultados Naturais", desc: "Rejuvenescimento sem exageros e com harmonia." }
+            ],
+            treatmentsTitle: "Tratamentos",
+            treatments: [
+                {
+                    name: "Limpeza de Pele Profunda",
+                    desc: "Remoção de impurezas e hidratação intensa.",
+                    imageUrl: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=500",
+                    topics: "Extração de cravos\nPeeling de diamante\nMáscara calmante",
+                    time: "1h 30min"
+                },
+                {
+                    name: "Peeling Químico",
+                    desc: "Renovação celular para atenuação de manchas e linhas.",
+                    imageUrl: "https://images.unsplash.com/photo-1512290900673-7002b5217a15?w=500",
+                    topics: "Clareamento de manchas\nEstímulo de colágeno\nTextura uniforme",
+                    time: "1h"
+                }
+            ],
+            contactTitle: "Contato & Localização",
+            phone: "(35) 998167478",
+            address: "Atendimento Presencial com Hora Marcada"
+        };
+
         function compressFeedbackImage(file, maxWidth = 800, quality = 0.75) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
@@ -614,71 +648,76 @@
         }
 
         function loadPageData() {
+            let data = defaultData;
             const localStored = localStorage.getItem('siteContent');
-            if (!localStored) return;
-            try {
-                const data = JSON.parse(localStored);
-                const logoImg = document.getElementById('siteLogo');
-                if (data.logoUrl && data.logoUrl.trim() !== '') {
-                    logoImg.src = data.logoUrl;
-                    logoImg.style.display = 'block';
-                }
-                if (data.brandName) document.getElementById('brandName').innerText = data.brandName;
-                if (data.heroTitle) document.getElementById('heroTitle').innerText = data.heroTitle;
-                if (data.heroSubtitle) document.getElementById('heroSubtitle').innerText = data.heroSubtitle;
-                if (data.heroBtnText) document.getElementById('heroBtnText').innerText = data.heroBtnText;
-                if (data.diffsTitle) document.getElementById('diffsTitle').innerText = data.diffsTitle;
+            if (localStored) {
+                try {
+                    const parsed = JSON.parse(localStored);
+                    data = { ...defaultData, ...parsed };
+                } catch(e){}
+            }
 
-                if (data.differentials && data.differentials.length > 0) {
-                    const diffsGrid = document.getElementById('diffsGrid');
-                    diffsGrid.innerHTML = '';
-                    data.differentials.forEach(d => {
-                        const iconClass = (d.icon && d.icon.includes('fa-')) ? d.icon : 'fa-solid fa-star';
-                        diffsGrid.innerHTML += `
-                            <div class="card">
-                                <div class="card-icon"><i class="${iconClass}"></i></div>
-                                <h3>${d.title || ''}</h3>
-                                <p style="color: var(--text-muted); font-size: 0.95rem;">${d.desc || ''}</p>
-                            </div>
-                        `;
-                    });
-                }
+            const logoImg = document.getElementById('siteLogo');
+            if (data.logoUrl && data.logoUrl.trim() !== '') {
+                logoImg.src = data.logoUrl;
+                logoImg.style.display = 'block';
+            } else {
+                logoImg.style.display = 'none';
+            }
 
-                if (data.treatmentsTitle) document.getElementById('treatmentsTitle').innerText = data.treatmentsTitle;
-                if (data.treatments && data.treatments.length > 0) {
-                    const grid = document.getElementById('treatmentsGrid');
-                    grid.innerHTML = '';
-                    data.treatments.forEach(t => {
-                        const imgHtml = t.imageUrl ? `<img src="${t.imageUrl}" class="treatment-card-img" alt="${t.name}">` : '';
-                        let topicsHtml = '';
-                        if (t.topics && t.topics.trim() !== '') {
-                            const listItems = t.topics.split('\n').filter(item => item.trim() !== '');
-                            if (listItems.length > 0) {
-                                topicsHtml = '<ul class="treatment-topics">' + 
-                                    listItems.map(item => `<li><i class="fa-solid fa-check"></i> <span>${item.replace(/^[-•*]\s*/, '')}</span></li>`).join('') + 
-                                    '</ul>';
-                            }
-                        }
-                        grid.innerHTML += `
-                            <div class="card">
-                                ${imgHtml}
-                                <h3>${t.name || 'Tratamento'}</h3>
-                                ${t.desc ? `<p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem;">${t.desc}</p>` : ''}
-                                ${topicsHtml}
-                                ${t.time ? `<span style="font-weight: 600; color: var(--primary-green); font-size: 0.85rem; margin-top: auto;">⏱ ${t.time}</span>` : ''}
-                            </div>
-                        `;
-                    });
-                }
+            if (data.brandName) document.getElementById('brandName').innerText = data.brandName;
+            if (data.heroTitle) document.getElementById('heroTitle').innerText = data.heroTitle;
+            if (data.heroSubtitle) document.getElementById('heroSubtitle').innerText = data.heroSubtitle;
+            if (data.heroBtnText) document.getElementById('heroBtnText').innerText = data.heroBtnText;
+            if (data.diffsTitle) document.getElementById('diffsTitle').innerText = data.diffsTitle;
 
-                if (data.contactTitle) document.getElementById('contactTitle').innerText = data.contactTitle;
-                if (data.phone) {
-                    document.getElementById('phone').innerText = data.phone;
-                    const cleanPhone = data.phone.replace(/\D/g, '');
-                    document.getElementById('whatsappBtn').href = `https://wa.me/55${cleanPhone}`;
+            const diffsGrid = document.getElementById('diffsGrid');
+            const differentialsList = (data.differentials && data.differentials.length > 0) ? data.differentials : defaultData.differentials;
+            diffsGrid.innerHTML = '';
+            differentialsList.forEach(d => {
+                const iconClass = (d.icon && d.icon.includes('fa-')) ? d.icon : 'fa-solid fa-star';
+                diffsGrid.innerHTML += `
+                    <div class="card">
+                        <div class="card-icon"><i class="${iconClass}"></i></div>
+                        <h3>${d.title || ''}</h3>
+                        <p style="color: var(--text-muted); font-size: 0.95rem;">${d.desc || ''}</p>
+                    </div>
+                `;
+            });
+
+            if (data.treatmentsTitle) document.getElementById('treatmentsTitle').innerText = data.treatmentsTitle;
+            const treatmentsList = (data.treatments && data.treatments.length > 0) ? data.treatments : defaultData.treatments;
+            const grid = document.getElementById('treatmentsGrid');
+            grid.innerHTML = '';
+            treatmentsList.forEach(t => {
+                const imgHtml = t.imageUrl ? `<img src="${t.imageUrl}" class="treatment-card-img" alt="${t.name}">` : '';
+                let topicsHtml = '';
+                if (t.topics && t.topics.trim() !== '') {
+                    const listItems = t.topics.split('\n').filter(item => item.trim() !== '');
+                    if (listItems.length > 0) {
+                        topicsHtml = '<ul class="treatment-topics">' + 
+                            listItems.map(item => `<li><i class="fa-solid fa-check"></i> <span>${item.replace(/^[-•*]\s*/, '')}</span></li>`).join('') + 
+                            '</ul>';
+                    }
                 }
-                if (data.address) document.getElementById('address').innerText = data.address;
-            } catch(e){}
+                grid.innerHTML += `
+                    <div class="card">
+                        ${imgHtml}
+                        <h3>${t.name || 'Tratamento'}</h3>
+                        ${t.desc ? `<p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 0.5rem;">${t.desc}</p>` : ''}
+                        ${topicsHtml}
+                        ${t.time ? `<span style="font-weight: 600; color: var(--primary-green); font-size: 0.85rem; margin-top: auto;">⏱ ${t.time}</span>` : ''}
+                    </div>
+                `;
+            });
+
+            if (data.contactTitle) document.getElementById('contactTitle').innerText = data.contactTitle;
+            if (data.phone) {
+                document.getElementById('phone').innerText = data.phone;
+                const cleanPhone = data.phone.replace(/\D/g, '');
+                document.getElementById('whatsappBtn').href = `https://wa.me/55${cleanPhone}`;
+            }
+            if (data.address) document.getElementById('address').innerText = data.address;
         }
 
         document.addEventListener('DOMContentLoaded', () => {

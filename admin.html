@@ -18,7 +18,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text-dark); padding: 2rem; min-height: 100vh; }
 
-        .admin-container { max-width: 900px; margin: 0 auto; }
+        .admin-container { max-width: 1000px; margin: 0 auto; }
         
         .header-admin {
             display: flex;
@@ -49,7 +49,7 @@
             margin-bottom: 2rem;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-        .card-admin h2 { color: var(--primary-green); margin-bottom: 1.5rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+        .card-admin h2 { color: var(--primary-green); margin-bottom: 1.5rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
 
         .form-group { margin-bottom: 1.2rem; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 0.4rem; font-size: 0.9rem; }
@@ -61,7 +61,7 @@
             font-size: 0.95rem;
         }
 
-        .btn-save {
+        .btn-action {
             background: var(--primary-green);
             color: #ffffff;
             padding: 0.8rem 1.8rem;
@@ -71,7 +71,27 @@
             cursor: pointer;
             transition: opacity 0.3s;
         }
-        .btn-save:hover { opacity: 0.9; }
+        .btn-action:hover { opacity: 0.9; }
+
+        .item-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: #fff;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .btn-delete:hover { opacity: 0.85; }
 
         .fb-admin-card {
             background: #f8fafc;
@@ -84,61 +104,76 @@
             align-items: center;
             gap: 1rem;
         }
-        .fb-admin-info { flex: 1; }
-        .btn-delete {
-            background: var(--danger);
-            color: #fff;
-            border: none;
-            padding: 0.5rem 0.9rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-        }
-        .btn-delete:hover { opacity: 0.85; }
     </style>
 </head>
 <body>
 
     <div class="admin-container">
         <div class="header-admin">
-            <h1><i class="fa-solid fa-sliders"></i> Painel de Controle</h1>
+            <h1><i class="fa-solid fa-sliders"></i> Painel de Controle Completo</h1>
             <a href="index.html" class="btn-view-site" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Site</a>
         </div>
 
-        <!-- Gerenciamento do Conteúdo do Site -->
+        <!-- Gerenciamento do Conteúdo Principal -->
         <div class="card-admin">
-            <h2><i class="fa-solid fa-pen-to-square"></i> Editar Conteúdo Principal</h2>
-            <form id="adminForm">
+            <h2><i class="fa-solid fa-pen-to-square"></i> Informações Gerais e Marca</h2>
+            <form id="generalForm">
+                <div class="form-group">
+                    <label>URL da Logo (Opcional)</label>
+                    <input type="text" id="logoUrlInput" placeholder="https://exemplo.com/logo.png">
+                </div>
                 <div class="form-group">
                     <label>Nome da Marca / Título da Logo</label>
-                    <input type="text" id="brandNameInput" value="Alcione Pacheco">
+                    <input type="text" id="brandNameInput" required>
                 </div>
                 <div class="form-group">
                     <label>Título Principal (Hero)</label>
-                    <input type="text" id="heroTitleInput" value="Cuidado minimalista, resultados extraordinários.">
+                    <input type="text" id="heroTitleInput" required>
                 </div>
                 <div class="form-group">
                     <label>Subtítulo Principal</label>
-                    <textarea id="heroSubtitleInput" rows="2">Protocolos estéticos avançados focados em rejuvenescimento natural e saúde da pele.</textarea>
+                    <textarea id="heroSubtitleInput" rows="2" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Texto do Botão Principal</label>
+                    <input type="text" id="heroBtnTextInput" required>
                 </div>
                 <div class="form-group">
                     <label>Telefone / WhatsApp (ex: 35998167478)</label>
-                    <input type="text" id="phoneInput" value="(35) 998167478">
+                    <input type="text" id="phoneInput" required>
                 </div>
                 <div class="form-group">
                     <label>Endereço / Horário de Atendimento</label>
-                    <input type="text" id="addressInput" value="Atendimento Presencial com Hora Marcada">
+                    <input type="text" id="addressInput" required>
                 </div>
 
-                <button type="submit" class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Salvar Alterações</button>
+                <button type="submit" class="btn-action"><i class="fa-solid fa-floppy-disk"></i> Salvar Informações Gerais</button>
             </form>
+        </div>
+
+        <!-- Gerenciamento de Diferenciais -->
+        <div class="card-admin">
+            <h2>
+                <span><i class="fa-solid fa-star"></i> Diferenciais</span>
+                <button type="button" class="btn-action" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" id="addDiffBtn"><i class="fa-solid fa-plus"></i> Adicionar</button>
+            </h2>
+            <div id="diffsList"></div>
+        </div>
+
+        <!-- Gerenciamento de Tratamentos -->
+        <div class="card-admin">
+            <h2>
+                <span><i class="fa-solid fa-spa"></i> Tratamentos (Postagens)</span>
+                <button type="button" class="btn-action" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" id="addTreatmentBtn"><i class="fa-solid fa-plus"></i> Adicionar Tratamento</button>
+            </h2>
+            <div id="treatmentsList"></div>
         </div>
 
         <!-- Gerenciamento de Feedbacks do Firebase -->
         <div class="card-admin">
-            <h2><i class="fa-solid fa-comments"></i> Feedbacks Recebidos (Firebase)</h2>
+            <h2><i class="fa-solid fa-comments"></i> Feedbacks dos Clientes (Firebase)</h2>
             <div id="adminFeedbacksList">
-                <p style="color: #666;">Carregando feedbacks...</p>
+                <p style="color: #666;">Carregando feedbacks em tempo real...</p>
             </div>
         </div>
     </div>
@@ -147,21 +182,183 @@
         import { db, ref, onValue } from "./firebase.js";
         import { remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Salvar configurações gerais
-        document.getElementById('adminForm').addEventListener('submit', (e) => {
+        // Dados padrão caso o localStorage esteja limpo
+        const defaultData = {
+            logoUrl: "",
+            brandName: "Alcione Pacheco",
+            heroTitle: "Cuidado minimalista, resultados extraordinários.",
+            heroSubtitle: "Protocolos estéticos avançados focados em rejuvenescimento natural e saúde da pele.",
+            heroBtnText: "Agendar Consulta",
+            diffsTitle: "Por que escolher a clínica?",
+            differentials: [
+                { icon: "fa-solid fa-gem", title: "Atendimento Exclusivo", desc: "Protocolos 100% personalizados para a sua pele." },
+                { icon: "fa-solid fa-certificate", title: "Tecnologia Avançada", desc: "Equipamentos de alta precisão e segurança." },
+                { icon: "fa-solid fa-heart", title: "Resultados Naturais", desc: "Rejuvenescimento sem exageros e com harmonia." }
+            ],
+            treatmentsTitle: "Tratamentos",
+            treatments: [
+                {
+                    name: "Limpeza de Pele Profunda",
+                    desc: "Remoção de impurezas e hidratação intensa.",
+                    imageUrl: "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=500",
+                    topics: "Extração de cravos\nPeeling de diamante\nMáscara calmante",
+                    time: "1h 30min"
+                },
+                {
+                    name: "Peeling Químico",
+                    desc: "Renovação celular para atenuação de manchas e linhas.",
+                    imageUrl: "https://images.unsplash.com/photo-1512290900673-7002b5217a15?w=500",
+                    topics: "Clareamento de manchas\nEstímulo de colágeno\nTextura uniforme",
+                    time: "1h"
+                }
+            ],
+            contactTitle: "Contato & Localização",
+            phone: "(35) 998167478",
+            address: "Atendimento Presencial com Hora Marcada"
+        };
+
+        function getStoredData() {
+            const stored = localStorage.getItem('siteContent');
+            if (!stored) return defaultData;
+            try {
+                const parsed = JSON.parse(stored);
+                return { ...defaultData, ...parsed };
+            } catch (e) {
+                return defaultData;
+            }
+        }
+
+        let currentData = getStoredData();
+
+        function saveData() {
+            localStorage.setItem('siteContent', JSON.stringify(currentData));
+            alert('Alterações salvas com sucesso!');
+        }
+
+        // Carregar Form Geral
+        function loadGeneralForm() {
+            document.getElementById('logoUrlInput').value = currentData.logoUrl || '';
+            document.getElementById('brandNameInput').value = currentData.brandName || '';
+            document.getElementById('heroTitleInput').value = currentData.heroTitle || '';
+            document.getElementById('heroSubtitleInput').value = currentData.heroSubtitle || '';
+            document.getElementById('heroBtnTextInput').value = currentData.heroBtnText || '';
+            document.getElementById('phoneInput').value = currentData.phone || '';
+            document.getElementById('addressInput').value = currentData.address || '';
+        }
+
+        document.getElementById('generalForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            const content = {
-                brandName: document.getElementById('brandNameInput').value,
-                heroTitle: document.getElementById('heroTitleInput').value,
-                heroSubtitle: document.getElementById('heroSubtitleInput').value,
-                phone: document.getElementById('phoneInput').value,
-                address: document.getElementById('addressInput').value
-            };
-            localStorage.setItem('siteContent', JSON.stringify(content));
-            alert('Configurações salvas com sucesso!');
+            currentData.logoUrl = document.getElementById('logoUrlInput').value;
+            currentData.brandName = document.getElementById('brandNameInput').value;
+            currentData.heroTitle = document.getElementById('heroTitleInput').value;
+            currentData.heroSubtitle = document.getElementById('heroSubtitleInput').value;
+            currentData.heroBtnText = document.getElementById('heroBtnTextInput').value;
+            currentData.phone = document.getElementById('phoneInput').value;
+            currentData.address = document.getElementById('addressInput').value;
+            saveData();
         });
 
-        // Carregar feedbacks para gerenciar/deletar do Firebase
+        // Renderizar Diferenciais
+        function renderDiffs() {
+            const container = document.getElementById('diffsList');
+            container.innerHTML = '';
+            (currentData.differentials || []).forEach((diff, index) => {
+                const box = document.createElement('div');
+                box.className = 'item-box';
+                box.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem;">
+                        <strong>Diferencial #${index + 1}</strong>
+                        <button type="button" class="btn-delete" onclick="removeDiff(${index})"><i class="fa-solid fa-trash"></i> Excluir</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Ícone (FontAwesome)</label>
+                        <input type="text" value="${diff.icon || ''}" onchange="updateDiff(${index}, 'icon', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Título</label>
+                        <input type="text" value="${diff.title || ''}" onchange="updateDiff(${index}, 'title', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição</label>
+                        <input type="text" value="${diff.desc || ''}" onchange="updateDiff(${index}, 'desc', this.value)">
+                    </div>
+                `;
+                container.appendChild(box);
+            });
+        }
+
+        window.updateDiff = (index, field, value) => {
+            currentData.differentials[index][field] = value;
+            localStorage.setItem('siteContent', JSON.stringify(currentData));
+        };
+
+        window.removeDiff = (index) => {
+            currentData.differentials.splice(index, 1);
+            saveData();
+            renderDiffs();
+        };
+
+        document.getElementById('addDiffBtn').addEventListener('click', () => {
+            currentData.differentials.push({ icon: 'fa-solid fa-star', title: 'Novo Diferencial', desc: 'Descrição' });
+            saveData();
+            renderDiffs();
+        });
+
+        // Renderizar Tratamentos
+        function renderTreatments() {
+            const container = document.getElementById('treatmentsList');
+            container.innerHTML = '';
+            (currentData.treatments || []).forEach((t, index) => {
+                const box = document.createElement('div');
+                box.className = 'item-box';
+                box.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem;">
+                        <strong>Tratamento #${index + 1}</strong>
+                        <button type="button" class="btn-delete" onclick="removeTreatment(${index})"><i class="fa-solid fa-trash"></i> Excluir</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Nome do Tratamento</label>
+                        <input type="text" value="${t.name || ''}" onchange="updateTreatment(${index}, 'name', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>URL da Imagem</label>
+                        <input type="text" value="${t.imageUrl || ''}" onchange="updateTreatment(${index}, 'imageUrl', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Descrição Curta</label>
+                        <input type="text" value="${t.desc || ''}" onchange="updateTreatment(${index}, 'desc', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Tópicos (1 por linha)</label>
+                        <textarea rows="3" onchange="updateTreatment(${index}, 'topics', this.value)">${t.topics || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Duração/Tempo</label>
+                        <input type="text" value="${t.time || ''}" onchange="updateTreatment(${index}, 'time', this.value)">
+                    </div>
+                `;
+                container.appendChild(box);
+            });
+        }
+
+        window.updateTreatment = (index, field, value) => {
+            currentData.treatments[index][field] = value;
+            localStorage.setItem('siteContent', JSON.stringify(currentData));
+        };
+
+        window.removeTreatment = (index) => {
+            currentData.treatments.splice(index, 1);
+            saveData();
+            renderTreatments();
+        };
+
+        document.getElementById('addTreatmentBtn').addEventListener('click', () => {
+            currentData.treatments.push({ name: 'Novo Tratamento', desc: '', imageUrl: '', topics: '', time: '' });
+            saveData();
+            renderTreatments();
+        });
+
+        // Carregar Feedbacks do Firebase
         const adminList = document.getElementById('adminFeedbacksList');
         const feedbacksRef = ref(db, 'feedbacks');
 
@@ -179,7 +376,7 @@
                 const div = document.createElement('div');
                 div.className = 'fb-admin-card';
                 div.innerHTML = `
-                    <div class="fb-admin-info">
+                    <div style="flex: 1;">
                         <strong>${item.name || 'Anônimo'}</strong> <small style="color:#777;">(${item.date || ''})</small>
                         <p style="font-size:0.9rem; color:#444; margin-top:4px;">"${item.text}"</p>
                     </div>
@@ -188,17 +385,20 @@
                 adminList.appendChild(div);
             });
 
-            // Evento para excluir feedback
-            document.querySelectorAll('.btn-delete').forEach(btn => {
+            document.querySelectorAll('.btn-delete[data-id]').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.currentTarget.getAttribute('data-id');
                     if (confirm('Deseja realmente apagar este feedback?')) {
                         await remove(ref(db, `feedbacks/${id}`));
-                        alert('Feedback removido!');
                     }
                 });
             });
         });
+
+        // Inicializar
+        loadGeneralForm();
+        renderDiffs();
+        renderTreatments();
     </script>
 </body>
 </html>
