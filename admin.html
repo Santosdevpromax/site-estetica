@@ -113,7 +113,7 @@
         <div>
             <div class="brand">
                 <h2>Alcione Pacheco</h2>
-                <p>Painel Admin <span style="font-size:0.75rem; background:#4a5c44; padding:2px 8px; border-radius:10px; color:#fff;">v1.5.0</span></p>
+                <p>Painel Admin <span style="font-size:0.75rem; background:#4a5c44; padding:2px 8px; border-radius:10px; color:#fff;">v1.6.0</span></p>
             </div>
             <ul class="nav-list">
                 <li class="nav-item active" onclick="switchTab('geral', this)"><i class="fa-solid fa-house"></i> Geral & Logo</li>
@@ -436,10 +436,26 @@
             renderTreatmentsList();
         }
 
-        function renderAdminFeedbacks() {
+        async function renderAdminFeedbacks() {
             const container = document.getElementById('adminFeedbacksList');
             if (!container) return;
-            const feedbacks = JSON.parse(localStorage.getItem('siteFeedbacks') || '[]');
+            
+            let feedbacks = [];
+
+            try {
+                const res = await fetch('/api/feedbacks');
+                if (res.ok) {
+                    feedbacks = await res.json();
+                    localStorage.setItem('siteFeedbacks', JSON.stringify(feedbacks));
+                }
+            } catch (err) {
+                feedbacks = JSON.parse(localStorage.getItem('siteFeedbacks') || '[]');
+            }
+
+            if (!Array.isArray(feedbacks) || feedbacks.length === 0) {
+                feedbacks = JSON.parse(localStorage.getItem('siteFeedbacks') || '[]');
+            }
+
             container.innerHTML = '';
 
             if (feedbacks.length === 0) {
@@ -456,7 +472,7 @@
                                 <strong style="font-size: 1.05rem; color: var(--primary-green);">${fb.name}</strong>
                                 <span style="font-size: 0.8rem; color: #888; margin-left: 8px;">(${fb.date || 'Sem data'})</span>
                             </div>
-                            <button type="button" style="color: #dc2626; background: rgba(220, 38, 38, 0.1); border: 1px solid #dc2626; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;" onclick="deleteFeedback(${index})">
+                            <button type="button" style="color: #dc2626; background: rgba(220, 38, 38, 0.1); border: 1px solid #dc2626; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem;" onclick="deleteFeedback(${index}, '${fb.id || ''}')">
                                 <i class="fa-solid fa-trash"></i> Excluir Feedback
                             </button>
                         </div>
@@ -467,11 +483,16 @@
             });
         }
 
-        function deleteFeedback(index) {
+        async function deleteFeedback(index, id) {
             if (confirm('Tem certeza de que deseja excluir este feedback?')) {
                 const feedbacks = JSON.parse(localStorage.getItem('siteFeedbacks') || '[]');
                 feedbacks.splice(index, 1);
                 localStorage.setItem('siteFeedbacks', JSON.stringify(feedbacks));
+
+                try {
+                    await fetch(`/api/feedbacks/${id}`, { method: 'DELETE' });
+                } catch(e) {}
+
                 renderAdminFeedbacks();
                 alert('Feedback excluído com sucesso!');
             }

@@ -39,7 +39,7 @@
             pointer-events: none;
         }
 
-        /* Orbes Luminosos de Fundo (Glow Futurista) */
+        /* Orbes Luminosos de Fundo */
         .glow-orb {
             position: fixed;
             border-radius: 50%;
@@ -49,30 +49,9 @@
             pointer-events: none;
             animation: floatGlow 12s ease-in-out infinite alternate;
         }
-        .orb-1 {
-            width: 400px;
-            height: 400px;
-            background: #4a5c44;
-            top: -100px;
-            left: -100px;
-        }
-        .orb-2 {
-            width: 500px;
-            height: 500px;
-            background: #2d4529;
-            bottom: -150px;
-            right: -100px;
-            animation-delay: -6s;
-        }
-        .orb-3 {
-            width: 350px;
-            height: 350px;
-            background: #627a5a;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation-duration: 16s;
-        }
+        .orb-1 { width: 400px; height: 400px; background: #4a5c44; top: -100px; left: -100px; }
+        .orb-2 { width: 500px; height: 500px; background: #2d4529; bottom: -150px; right: -100px; animation-delay: -6s; }
+        .orb-3 { width: 350px; height: 350px; background: #627a5a; top: 40%; left: 50%; transform: translate(-50%, -50%); animation-duration: 16s; }
 
         @keyframes floatGlow {
             0% { transform: translateY(0) scale(1); }
@@ -354,10 +333,8 @@
 </head>
 <body>
 
-    <!-- Canvas Futurista de Partículas -->
     <canvas id="bgCanvas"></canvas>
     
-    <!-- Orbes Luminosos de Atmosfera -->
     <div class="glow-orb orb-1"></div>
     <div class="glow-orb orb-2"></div>
     <div class="glow-orb orb-3"></div>
@@ -426,7 +403,7 @@
                     <label>Enviar Foto do Procedimento (Opcional)</label>
                     <input type="file" id="fbImage" accept="image/*" style="margin-bottom: 1.5rem;">
                 </div>
-                <button type="submit" class="btn" style="width: 100%; border: none; cursor: pointer;"><i class="fa-solid fa-paper-plane"></i> Enviar Feedback</button>
+                <button type="submit" class="btn" id="fbSubmitBtn" style="width: 100%; border: none; cursor: pointer;"><i class="fa-solid fa-paper-plane"></i> Enviar Feedback</button>
             </form>
         </div>
 
@@ -436,7 +413,7 @@
     <footer>
         <p>&copy; Alcione Pacheco Estética Avançada. Todos os direitos reservados.</p>
         <p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);">
-            Desenvolvido por <strong>Pedro Santos</strong> | <span class="version-tag">v1.5.0</span>
+            Desenvolvido por <strong>Pedro Santos</strong> | <span class="version-tag">v1.6.0</span>
         </p>
     </footer>
 
@@ -570,6 +547,10 @@
 
         async function submitFeedback(e) {
             e.preventDefault();
+            const submitBtn = document.getElementById('fbSubmitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+
             const name = document.getElementById('fbName').value.trim();
             const text = document.getElementById('fbText').value.trim();
             const fileInput = document.getElementById('fbImage');
@@ -580,26 +561,62 @@
             }
 
             const newFeedback = {
+                id: Date.now().toString(),
                 name: name,
                 text: text,
                 image: imageBase64,
                 date: new Date().toLocaleDateString('pt-BR')
             };
 
+            // Salva no LocalStorage do navegador
             const existingFeedbacks = JSON.parse(localStorage.getItem('siteFeedbacks') || '[]');
             existingFeedbacks.unshift(newFeedback);
             localStorage.setItem('siteFeedbacks', JSON.stringify(existingFeedbacks));
 
+            // Envia para o Servidor/API para sincronizar entre Celular e PC
+            try {
+                await fetch('/api/feedbacks', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newFeedback)
+                });
+            } catch (err) {
+                console.warn('Servidor offline ou sem rota /api/feedbacks. Feedback salvo localmente.');
+            }
+
             document.getElementById('feedbackForm').reset();
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar Feedback';
+
             renderFeedbacks();
             alert('Muito obrigado pelo seu feedback!');
         }
 
-        function renderFeedbacks() {
+        async function renderFeedbacks() {
             const container = document.getElementById('feedbacksGrid');
             if (!container) return;
             
-            const feedbacks = JSON.parse(localStorage.getItem('siteFeedbacks') || '[]');
+            let feedbacks = [];
+
+            // 1. Tenta buscar os feedbacks sincronizados do Servidor (PC + Mobile)
+            try {
+                const res = await fetch('/api/feedbacks');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (Array.isArray(data)) {
+                        feedbacks = data;
+                        localStorage.setItem('siteFeedbacks', JSON.stringify(feedbacks));
+                    }
+                }
+            } catch (err) {
+                // Fallback para o localStorage em caso de erro/off-line
+                feedbacks = JSON.parse(localStorage.getItem('siteFeedbacks') || '[]');
+            }
+
+            if (feedbacks.length === 0) {
+                feedbacks = JSON.parse(localStorage.getItem('siteFeedbacks') || '[]');
+            }
+
             container.innerHTML = '';
 
             if (feedbacks.length === 0) {
