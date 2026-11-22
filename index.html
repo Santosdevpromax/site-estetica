@@ -7,7 +7,7 @@
     <title>Alcione Pacheco | Estética Avançada</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -28,7 +28,6 @@
             <a href="#inicio" onclick="closeMenu()">Início</a>
             <a href="#diferenciais" onclick="closeMenu()">Diferenciais</a>
             <a href="#tratamentos" onclick="closeMenu()">Tratamentos</a>
-            <a href="#antes-depois" onclick="closeMenu()">Antes e Depois</a>
             <a href="#contato" onclick="closeMenu()">Contato</a>
             <a href="#feedbacks" onclick="closeMenu()">Feedbacks</a>
         </nav>
@@ -52,11 +51,6 @@
     <section id="tratamentos">
         <h2 class="section-title" id="treatmentsTitle">Tratamentos</h2>
         <div class="grid" id="treatmentsGrid"></div>
-    </section>
-
-    <section id="antes-depois">
-        <h2 class="section-title" id="beforeAfterTitle">Resultados: Antes & Depois</h2>
-        <div class="grid" id="beforeAfterGrid"></div>
     </section>
 
     <section id="contato">
@@ -96,7 +90,7 @@
     <footer>
         <p>&copy; Alcione Pacheco Estética Avançada. Todos os direitos reservados.</p>
         <p style="margin-top: 0.5rem; font-size: 0.85rem; color: rgba(255,255,255,0.7);">
-            Desenvolvido por <strong>Pedro Santos</strong> | <span class="version-tag">v2.2.0 Firebase Sync</span>
+            Desenvolvido por <strong>Pedro Santos</strong> | <span class="version-tag">v2.1.0 Firebase Sync</span>
         </p>
     </footer>
 
@@ -191,35 +185,6 @@
             navbar.classList.remove('active');
             menuIcon.classList.remove('fa-xmark');
             menuIcon.classList.add('fa-bars');
-        }
-
-        function goToBaSlide(btn, slideIndex) {
-            const wrapper = btn.closest('.ba-carousel-wrapper');
-            const track = wrapper.querySelector('.ba-track');
-            track.scrollTo({
-                left: track.clientWidth * slideIndex,
-                behavior: 'smooth'
-            });
-        }
-
-        function moveBaSlide(btn, direction) {
-            const wrapper = btn.closest('.ba-carousel-wrapper');
-            const track = wrapper.querySelector('.ba-track');
-            const currentIndex = Math.round(track.scrollLeft / track.clientWidth);
-            const nextIndex = Math.max(0, Math.min(1, currentIndex + direction));
-            track.scrollTo({
-                left: track.clientWidth * nextIndex,
-                behavior: 'smooth'
-            });
-        }
-
-        function syncBaDots(track) {
-            const wrapper = track.closest('.ba-carousel-wrapper');
-            const dots = wrapper.querySelectorAll('.ba-dot');
-            const activeIndex = Math.round(track.scrollLeft / track.clientWidth);
-            dots.forEach((dot, idx) => {
-                dot.classList.toggle('active', idx === activeIndex);
-            });
         }
     </script>
 
@@ -334,7 +299,6 @@
                 if (content.heroBtnText && document.getElementById('heroBtnText')) document.getElementById('heroBtnText').textContent = content.heroBtnText;
                 if (content.diffsTitle && document.getElementById('diffsTitle')) document.getElementById('diffsTitle').textContent = content.diffsTitle;
                 if (content.treatmentsTitle && document.getElementById('treatmentsTitle')) document.getElementById('treatmentsTitle').textContent = content.treatmentsTitle;
-                if (content.beforeAfterTitle && document.getElementById('beforeAfterTitle')) document.getElementById('beforeAfterTitle').textContent = content.beforeAfterTitle;
                 if (content.contactTitle && document.getElementById('contactTitle')) document.getElementById('contactTitle').textContent = content.contactTitle;
                 if (content.phone && document.getElementById('phone')) document.getElementById('phone').textContent = content.phone;
                 if (content.address && document.getElementById('address')) document.getElementById('address').textContent = content.address;
@@ -372,51 +336,6 @@
                             ${item.time ? `<div class="info-badge"><i class="fa-regular fa-clock"></i> ${item.time}</div>` : ''}
                         </div>
                     `).join('');
-                }
-
-                const beforeAfterGrid = document.getElementById('beforeAfterGrid');
-                if (beforeAfterGrid) {
-                    const baList = content.beforeAfter 
-                        ? (Array.isArray(content.beforeAfter) ? content.beforeAfter : Object.values(content.beforeAfter)) 
-                        : [];
-
-                    if (baList.length === 0) {
-                        beforeAfterGrid.innerHTML = '<p class="empty-feedback-msg">Em breve novos resultados de procedimentos.</p>';
-                    } else {
-                        beforeAfterGrid.innerHTML = baList.map(item => `
-                            <div class="card">
-                                <div class="ba-carousel-wrapper">
-                                    <button type="button" class="ba-arrow prev" aria-label="Foto Anterior" onclick="moveBaSlide(this, -1)">
-                                        <i class="fa-solid fa-chevron-left"></i>
-                                    </button>
-                                    
-                                    <div class="ba-track" onscroll="syncBaDots(this)">
-                                        <div class="ba-slide">
-                                            <span class="ba-badge antes">Antes</span>
-                                            <img src="${item.beforeUrl || ''}" alt="Antes - ${item.title || ''}">
-                                        </div>
-                                        <div class="ba-slide">
-                                            <span class="ba-badge depois">Depois</span>
-                                            <img src="${item.afterUrl || ''}" alt="Depois - ${item.title || ''}">
-                                        </div>
-                                    </div>
-
-                                    <button type="button" class="ba-arrow next" aria-label="Próxima Foto" onclick="moveBaSlide(this, 1)">
-                                        <i class="fa-solid fa-chevron-right"></i>
-                                    </button>
-
-                                    <div class="ba-dots">
-                                        <button type="button" class="ba-dot active" aria-label="Ver Antes" onclick="goToBaSlide(this, 0)"></button>
-                                        <button type="button" class="ba-dot" aria-label="Ver Depois" onclick="goToBaSlide(this, 1)"></button>
-                                    </div>
-                                    <span class="ba-hint">Arraste para o lado ou toque nas bolinhas</span>
-                                </div>
-
-                                <h3>${item.title || ''}</h3>
-                                ${item.desc ? `<p style="color: var(--text-muted); font-size: 0.92rem;">${item.desc}</p>` : ''}
-                            </div>
-                        `).join('');
-                    }
                 }
             });
         }
