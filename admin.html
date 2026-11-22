@@ -48,4 +48,372 @@ body { background-color: #121a11; color: #1e291c; padding: 2rem; min-height: 100
 .card-admin h2 {
   color: #4a5c44; margin-bottom: 1.5rem; border-bottom: 2px solid #e2e8f0;
   padding-bottom: 0.5rem; display: flex; justify-content: space-between;
-  align-items: center; flex-wrap: wrap; gap: 0.
+  align-items: center; flex-wrap: wrap; gap: 0.5rem;
+}
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 0.4rem; font-size: 0.9rem; }
+.form-group input, .form-group textarea {
+  width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem;
+}
+.btn-action {
+  background-color: #4a5c44; color: #ffffff; padding: 0.85rem 1.6rem;
+  border: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer;
+}
+.item-box {
+  background: #f8fafc; border: 1px solid #e2e8f0;
+  border-radius: 8px; padding: 1rem; margin-bottom: 1rem;
+}
+.ba-preview-row { display: flex; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap; }
+.ba-preview-box {
+  flex: 1; min-width: 140px; background: #ffffff; border: 1px solid #cbd5e1;
+  border-radius: 8px; padding: 0.5rem; text-align: center;
+}
+.ba-preview-box img { width: 100%; height: 120px; object-fit: cover; border-radius: 6px; margin-top: 0.3rem; }
+.btn-delete {
+  background: #dc2626; color: #fff; border: none; padding: 0.4rem 0.8rem;
+  border-radius: 6px; cursor: pointer; font-size: 0.85rem;
+}
+.fb-admin-card {
+  background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem;
+  margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+}
+@media (max-width: 600px) {
+  body { padding: 1rem; }
+  .fb-admin-card { flex-direction: column; align-items: flex-start; }
+  .fb-admin-card .btn-delete { align-self: flex-end; }
+}
+</style>
+</head>
+<body>
+
+<div id="loginScreen">
+  <div class="login-icon"><i class="fa-solid fa-lock"></i></div>
+  <h2>Acesso Restrito</h2>
+  <p>Digite a senha administrativa para gerenciar o site.</p>
+  <form id="loginForm">
+    <input type="password" id="adminPasswordInput" class="login-input" placeholder="Senha" required autofocus>
+    <div class="login-error" id="loginError">Senha incorreta. Tente novamente.</div>
+    <button type="submit" class="btn-action" style="width:100%;">Entrar no Painel</button>
+  </form>
+</div>
+
+<div class="admin-container" id="adminPanel">
+  <div class="header-admin">
+    <h1><i class="fa-solid fa-sliders"></i> Painel de Controle</h1>
+    <div class="header-actions">
+      <a href="index.html" class="btn-view-site" target="_blank">Ver Site</a>
+      <button type="button" class="btn-logout" id="logoutBtn">Sair</button>
+    </div>
+  </div>
+
+  <div class="card-admin">
+    <h2>Informações Gerais e Marca</h2>
+    <form id="generalForm">
+      <div class="form-group">
+        <label>URL da Logo (Opcional)</label>
+        <input type="text" id="logoUrlInput" placeholder="https://exemplo.com/logo.png">
+      </div>
+      <div class="form-group">
+        <label>Nome da Marca / Título da Logo</label>
+        <input type="text" id="brandNameInput" required>
+      </div>
+      <div class="form-group">
+        <label>Título Principal (Hero)</label>
+        <input type="text" id="heroTitleInput" required>
+      </div>
+      <div class="form-group">
+        <label>Subtítulo Principal</label>
+        <textarea id="heroSubtitleInput" rows="2" required></textarea>
+      </div>
+      <div class="form-group">
+        <label>Texto do Botão Principal</label>
+        <input type="text" id="heroBtnTextInput" required>
+      </div>
+      <div class="form-group">
+        <label>Telefone / WhatsApp (ex: 35998167478)</label>
+        <input type="text" id="phoneInput" required>
+      </div>
+      <div class="form-group">
+        <label>Endereço / Horário de Atendimento</label>
+        <input type="text" id="addressInput" required>
+      </div>
+      <button type="submit" class="btn-action">Salvar Informações no Firebase</button>
+    </form>
+  </div>
+
+  <div class="card-admin">
+    <h2>
+      <span>Diferenciais</span>
+      <button type="button" class="btn-action" style="padding:0.4rem 0.8rem;font-size:0.85rem;" id="addDiffBtn">+ Adicionar</button>
+    </h2>
+    <div id="diffsList"></div>
+  </div>
+
+  <div class="card-admin">
+    <h2>
+      <span>Tratamentos (Postagens)</span>
+      <button type="button" class="btn-action" style="padding:0.4rem 0.8rem;font-size:0.85rem;" id="addTreatmentBtn">+ Adicionar</button>
+    </h2>
+    <div id="treatmentsList"></div>
+  </div>
+
+  <div class="card-admin">
+    <h2>
+      <span>Resultados: Antes & Depois</span>
+      <button type="button" class="btn-action" style="padding:0.4rem 0.8rem;font-size:0.85rem;" id="addBeforeAfterBtn">+ Adicionar</button>
+    </h2>
+    <div id="beforeAfterList"></div>
+  </div>
+
+  <div class="card-admin">
+    <h2>Feedbacks dos Clientes</h2>
+    <div id="adminFeedbacksList"><p style="color:#666;">Carregando...</p></div>
+  </div>
+</div>
+
+<script>
+const SENHA_CORRETA = "93319";
+const loginScreen = document.getElementById('loginScreen');
+const adminPanel = document.getElementById('adminPanel');
+const loginForm = document.getElementById('loginForm');
+const passwordInput = document.getElementById('adminPasswordInput');
+const loginError = document.getElementById('loginError');
+
+function liberarPainel() {
+  loginScreen.style.display = 'none';
+  adminPanel.style.display = 'block';
+}
+
+if (sessionStorage.getItem('adminAuth') === 'true') {
+  liberarPainel();
+}
+
+loginForm.addEventListener('submit', function(e) {
+  e.preventDefault();
+  if (passwordInput.value.trim() === SENHA_CORRETA) {
+    sessionStorage.setItem('adminAuth', 'true');
+    loginError.style.display = 'none';
+    liberarPainel();
+  } else {
+    loginError.style.display = 'block';
+    passwordInput.value = '';
+    passwordInput.focus();
+  }
+});
+
+document.getElementById('logoutBtn').addEventListener('click', function() {
+  sessionStorage.removeItem('adminAuth');
+  adminPanel.style.display = 'none';
+  loginScreen.style.display = 'block';
+  passwordInput.value = '';
+});
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBN8vm7CzOl3rZsLvk3ddifTmuafjZta6g",
+  authDomain: "site-aphc.firebaseapp.com",
+  projectId: "site-aphc",
+  storageBucket: "site-aphc.firebasestorage.app",
+  messagingSenderId: "1012964206543",
+  appId: "1:1012964206543:web:51d14173114d9b370894ba",
+  measurementId: "G-K5EM79WKGQ",
+  databaseURL: "https://site-aphc-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let currentData = {
+  logoUrl: "", brandName: "", heroTitle: "", heroSubtitle: "",
+  heroBtnText: "", phone: "", address: "",
+  differentials: [], treatments: [], beforeAfter: []
+};
+
+function listenToFirebaseData() {
+  const siteRef = ref(db, 'siteContent');
+  onValue(siteRef, (snapshot) => {
+    const data = snapshot.val();
+    if (!data) return;
+    currentData = {
+      ...data,
+      differentials: data.differentials ? (Array.isArray(data.differentials) ? data.differentials : Object.values(data.differentials)) : [],
+      treatments: data.treatments ? (Array.isArray(data.treatments) ? data.treatments : Object.values(data.treatments)) : [],
+      beforeAfter: data.beforeAfter ? (Array.isArray(data.beforeAfter) ? data.beforeAfter : Object.values(data.beforeAfter)) : []
+    };
+    populateGeneralForm();
+    renderDiffs();
+    renderTreatments();
+    renderBeforeAfter();
+  });
+}
+
+function populateGeneralForm() {
+  document.getElementById('logoUrlInput').value = currentData.logoUrl || '';
+  document.getElementById('brandNameInput').value = currentData.brandName || '';
+  document.getElementById('heroTitleInput').value = currentData.heroTitle || '';
+  document.getElementById('heroSubtitleInput').value = currentData.heroSubtitle || '';
+  document.getElementById('heroBtnTextInput').value = currentData.heroBtnText || '';
+  document.getElementById('phoneInput').value = currentData.phone || '';
+  document.getElementById('addressInput').value = currentData.address || '';
+}
+
+async function saveToFirebase(showAlert) {
+  try {
+    await set(ref(db, 'siteContent'), currentData);
+    if (showAlert) alert('Alterações salvas com sucesso!');
+  } catch (err) {
+    console.error(err);
+    alert('Erro ao salvar alterações.');
+  }
+}
+
+document.getElementById('generalForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  currentData.logoUrl = document.getElementById('logoUrlInput').value;
+  currentData.brandName = document.getElementById('brandNameInput').value;
+  currentData.heroTitle = document.getElementById('heroTitleInput').value;
+  currentData.heroSubtitle = document.getElementById('heroSubtitleInput').value;
+  currentData.heroBtnText = document.getElementById('heroBtnTextInput').value;
+  currentData.phone = document.getElementById('phoneInput').value;
+  currentData.address = document.getElementById('addressInput').value;
+  saveToFirebase(true);
+});
+
+function renderDiffs() {
+  const container = document.getElementById('diffsList');
+  container.innerHTML = '';
+  currentData.differentials.forEach((diff, index) => {
+    const box = document.createElement('div');
+    box.className = 'item-box';
+    box.innerHTML = [
+      '<div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;align-items:center;">',
+      '<strong>Diferencial #' + (index + 1) + '</strong>',
+      '<button type="button" class="btn-delete" onclick="removeDiff(' + index + ')">Excluir</button>',
+      '</div>',
+      '<div class="form-group"><label>Ícone (FontAwesome)</label>',
+      '<input type="text" value="' + (diff.icon || '') + '" onchange="updateDiff(' + index + ',\'icon\',this.value)"></div>',
+      '<div class="form-group"><label>Título</label>',
+      '<input type="text" value="' + (diff.title || '') + '" onchange="updateDiff(' + index + ',\'title\',this.value)"></div>',
+      '<div class="form-group"><label>Descrição</label>',
+      '<input type="text" value="' + (diff.desc || '') + '" onchange="updateDiff(' + index + ',\'desc\',this.value)"></div>'
+    ].join('');
+    container.appendChild(box);
+  });
+}
+
+window.updateDiff = (index, field, value) => { currentData.differentials[index][field] = value; saveToFirebase(false); };
+window.removeDiff = (index) => { currentData.differentials.splice(index, 1); saveToFirebase(false); };
+document.getElementById('addDiffBtn').addEventListener('click', () => {
+  currentData.differentials.push({ icon: 'fa-solid fa-star', title: 'Novo Diferencial', desc: 'Descrição' });
+  saveToFirebase(false);
+});
+
+function renderTreatments() {
+  const container = document.getElementById('treatmentsList');
+  container.innerHTML = '';
+  currentData.treatments.forEach((t, index) => {
+    const box = document.createElement('div');
+    box.className = 'item-box';
+    box.innerHTML = [
+      '<div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;align-items:center;">',
+      '<strong>Tratamento #' + (index + 1) + '</strong>',
+      '<button type="button" class="btn-delete" onclick="removeTreatment(' + index + ')">Excluir</button>',
+      '</div>',
+      '<div class="form-group"><label>Nome do Tratamento</label>',
+      '<input type="text" value="' + (t.name || '') + '" onchange="updateTreatment(' + index + ',\'name\',this.value)"></div>',
+      '<div class="form-group"><label>URL da Imagem</label>',
+      '<input type="text" value="' + (t.imageUrl || '') + '" onchange="updateTreatment(' + index + ',\'imageUrl\',this.value)"></div>',
+      '<div class="form-group"><label>Descrição</label>',
+      '<textarea onchange="updateTreatment(' + index + ',\'desc\',this.value)">' + (t.desc || '') + '</textarea></div>',
+      '<div class="form-group"><label>Tópicos (um por linha)</label>',
+      '<textarea onchange="updateTreatment(' + index + ',\'topics\',this.value)">' + (t.topics || '') + '</textarea></div>',
+      '<div class="form-group"><label>Duração/Tempo</label>',
+      '<input type="text" value="' + (t.time || '') + '" onchange="updateTreatment(' + index + ',\'time\',this.value)"></div>'
+    ].join('');
+    container.appendChild(box);
+  });
+}
+
+window.updateTreatment = (index, field, value) => { currentData.treatments[index][field] = value; saveToFirebase(false); };
+window.removeTreatment = (index) => { currentData.treatments.splice(index, 1); saveToFirebase(false); };
+document.getElementById('addTreatmentBtn').addEventListener('click', () => {
+  currentData.treatments.push({ name: 'Novo Tratamento', desc: '', imageUrl: '', topics: '', time: '' });
+  saveToFirebase(false);
+});
+
+function renderBeforeAfter() {
+  const container = document.getElementById('beforeAfterList');
+  container.innerHTML = '';
+  currentData.beforeAfter.forEach((ba, index) => {
+    const box = document.createElement('div');
+    box.className = 'item-box';
+    let previews = '';
+    if (ba.beforeUrl || ba.afterUrl) {
+      previews = '<div class="ba-preview-row">' +
+        (ba.beforeUrl ? '<div class="ba-preview-box"><small><strong>Antes</strong></small><img src="' + ba.beforeUrl + '"></div>' : '') +
+        (ba.afterUrl ? '<div class="ba-preview-box"><small><strong>Depois</strong></small><img src="' + ba.afterUrl + '"></div>' : '') +
+        '</div>';
+    }
+    box.innerHTML = [
+      '<div style="display:flex;justify-content:space-between;margin-bottom:0.5rem;align-items:center;">',
+      '<strong>Resultado #' + (index + 1) + '</strong>',
+      '<button type="button" class="btn-delete" onclick="removeBeforeAfter(' + index + ')">Excluir</button>',
+      '</div>',
+      '<div class="form-group"><label>Título do Procedimento</label>',
+      '<input type="text" value="' + (ba.title || '') + '" onchange="updateBeforeAfter(' + index + ',\'title\',this.value)"></div>',
+      '<div class="form-group"><label>URL da Foto ANTES</label>',
+      '<input type="text" value="' + (ba.beforeUrl || '') + '" onchange="updateBeforeAfter(' + index + ',\'beforeUrl\',this.value)"></div>',
+      '<div class="form-group"><label>URL da Foto DEPOIS</label>',
+      '<input type="text" value="' + (ba.afterUrl || '') + '" onchange="updateBeforeAfter(' + index + ',\'afterUrl\',this.value)"></div>',
+      '<div class="form-group"><label>Descrição (Opcional)</label>',
+      '<textarea rows="2" onchange="updateBeforeAfter(' + index + ',\'desc\',this.value)">' + (ba.desc || '') + '</textarea></div>',
+      previews
+    ].join('');
+    container.appendChild(box);
+  });
+}
+
+window.updateBeforeAfter = (index, field, value) => { currentData.beforeAfter[index][field] = value; saveToFirebase(false); };
+window.removeBeforeAfter = (index) => { currentData.beforeAfter.splice(index, 1); saveToFirebase(false); };
+document.getElementById('addBeforeAfterBtn').addEventListener('click', () => {
+  currentData.beforeAfter.push({ title: 'Novo Resultado', beforeUrl: '', afterUrl: '', desc: '' });
+  saveToFirebase(false);
+});
+
+function listenToAdminFeedbacks() {
+  const container = document.getElementById('adminFeedbacksList');
+  onValue(ref(db, 'feedbacks'), (snapshot) => {
+    const data = snapshot.val();
+    container.innerHTML = '';
+    if (!data) {
+      container.innerHTML = '<p style="color:#666;">Nenhum feedback recebido ainda.</p>';
+      return;
+    }
+    Object.entries(data).forEach(([key, fb]) => {
+      const card = document.createElement('div');
+      card.className = 'fb-admin-card';
+      card.innerHTML = [
+        '<div><strong>' + fb.name + '</strong> <small>(' + (fb.date || '') + ')</small>',
+        '<p style="margin-top:0.3rem;">' + fb.text + '</p></div>',
+        '<button class="btn-delete" onclick="deleteFeedback(\'' + key + '\')">Excluir</button>'
+      ].join('');
+      container.appendChild(card);
+    });
+  });
+}
+
+window.deleteFeedback = async (key) => {
+  if (confirm('Deseja realmente excluir este feedback?')) {
+    await remove(ref(db, 'feedbacks/' + key));
+  }
+};
+
+listenToFirebaseData();
+listenToAdminFeedbacks();
+</script>
+</body>
+</html>
