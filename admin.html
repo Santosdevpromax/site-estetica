@@ -94,31 +94,6 @@
             position: relative;
         }
 
-        .ba-preview-row {
-            display: flex;
-            gap: 1rem;
-            margin-top: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .ba-preview-box {
-            flex: 1;
-            min-width: 140px;
-            background: #ffffff;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 0.5rem;
-            text-align: center;
-        }
-
-        .ba-preview-box img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-            border-radius: 6px;
-            margin-top: 0.3rem;
-        }
-
         .btn-delete {
             background: var(--danger);
             color: #fff;
@@ -213,15 +188,6 @@
             <div id="treatmentsList"></div>
         </div>
 
-        <!-- Gerenciamento de Antes & Depois -->
-        <div class="card-admin">
-            <h2>
-                <span><i class="fa-solid fa-images"></i> Resultados: Antes & Depois</span>
-                <button type="button" class="btn-action" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" id="addBeforeAfterBtn"><i class="fa-solid fa-plus"></i> Adicionar Resultado</button>
-            </h2>
-            <div id="beforeAfterList"></div>
-        </div>
-
         <!-- Gerenciamento de Feedbacks do Firebase -->
         <div class="card-admin">
             <h2><i class="fa-solid fa-comments"></i> Feedbacks dos Clientes (Firebase)</h2>
@@ -244,10 +210,10 @@
             phone: "",
             address: "",
             differentials: [],
-            treatments: [],
-            beforeAfter: []
+            treatments: []
         };
 
+        // Carrega os dados direto do Firebase em Tempo Real
         function listenToFirebaseData() {
             const siteRef = ref(db, 'siteContent');
             onValue(siteRef, (snapshot) => {
@@ -256,13 +222,11 @@
                     currentData = {
                         ...data,
                         differentials: data.differentials ? (Array.isArray(data.differentials) ? data.differentials : Object.values(data.differentials)) : [],
-                        treatments: data.treatments ? (Array.isArray(data.treatments) ? data.treatments : Object.values(data.treatments)) : [],
-                        beforeAfter: data.beforeAfter ? (Array.isArray(data.beforeAfter) ? data.beforeAfter : Object.values(data.beforeAfter)) : []
+                        treatments: data.treatments ? (Array.isArray(data.treatments) ? data.treatments : Object.values(data.treatments)) : []
                     };
                     populateGeneralForm();
                     renderDiffs();
                     renderTreatments();
-                    renderBeforeAfter();
                 }
             });
         }
@@ -394,59 +358,7 @@
             saveToFirebase(false);
         });
 
-        function renderBeforeAfter() {
-            const container = document.getElementById('beforeAfterList');
-            container.innerHTML = '';
-            currentData.beforeAfter.forEach((ba, index) => {
-                const box = document.createElement('div');
-                box.className = 'item-box';
-                box.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem; align-items:center;">
-                        <strong>Resultado Antes & Depois #${index + 1}</strong>
-                        <button type="button" class="btn-delete" onclick="removeBeforeAfter(${index})"><i class="fa-solid fa-trash"></i> Excluir</button>
-                    </div>
-                    <div class="form-group">
-                        <label>Título do Procedimento</label>
-                        <input type="text" value="${ba.title || ''}" placeholder="Ex: Preenchimento Labial" onchange="updateBeforeAfter(${index}, 'title', this.value)">
-                    </div>
-                    <div class="form-group">
-                        <label>URL da Foto ANTES</label>
-                        <input type="text" value="${ba.beforeUrl || ''}" placeholder="https://..." onchange="updateBeforeAfter(${index}, 'beforeUrl', this.value)">
-                    </div>
-                    <div class="form-group">
-                        <label>URL da Foto DEPOIS</label>
-                        <input type="text" value="${ba.afterUrl || ''}" placeholder="https://..." onchange="updateBeforeAfter(${index}, 'afterUrl', this.value)">
-                    </div>
-                    <div class="form-group">
-                        <label>Descrição / Observação (Opcional)</label>
-                        <textarea rows="2" onchange="updateBeforeAfter(${index}, 'desc', this.value)">${ba.desc || ''}</textarea>
-                    </div>
-                    ${(ba.beforeUrl || ba.afterUrl) ? `
-                        <div class="ba-preview-row">
-                            ${ba.beforeUrl ? `<div class="ba-preview-box"><small><strong>Antes</strong></small><img src="${ba.beforeUrl}" alt="Antes"></div>` : ''}
-                            ${ba.afterUrl ? `<div class="ba-preview-box"><small><strong>Depois</strong></small><img src="${ba.afterUrl}" alt="Depois"></div>` : ''}
-                        </div>
-                    ` : ''}
-                `;
-                container.appendChild(box);
-            });
-        }
-
-        window.updateBeforeAfter = (index, field, value) => {
-            currentData.beforeAfter[index][field] = value;
-            saveToFirebase(false);
-        };
-
-        window.removeBeforeAfter = (index) => {
-            currentData.beforeAfter.splice(index, 1);
-            saveToFirebase(false);
-        };
-
-        document.getElementById('addBeforeAfterBtn').addEventListener('click', () => {
-            currentData.beforeAfter.push({ title: 'Novo Resultado', beforeUrl: '', afterUrl: '', desc: '' });
-            saveToFirebase(false);
-        });
-
+        // Moderação de Feedbacks
         function listenToAdminFeedbacks() {
             const container = document.getElementById('adminFeedbacksList');
             const fbRef = ref(db, 'feedbacks');
