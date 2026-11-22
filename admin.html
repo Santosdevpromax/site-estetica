@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="https://i.ibb.co/CK8tMBD8/Code-Generated-Image.png">
     <title>Painel Administrativo | Alcione Pacheco</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -18,7 +19,79 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text-dark); padding: 2rem; min-height: 100vh; }
 
-        .admin-container { max-width: 1000px; margin: 0 auto; }
+        /* TELA DE LOGIN */
+        .login-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--bg-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            z-index: 9999;
+        }
+
+        .login-box {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 400px;
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.45);
+            text-align: center;
+        }
+
+        .login-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(74, 92, 68, 0.12);
+            color: var(--primary-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin: 0 auto 1.2rem auto;
+        }
+
+        .login-box h2 {
+            color: var(--primary-green);
+            margin-bottom: 0.4rem;
+            font-size: 1.4rem;
+        }
+
+        .login-box p {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            text-align: center;
+            letter-spacing: 3px;
+            margin-bottom: 1rem;
+            outline: none;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary-green);
+        }
+
+        .login-error {
+            color: var(--danger);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        /* PAINEL PRINCIPAL */
+        .admin-container { max-width: 1000px; margin: 0 auto; display: none; }
         
         .header-admin {
             display: flex;
@@ -32,17 +105,25 @@
             gap: 1rem;
         }
         .header-admin h1 { font-size: 1.8rem; }
+
+        .header-actions {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
         
-        .btn-view-site {
+        .btn-view-site, .btn-logout {
             color: #ffffff;
             text-decoration: none;
             background: rgba(255,255,255,0.15);
             padding: 0.6rem 1.2rem;
             border-radius: 8px;
             font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
             transition: background 0.3s;
         }
-        .btn-view-site:hover { background: rgba(255,255,255,0.25); }
+        .btn-view-site:hover, .btn-logout:hover { background: rgba(255,255,255,0.25); }
 
         .card-admin {
             background: var(--card-bg);
@@ -94,6 +175,31 @@
             position: relative;
         }
 
+        .ba-preview-row {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .ba-preview-box {
+            flex: 1;
+            min-width: 140px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 0.5rem;
+            text-align: center;
+        }
+
+        .ba-preview-box img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-top: 0.3rem;
+        }
+
         .btn-delete {
             background: var(--danger);
             color: #fff;
@@ -120,278 +226,4 @@
 
         @media (max-width: 600px) {
             body { padding: 1rem; }
-            .fb-admin-card { flex-direction: column; align-items: flex-start; }
-            .fb-admin-card .btn-delete { align-self: flex-end; }
-        }
-    </style>
-</head>
-<body>
-
-    <div class="admin-container">
-        <div class="header-admin">
-            <h1><i class="fa-solid fa-sliders"></i> Painel de Controle Completo</h1>
-            <a href="index.html" class="btn-view-site" target="_blank"><i class="fa-solid fa-arrow-up-right-from-square"></i> Ver Site</a>
-        </div>
-
-        <!-- Gerenciamento do Conteúdo Principal -->
-        <div class="card-admin">
-            <h2><i class="fa-solid fa-pen-to-square"></i> Informações Gerais e Marca</h2>
-            <form id="generalForm">
-                <div class="form-group">
-                    <label>URL da Logo (Opcional)</label>
-                    <input type="text" id="logoUrlInput" placeholder="https://exemplo.com/logo.png">
-                </div>
-                <div class="form-group">
-                    <label>Nome da Marca / Título da Logo</label>
-                    <input type="text" id="brandNameInput" required>
-                </div>
-                <div class="form-group">
-                    <label>Título Principal (Hero)</label>
-                    <input type="text" id="heroTitleInput" required>
-                </div>
-                <div class="form-group">
-                    <label>Subtítulo Principal</label>
-                    <textarea id="heroSubtitleInput" rows="2" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Texto do Botão Principal</label>
-                    <input type="text" id="heroBtnTextInput" required>
-                </div>
-                <div class="form-group">
-                    <label>Telefone / WhatsApp (ex: 35998167478)</label>
-                    <input type="text" id="phoneInput" required>
-                </div>
-                <div class="form-group">
-                    <label>Endereço / Horário de Atendimento</label>
-                    <input type="text" id="addressInput" required>
-                </div>
-
-                <button type="submit" class="btn-action" id="saveBtn"><i class="fa-solid fa-floppy-disk"></i> Salvar Informações no Firebase</button>
-            </form>
-        </div>
-
-        <!-- Gerenciamento de Diferenciais -->
-        <div class="card-admin">
-            <h2>
-                <span><i class="fa-solid fa-star"></i> Diferenciais</span>
-                <button type="button" class="btn-action" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" id="addDiffBtn"><i class="fa-solid fa-plus"></i> Adicionar</button>
-            </h2>
-            <div id="diffsList"></div>
-        </div>
-
-        <!-- Gerenciamento de Tratamentos -->
-        <div class="card-admin">
-            <h2>
-                <span><i class="fa-solid fa-spa"></i> Tratamentos (Postagens)</span>
-                <button type="button" class="btn-action" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;" id="addTreatmentBtn"><i class="fa-solid fa-plus"></i> Adicionar Tratamento</button>
-            </h2>
-            <div id="treatmentsList"></div>
-        </div>
-
-        <!-- Gerenciamento de Feedbacks do Firebase -->
-        <div class="card-admin">
-            <h2><i class="fa-solid fa-comments"></i> Feedbacks dos Clientes (Firebase)</h2>
-            <div id="adminFeedbacksList">
-                <p style="color: #666;">Carregando feedbacks em tempo real...</p>
-            </div>
-        </div>
-    </div>
-
-    <script type="module">
-        import { db, ref, set, onValue } from "./firebase.js";
-        import { remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-        let currentData = {
-            logoUrl: "",
-            brandName: "",
-            heroTitle: "",
-            heroSubtitle: "",
-            heroBtnText: "",
-            phone: "",
-            address: "",
-            differentials: [],
-            treatments: []
-        };
-
-        // Carrega os dados direto do Firebase em Tempo Real
-        function listenToFirebaseData() {
-            const siteRef = ref(db, 'siteContent');
-            onValue(siteRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    currentData = {
-                        ...data,
-                        differentials: data.differentials ? (Array.isArray(data.differentials) ? data.differentials : Object.values(data.differentials)) : [],
-                        treatments: data.treatments ? (Array.isArray(data.treatments) ? data.treatments : Object.values(data.treatments)) : []
-                    };
-                    populateGeneralForm();
-                    renderDiffs();
-                    renderTreatments();
-                }
-            });
-        }
-
-        function populateGeneralForm() {
-            document.getElementById('logoUrlInput').value = currentData.logoUrl || '';
-            document.getElementById('brandNameInput').value = currentData.brandName || '';
-            document.getElementById('heroTitleInput').value = currentData.heroTitle || '';
-            document.getElementById('heroSubtitleInput').value = currentData.heroSubtitle || '';
-            document.getElementById('heroBtnTextInput').value = currentData.heroBtnText || '';
-            document.getElementById('phoneInput').value = currentData.phone || '';
-            document.getElementById('addressInput').value = currentData.address || '';
-        }
-
-        async function saveToFirebase(showAlert = false) {
-            try {
-                const siteRef = ref(db, 'siteContent');
-                await set(siteRef, currentData);
-                if (showAlert) alert('Alterações salvas com sucesso no banco de dados!');
-            } catch (err) {
-                console.error("Erro ao salvar:", err);
-                alert("Erro ao salvar alterações.");
-            }
-        }
-
-        document.getElementById('generalForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            currentData.logoUrl = document.getElementById('logoUrlInput').value;
-            currentData.brandName = document.getElementById('brandNameInput').value;
-            currentData.heroTitle = document.getElementById('heroTitleInput').value;
-            currentData.heroSubtitle = document.getElementById('heroSubtitleInput').value;
-            currentData.heroBtnText = document.getElementById('heroBtnTextInput').value;
-            currentData.phone = document.getElementById('phoneInput').value;
-            currentData.address = document.getElementById('addressInput').value;
-            saveToFirebase(true);
-        });
-
-        function renderDiffs() {
-            const container = document.getElementById('diffsList');
-            container.innerHTML = '';
-            currentData.differentials.forEach((diff, index) => {
-                const box = document.createElement('div');
-                box.className = 'item-box';
-                box.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem; align-items:center;">
-                        <strong>Diferencial #${index + 1}</strong>
-                        <button type="button" class="btn-delete" onclick="removeDiff(${index})"><i class="fa-solid fa-trash"></i> Excluir</button>
-                    </div>
-                    <div class="form-group">
-                        <label>Ícone (FontAwesome)</label>
-                        <input type="text" value="${diff.icon || ''}" onchange="updateDiff(${index}, 'icon', this.value)">
-                    </div>
-                    <div class="form-group">
-                        <label>Título</label>
-                        <input type="text" value="${diff.title || ''}" onchange="updateDiff(${index}, 'title', this.value)">
-                    </div>
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <input type="text" value="${diff.desc || ''}" onchange="updateDiff(${index}, 'desc', this.value)">
-                    </div>
-                `;
-                container.appendChild(box);
-            });
-        }
-
-        window.updateDiff = (index, field, value) => {
-            currentData.differentials[index][field] = value;
-            saveToFirebase(false);
-        };
-
-        window.removeDiff = (index) => {
-            currentData.differentials.splice(index, 1);
-            saveToFirebase(false);
-        };
-
-        document.getElementById('addDiffBtn').addEventListener('click', () => {
-            currentData.differentials.push({ icon: 'fa-solid fa-star', title: 'Novo Diferencial', desc: 'Descrição' });
-            saveToFirebase(false);
-        });
-
-        function renderTreatments() {
-            const container = document.getElementById('treatmentsList');
-            container.innerHTML = '';
-            currentData.treatments.forEach((t, index) => {
-                const box = document.createElement('div');
-                box.className = 'item-box';
-                box.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem; align-items:center;">
-                        <strong>Tratamento #${index + 1}</strong>
-                        <button type="button" class="btn-delete" onclick="removeTreatment(${index})"><i class="fa-solid fa-trash"></i> Excluir</button>
-                    </div>
-                    <div class="form-group">
-                        <label>Nome do Tratamento</label>
-                        <input type="text" value="${t.name || ''}" onchange="updateTreatment(${index}, 'name', this.value)">
-                    </div>
-                    <div class="form-group">
-                        <label>URL da Imagem</label>
-                        <input type="text" value="${t.imageUrl || ''}" onchange="updateTreatment(${index}, 'imageUrl', this.value)">
-                    </div>
-                    <div class="form-group">
-                        <label>Descrição</label>
-                        <textarea onchange="updateTreatment(${index}, 'desc', this.value)">${t.desc || ''}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Tópicos (um por linha)</label>
-                        <textarea onchange="updateTreatment(${index}, 'topics', this.value)">${t.topics || ''}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Duração/Tempo</label>
-                        <input type="text" value="${t.time || ''}" onchange="updateTreatment(${index}, 'time', this.value)">
-                    </div>
-                `;
-                container.appendChild(box);
-            });
-        }
-
-        window.updateTreatment = (index, field, value) => {
-            currentData.treatments[index][field] = value;
-            saveToFirebase(false);
-        };
-
-        window.removeTreatment = (index) => {
-            currentData.treatments.splice(index, 1);
-            saveToFirebase(false);
-        };
-
-        document.getElementById('addTreatmentBtn').addEventListener('click', () => {
-            currentData.treatments.push({ name: 'Novo Tratamento', desc: '', imageUrl: '', topics: '', time: '' });
-            saveToFirebase(false);
-        });
-
-        // Moderação de Feedbacks
-        function listenToAdminFeedbacks() {
-            const container = document.getElementById('adminFeedbacksList');
-            const fbRef = ref(db, 'feedbacks');
-            onValue(fbRef, (snapshot) => {
-                const data = snapshot.val();
-                container.innerHTML = '';
-                if (!data) {
-                    container.innerHTML = '<p style="color:#666;">Nenhum feedback recebido ainda.</p>';
-                    return;
-                }
-                Object.entries(data).forEach(([key, fb]) => {
-                    const card = document.createElement('div');
-                    card.className = 'fb-admin-card';
-                    card.innerHTML = `
-                        <div>
-                            <strong>${fb.name}</strong> <small>(${fb.date || ''})</small>
-                            <p style="margin-top:0.3rem;">${fb.text}</p>
-                        </div>
-                        <button class="btn-delete" onclick="deleteFeedback('${key}')"><i class="fa-solid fa-trash"></i> Excluir</button>
-                    `;
-                    container.appendChild(card);
-                });
-            });
-        }
-
-        window.deleteFeedback = async (key) => {
-            if (confirm("Deseja realmente excluir este feedback?")) {
-                await remove(ref(db, `feedbacks/${key}`));
-            }
-        };
-
-        listenToFirebaseData();
-        listenToAdminFeedbacks();
-    </script>
-</body>
-</html>
+            .fb
