@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta name="referrer" content="no-referrer">
 <link rel="icon" type="image/png" href="https://i.ibb.co/CK8tMBD8/Code-Generated-Image.png">
-<title>Painel Administrativo | Alcione Pacheco</title>
+<title>Painel Administrativo | Estética Alcione Pacheco</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
@@ -28,6 +30,7 @@ body { background-color: #121a11; color: #1e291c; padding: 2rem; min-height: 100
   background-color: #f8fafc; color: #1e291c; margin-bottom: 1rem; outline: none;
 }
 .login-input:focus { border-color: #4a5c44; background-color: #ffffff; }
+.login-input:disabled { background-color: #e2e8f0; cursor: not-allowed; }
 .login-error { color: #dc2626; font-size: 0.85rem; font-weight: 600; margin-bottom: 1rem; display: none; }
 .admin-container { max-width: 1000px; margin: 0 auto; display: none; }
 .header-admin {
@@ -59,6 +62,7 @@ body { background-color: #121a11; color: #1e291c; padding: 2rem; min-height: 100
   background-color: #4a5c44; color: #ffffff; padding: 0.85rem 1.6rem;
   border: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; cursor: pointer;
 }
+.btn-action:disabled { opacity: 0.5; cursor: not-allowed; }
 .item-box {
   background: #f8fafc; border: 1px solid #e2e8f0;
   border-radius: 8px; padding: 1rem; margin-bottom: 1rem;
@@ -87,13 +91,13 @@ body { background-color: #121a11; color: #1e291c; padding: 2rem; min-height: 100
 <body>
 
 <div id="loginScreen">
-  <div class="login-icon"><i class="fa-solid fa-lock"></i></div>
+  <div class="login-icon"><i class="fa-solid fa-shield-halved"></i></div>
   <h2>Acesso Restrito</h2>
-  <p>Digite a senha administrativa para gerenciar o site.</p>
-  <form id="loginForm">
-    <input type="password" id="adminPasswordInput" class="login-input" placeholder="Senha" required autofocus>
-    <div class="login-error" id="loginError">Senha incorreta. Tente novamente.</div>
-    <button type="submit" class="btn-action" style="width:100%;">Entrar no Painel</button>
+  <p>Por segurança, digite a senha administrativa sempre que acessar o painel.</p>
+  <form id="loginForm" autocomplete="off">
+    <input type="password" id="adminPasswordInput" class="login-input" placeholder="Senha" autocomplete="new-password" required autofocus>
+    <div class="login-error" id="loginError"></div>
+    <button type="submit" id="loginSubmitBtn" class="btn-action" style="width:100%;">Desbloquear Painel</button>
   </form>
 </div>
 
@@ -101,8 +105,8 @@ body { background-color: #121a11; color: #1e291c; padding: 2rem; min-height: 100
   <div class="header-admin">
     <h1><i class="fa-solid fa-sliders"></i> Painel de Controle</h1>
     <div class="header-actions">
-      <a href="index.html" class="btn-view-site" target="_blank">Ver Site</a>
-      <button type="button" class="btn-logout" id="logoutBtn">Sair</button>
+      <a href="index.html" class="btn-view-site" target="_blank" rel="noopener noreferrer">Ver Site</a>
+      <button type="button" class="btn-logout" id="logoutBtn"><i class="fa-solid fa-lock"></i> Bloquear</button>
     </div>
   </div>
 
@@ -172,40 +176,103 @@ body { background-color: #121a11; color: #1e291c; padding: 2rem; min-height: 100
 </div>
 
 <script>
-const SENHA_CORRETA = "93319";
+// Limpa qualquer rastro antigo de sessão salva
+try { sessionStorage.removeItem('adminAuth'); localStorage.removeItem('adminAuth'); } catch (e) {}
+
+const EXPECTED_HASH = "3434e701a4a2ab6e2cd50a9573cd935069a4919a574351cf96eb6dc1a7ef3d5e";
+let isAuthenticated = false;
+let failedAttempts = 0;
+let lockUntil = 0;
+let inactivityTimer = null;
+
 const loginScreen = document.getElementById('loginScreen');
 const adminPanel = document.getElementById('adminPanel');
 const loginForm = document.getElementById('loginForm');
 const passwordInput = document.getElementById('adminPasswordInput');
+const loginSubmitBtn = document.getElementById('loginSubmitBtn');
 const loginError = document.getElementById('loginError');
 
-function liberarPainel() {
-  loginScreen.style.display = 'none';
-  adminPanel.style.display = 'block';
+async function sha256(text) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(text);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-if (sessionStorage.getItem('adminAuth') === 'true') {
-  liberarPainel();
-}
-
-loginForm.addEventListener('submit', function(e) {
-  e.preventDefault();
-  if (passwordInput.value.trim() === SENHA_CORRETA) {
-    sessionStorage.setItem('adminAuth', 'true');
-    loginError.style.display = 'none';
-    liberarPainel();
-  } else {
+function bloquearPainel(msg) {
+  isAuthenticated = false;
+  adminPanel.style.display = 'none';
+  loginScreen.style.display = 'block';
+  passwordInput.value = '';
+  if (inactivityTimer) clearTimeout(inactivityTimer);
+  if (msg) {
+    loginError.textContent = msg;
     loginError.style.display = 'block';
+  }
+}
+
+function resetInactivityTimer() {
+  if (!isAuthenticated) return;
+  if (inactivityTimer) clearTimeout(inactivityTimer);
+  // Tranca automaticamente após 10 minutos sem interação
+  inactivityTimer = setTimeout(() => {
+    bloquearPainel('Sessão expirada por inatividade. Digite a senha novamente.');
+  }, 10 * 60 * 1000);
+}
+
+['click', 'keydown', 'mousemove', 'touchstart'].forEach(evt => {
+  document.addEventListener(evt, resetInactivityTimer, { passive: true });
+});
+
+function startLockoutCountdown() {
+  passwordInput.disabled = true;
+  loginSubmitBtn.disabled = true;
+  const interval = setInterval(() => {
+    const remaining = Math.ceil((lockUntil - Date.now()) / 1000);
+    if (remaining <= 0) {
+      clearInterval(interval);
+      passwordInput.disabled = false;
+      loginSubmitBtn.disabled = false;
+      failedAttempts = 0;
+      loginError.style.display = 'none';
+      passwordInput.focus();
+    } else {
+      loginError.textContent = 'Muitas tentativas incorretas. Aguarde ' + remaining + 's.';
+      loginError.style.display = 'block';
+    }
+  }, 500);
+}
+
+loginForm.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (Date.now() < lockUntil) return;
+
+  const typedHash = await sha256(passwordInput.value.trim());
+  if (typedHash === EXPECTED_HASH) {
+    isAuthenticated = true;
+    failedAttempts = 0;
     passwordInput.value = '';
-    passwordInput.focus();
+    loginError.style.display = 'none';
+    loginScreen.style.display = 'none';
+    adminPanel.style.display = 'block';
+    resetInactivityTimer();
+    if (window.initAdminData) window.initAdminData();
+  } else {
+    failedAttempts++;
+    passwordInput.value = '';
+    if (failedAttempts >= 3) {
+      lockUntil = Date.now() + 60000;
+      startLockoutCountdown();
+    } else {
+      loginError.textContent = 'Senha incorreta (' + failedAttempts + '/3 tentativas).';
+      loginError.style.display = 'block';
+      passwordInput.focus();
+    }
   }
 });
 
 document.getElementById('logoutBtn').addEventListener('click', function() {
-  sessionStorage.removeItem('adminAuth');
-  adminPanel.style.display = 'none';
-  loginScreen.style.display = 'block';
-  passwordInput.value = '';
+  bloquearPainel('');
 });
 </script>
 
@@ -227,10 +294,28 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+let listenersStarted = false;
 let currentData = {
   logoUrl: "", brandName: "", heroTitle: "", heroSubtitle: "",
   heroBtnText: "", phone: "", address: "",
   differentials: [], treatments: [], beforeAfter: []
+};
+
+function escapeHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+// Só carrega dados do banco após a senha ser validada
+window.initAdminData = function() {
+  if (listenersStarted) return;
+  listenersStarted = true;
+  listenToFirebaseData();
+  listenToAdminFeedbacks();
 };
 
 function listenToFirebaseData() {
@@ -267,7 +352,7 @@ async function saveToFirebase(showAlert) {
     if (showAlert) alert('Alterações salvas com sucesso!');
   } catch (err) {
     console.error(err);
-    alert('Erro ao salvar alterações.');
+    alert('Erro ao salvar alterações. Verifique as permissões do banco.');
   }
 }
 
@@ -295,11 +380,11 @@ function renderDiffs() {
       '<button type="button" class="btn-delete" onclick="removeDiff(' + index + ')">Excluir</button>',
       '</div>',
       '<div class="form-group"><label>Ícone (FontAwesome)</label>',
-      '<input type="text" value="' + (diff.icon || '') + '" onchange="updateDiff(' + index + ',\'icon\',this.value)"></div>',
+      '<input type="text" value="' + escapeHtml(diff.icon) + '" onchange="updateDiff(' + index + ',\'icon\',this.value)"></div>',
       '<div class="form-group"><label>Título</label>',
-      '<input type="text" value="' + (diff.title || '') + '" onchange="updateDiff(' + index + ',\'title\',this.value)"></div>',
+      '<input type="text" value="' + escapeHtml(diff.title) + '" onchange="updateDiff(' + index + ',\'title\',this.value)"></div>',
       '<div class="form-group"><label>Descrição</label>',
-      '<input type="text" value="' + (diff.desc || '') + '" onchange="updateDiff(' + index + ',\'desc\',this.value)"></div>'
+      '<input type="text" value="' + escapeHtml(diff.desc) + '" onchange="updateDiff(' + index + ',\'desc\',this.value)"></div>'
     ].join('');
     container.appendChild(box);
   });
@@ -324,15 +409,15 @@ function renderTreatments() {
       '<button type="button" class="btn-delete" onclick="removeTreatment(' + index + ')">Excluir</button>',
       '</div>',
       '<div class="form-group"><label>Nome do Tratamento</label>',
-      '<input type="text" value="' + (t.name || '') + '" onchange="updateTreatment(' + index + ',\'name\',this.value)"></div>',
+      '<input type="text" value="' + escapeHtml(t.name) + '" onchange="updateTreatment(' + index + ',\'name\',this.value)"></div>',
       '<div class="form-group"><label>URL da Imagem</label>',
-      '<input type="text" value="' + (t.imageUrl || '') + '" onchange="updateTreatment(' + index + ',\'imageUrl\',this.value)"></div>',
+      '<input type="text" value="' + escapeHtml(t.imageUrl) + '" onchange="updateTreatment(' + index + ',\'imageUrl\',this.value)"></div>',
       '<div class="form-group"><label>Descrição</label>',
-      '<textarea onchange="updateTreatment(' + index + ',\'desc\',this.value)">' + (t.desc || '') + '</textarea></div>',
+      '<textarea onchange="updateTreatment(' + index + ',\'desc\',this.value)">' + escapeHtml(t.desc) + '</textarea></div>',
       '<div class="form-group"><label>Tópicos (um por linha)</label>',
-      '<textarea onchange="updateTreatment(' + index + ',\'topics\',this.value)">' + (t.topics || '') + '</textarea></div>',
+      '<textarea onchange="updateTreatment(' + index + ',\'topics\',this.value)">' + escapeHtml(t.topics) + '</textarea></div>',
       '<div class="form-group"><label>Duração/Tempo</label>',
-      '<input type="text" value="' + (t.time || '') + '" onchange="updateTreatment(' + index + ',\'time\',this.value)"></div>'
+      '<input type="text" value="' + escapeHtml(t.time) + '" onchange="updateTreatment(' + index + ',\'time\',this.value)"></div>'
     ].join('');
     container.appendChild(box);
   });
@@ -354,8 +439,8 @@ function renderBeforeAfter() {
     let previews = '';
     if (ba.beforeUrl || ba.afterUrl) {
       previews = '<div class="ba-preview-row">' +
-        (ba.beforeUrl ? '<div class="ba-preview-box"><small><strong>Antes</strong></small><img src="' + ba.beforeUrl + '"></div>' : '') +
-        (ba.afterUrl ? '<div class="ba-preview-box"><small><strong>Depois</strong></small><img src="' + ba.afterUrl + '"></div>' : '') +
+        (ba.beforeUrl ? '<div class="ba-preview-box"><small><strong>Antes</strong></small><img src="' + escapeHtml(ba.beforeUrl) + '"></div>' : '') +
+        (ba.afterUrl ? '<div class="ba-preview-box"><small><strong>Depois</strong></small><img src="' + escapeHtml(ba.afterUrl) + '"></div>' : '') +
         '</div>';
     }
     box.innerHTML = [
@@ -364,13 +449,13 @@ function renderBeforeAfter() {
       '<button type="button" class="btn-delete" onclick="removeBeforeAfter(' + index + ')">Excluir</button>',
       '</div>',
       '<div class="form-group"><label>Título do Procedimento</label>',
-      '<input type="text" value="' + (ba.title || '') + '" onchange="updateBeforeAfter(' + index + ',\'title\',this.value)"></div>',
+      '<input type="text" value="' + escapeHtml(ba.title) + '" onchange="updateBeforeAfter(' + index + ',\'title\',this.value)"></div>',
       '<div class="form-group"><label>URL da Foto ANTES</label>',
-      '<input type="text" value="' + (ba.beforeUrl || '') + '" onchange="updateBeforeAfter(' + index + ',\'beforeUrl\',this.value)"></div>',
+      '<input type="text" value="' + escapeHtml(ba.beforeUrl) + '" onchange="updateBeforeAfter(' + index + ',\'beforeUrl\',this.value)"></div>',
       '<div class="form-group"><label>URL da Foto DEPOIS</label>',
-      '<input type="text" value="' + (ba.afterUrl || '') + '" onchange="updateBeforeAfter(' + index + ',\'afterUrl\',this.value)"></div>',
+      '<input type="text" value="' + escapeHtml(ba.afterUrl) + '" onchange="updateBeforeAfter(' + index + ',\'afterUrl\',this.value)"></div>',
       '<div class="form-group"><label>Descrição (Opcional)</label>',
-      '<textarea rows="2" onchange="updateBeforeAfter(' + index + ',\'desc\',this.value)">' + (ba.desc || '') + '</textarea></div>',
+      '<textarea rows="2" onchange="updateBeforeAfter(' + index + ',\'desc\',this.value)">' + escapeHtml(ba.desc) + '</textarea></div>',
       previews
     ].join('');
     container.appendChild(box);
@@ -397,9 +482,9 @@ function listenToAdminFeedbacks() {
       const card = document.createElement('div');
       card.className = 'fb-admin-card';
       card.innerHTML = [
-        '<div><strong>' + fb.name + '</strong> <small>(' + (fb.date || '') + ')</small>',
-        '<p style="margin-top:0.3rem;">' + fb.text + '</p></div>',
-        '<button class="btn-delete" onclick="deleteFeedback(\'' + key + '\')">Excluir</button>'
+        '<div><strong>' + escapeHtml(fb.name) + '</strong> <small>(' + escapeHtml(fb.date) + ')</small>',
+        '<p style="margin-top:0.3rem;">' + escapeHtml(fb.text) + '</p></div>',
+        '<button class="btn-delete" onclick="deleteFeedback(\'' + escapeHtml(key) + '\')">Excluir</button>'
       ].join('');
       container.appendChild(card);
     });
@@ -411,9 +496,6 @@ window.deleteFeedback = async (key) => {
     await remove(ref(db, 'feedbacks/' + key));
   }
 };
-
-listenToFirebaseData();
-listenToAdminFeedbacks();
 </script>
 </body>
 </html>
