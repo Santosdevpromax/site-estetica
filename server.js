@@ -1,13 +1,10 @@
 const express = require('express');
 const path = require('path');
-const fs = require('fs');
 
 const app = express();
 
-// Middlewares essenciais
 app.use(express.json());
 
-// Libera conexões (CORS) para o Painel Adm salvar sem bloqueio do navegador
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -16,21 +13,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// Servidor de arquivos estáticos
+// Serve os arquivos estáticos diretamente da raiz do projeto
 app.use(express.static(__dirname));
-app.use(express.static(path.join(__dirname, 'public')));
 
-// Credenciais do JSONBin.io
 const JSONBIN_BIN_ID = '6a8d25d9da38895dfe0d54aa';
 const JSONBIN_MASTER_KEY = '$2a$10$pqK/RRsBQUtlA6zpFiCapOonDsnDdQe3BEdxS3hm8lRv4JnC7iE10';
 
-// API GET - Busca dados atualizados do banco
 app.get('/api/content', async (req, res) => {
   try {
     const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-      headers: {
-        'X-Master-Key': JSONBIN_MASTER_KEY
-      }
+      headers: { 'X-Master-Key': JSONBIN_MASTER_KEY }
     });
     const data = await response.json();
     return res.json(data.record || {});
@@ -39,7 +31,6 @@ app.get('/api/content', async (req, res) => {
   }
 });
 
-// API POST - Salva as alterações feitas no Painel Adm
 app.post('/api/content', async (req, res) => {
   try {
     const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
@@ -61,21 +52,14 @@ app.post('/api/content', async (req, res) => {
   }
 });
 
-// Rota Principal
 app.get('/', (req, res) => {
-  const publicIndex = path.join(__dirname, 'public', 'index.html');
-  const rootIndex = path.join(__dirname, 'index.html');
-  res.sendFile(fs.existsSync(publicIndex) ? publicIndex : rootIndex);
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Rota do Painel Administrativo
 app.get('/admin', (req, res) => {
-  const publicAdmin = path.join(__dirname, 'public', 'admin.html');
-  const rootAdmin = path.join(__dirname, 'admin.html');
-  res.sendFile(fs.existsSync(publicAdmin) ? publicAdmin : rootAdmin);
+  res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
-// Inicialização e Exportação para Vercel Serverless
 const PORT = process.env.PORT || 3000;
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
