@@ -279,7 +279,9 @@ main, section {
   font-weight: 600;
 }
 
-/* CARROSSEL ANTES E DEPOIS (BOLINHAS) */
+/* =========================================
+   CARROSSEL ANTES E DEPOIS (BOLINHAS)
+   ========================================= */
 .ba-carousel-wrapper {
   position: relative;
   width: 100%;
@@ -293,13 +295,13 @@ main, section {
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   border-radius: var(--border-radius-img);
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
   background-color: #f4f6f4;
 }
 
 .ba-track::-webkit-scrollbar {
-  display: none;
+  display: none; /* Chrome/Safari */
 }
 
 .ba-slide {
@@ -346,7 +348,7 @@ main, section {
 
 .ba-arrow {
   position: absolute;
-  top: 42%;
+  top: 50%;
   transform: translateY(-50%);
   width: 34px;
   height: 34px;
@@ -402,6 +404,8 @@ main, section {
   margin-top: 6px;
   display: block;
 }
+
+/* ========================================= */
 
 .contact-box {
   text-align: center;
